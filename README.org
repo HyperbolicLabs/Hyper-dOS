@@ -23,7 +23,7 @@ microk8s enable community argocd nvidia
 ** Installation
 
    #+begin_src bash
-curl https://github.com/HyperbolicLabs/Hyper-dOS/blob/main/install.yaml | microk8s.kubectl apply -f
+curl https://raw.githubusercontent.com/HyperbolicLabs/Hyper-dOS/main/install.yaml | microk8s.kubectl apply -f -
    #+end_src
 
    if you would like to apply the installation manifest yourself, you are welcome to copy the yaml below:
@@ -36,21 +36,22 @@ kind: Application
 metadata:
   name: hyperdos
   namespace: argocd
-project: default
-source:
-  repoURL: 'https://github.com/hyperboliclabs/hyper-dos.git'
-  path: metadeployment/
-  targetRevision: main
-  directory:
-    recurse: true
-    jsonnet: {}
-destination:
-  server: 'https://kubernetes.default.svc'
-  namespace: argocd
-syncPolicy:
-  # https://argo-cd.readthedocs.io/en/stable/user-guide/auto_sync/
-  automated:
-    prune: true
-    allowEmpty: true
-    selfHeal: true
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/hyperboliclabs/hyper-dos.git'
+    path: metadeployment/
+    targetRevision: main
+    directory:
+      recurse: true
+      jsonnet: {}
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: argocd
+  syncPolicy:
+    # https://argo-cd.readthedocs.io/en/stable/user-guide/auto_sync/
+    automated:
+      prune: true
+      allowEmpty: true
+      selfHeal: true
    #+end_src
