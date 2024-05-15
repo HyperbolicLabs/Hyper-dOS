@@ -15,5 +15,10 @@ spec:
     spec:
       containers:
       - name: nvidia-smi
-        image: tensorflow/tensorflow:latest-gpu
+        resources:
+          limits:
+            nvidia.com/gpu: 1
+        # image: tensorflow/tensorflow:latest-gpu
+        # image: pytorch/pytorch:latest
+        image: nvidia/cuda:12.4.1-cudnn-runtime-ubuntu22.04
         command: ["/bin/bash", "-c", "nvidia-smi && sleep infinity"]
