@@ -5,20 +5,21 @@ kind: Application
 metadata:
   name: hyperdos
   namespace: argocd
-project: default
-source:
-  repoURL: 'https://github.com/hyperboliclabs/hyper-dos.git'
-  path: metadeployment/
-  targetRevision: main
-  directory:
-    recurse: true
-    jsonnet: {}
-destination:
-  server: 'https://kubernetes.default.svc'
-  namespace: argocd
-syncPolicy:
-  # https://argo-cd.readthedocs.io/en/stable/user-guide/auto_sync/
-  automated:
-    prune: true
-    allowEmpty: true
-    selfHeal: true
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/hyperboliclabs/hyper-dos.git'
+    path: metadeployment/
+    targetRevision: main
+    directory:
+      recurse: true
+      jsonnet: {}
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: argocd
+  syncPolicy:
+    # https://argo-cd.readthedocs.io/en/stable/user-guide/auto_sync/
+    automated:
+      prune: true
+      allowEmpty: true
+      selfHeal: true
