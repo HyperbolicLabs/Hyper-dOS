@@ -1,0 +1,19 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hello
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hello
+  template:
+    metadata:
+      labels:
+        app: hello
+    spec:
+      containers:
+      - name: nvidia-smi
+        image: tensorflow/tensorflow:latest-gpu
+        command: ["/bin/bash", "-c", "nvidia-smi && sleep infinity"]

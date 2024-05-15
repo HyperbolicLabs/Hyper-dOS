@@ -1,0 +1,56 @@
+#+auto_tangle: t
+
+* Hyper-dOS
+Hyperbolic Distributed Operating System
+
+** Prerequisites
+you will need a Kubernetes cluster with argocd and the NVIDIA operator installed. While most properly configured Kubernetes clusters should be able to run HyperdOS, we officially support the microk8s distro only.
+
+*** install microk8s (ubuntu)
+
+https://microk8s.io/docs/getting-started
+
+   #+begin_src bash
+sudo snap install microk8s --classic --channel=1.30
+sudo usermod -a -G microk8s $USER
+microk8s start --wait-ready
+microk8s enable community argocd nvidia
+   #+end_src
+
+   - note: we do not officially support operating systems other than Linux. That being said, if you would like to join the Hyperbolic Supply Network from a Windows or MacOS device, you are welcome to give it a shot: https://microk8s.io/docs/install-alternatives
+
+
+** Installation
+
+   #+begin_src bash
+curl https://github.com/HyperbolicLabs/Hyper-dOS/blob/main/install.yaml | microk8s.kubectl apply -f
+   #+end_src
+
+   if you would like to apply the installation manifest yourself, you are welcome to copy the yaml below:
+
+   #+begin_src yaml :tangle install.yaml
+---
+# Note: install.yaml is automatically generated from README.org
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: hyperdos
+  namespace: argocd
+project: default
+source:
+  repoURL: 'https://github.com/hyperboliclabs/hyper-dos.git'
+  path: metadeployment/
+  targetRevision: main
+  directory:
+    recurse: true
+    jsonnet: {}
+destination:
+  server: 'https://kubernetes.default.svc'
+  namespace: argocd
+syncPolicy:
+  # https://argo-cd.readthedocs.io/en/stable/user-guide/auto_sync/
+  automated:
+    prune: true
+    allowEmpty: true
+    selfHeal: true
+   #+end_src
