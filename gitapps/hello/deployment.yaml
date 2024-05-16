@@ -13,20 +13,16 @@ spec:
       labels:
         app: hello
     spec:
-      runtimeClassName: nvidia
-      containers:
+      # runtimeClassName: nvidia
+      # containers:
+      # - name: cuda-vector-add
+      #   image: "k8s.gcr.io/cuda-vector-add:v0.1"
+      #   resources:
+      #     limits:
+      #       nvidia.com/gpu: 1
       - name: nvidia-smi
         resources:
           limits:
             nvidia.com/gpu: 1
-        # image: tensorflow/tensorflow:latest-gpu
-        # image: pytorch/pytorch:latest
-        # image: nvidia/cuda:12.4.1-cudnn-runtime-ubuntu22.04
-        # image: nvidia/cuda:12.4.1-cudnn-devel-ubuntu22.04
-        # image: nvidia/cuda:12.4.1-base-ubuntu20.04
         image: nvidia/cuda:12.4.1-runtime-ubuntu22.04
-        # command: ["/bin/sh", "-c"]
-        # args: ["sleep infinity"]
-        # command: ["nvidia-smi && sleep infinity"]
-        # args: ["nvidia-smi && tail -f /dev/null"]
-        command: ["/bin/bash", "-c", "sleep infinity"]
+        command: ["/bin/bash", "-c", "nvidia-smi && sleep infinity"]
