@@ -13,6 +13,7 @@ spec:
       labels:
         app: hello
     spec:
+      runtimeClassName: nvidia
       containers:
       - name: nvidia-smi
         resources:
