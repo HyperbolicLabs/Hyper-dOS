@@ -14,12 +14,6 @@
 #         app: hello
 #     spec:
 #       runtimeClassName: nvidia
-#       containers:
-#       # - name: cuda-vector-add
-#       #   image: "k8s.gcr.io/cuda-vector-add:v0.1"
-#       #   resources:
-#       #     limits:
-#       #       nvidia.com/gpu: 1
 #       - name: nvidia-smi
 #         resources:
 #           limits:
@@ -31,15 +25,20 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: hello
+  name: nvidia-smi
 spec:
   template:
     spec:
       runtimeClassName: nvidia
+      restartPolicy: Never
       containers:
       - name: nvidia-smi
         image: nvidia/cuda:12.4.1-base-ubuntu22.04
         command:
           - nvidia-smi
-      restartPolicy: Never
+      - name: cuda-vector-add
+        image: "k8s.gcr.io/cuda-vector-add:v0.1"
+        resources:
+          limits:
+            nvidia.com/gpu: 1
   backoffLimit: 2
