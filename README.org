@@ -10,7 +10,7 @@
 
 https://microk8s.io/docs/getting-started
 
-   #+begin_src bash
+   #+begin_src
 sudo snap install microk8s --classic --channel=1.30
 sudo usermod -a -G microk8s $USER # allow non-sudo use of microk8s command
 newgrp microk8s # reload shell
@@ -64,7 +64,7 @@ spec:
 
 - if you already have nvidia drivers and container toolkit installed, use this command instead:
 
-  #+begin_src bash
+  #+begin_src
   microk8s enable nvidia --gpu-operator-driver host
   #+end_src
 
