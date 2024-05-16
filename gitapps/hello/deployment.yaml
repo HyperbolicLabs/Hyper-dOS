@@ -21,5 +21,6 @@ spec:
         # image: tensorflow/tensorflow:latest-gpu
         # image: pytorch/pytorch:latest
         # image: nvidia/cuda:12.4.1-cudnn-runtime-ubuntu22.04
-        image: nvidia/cuda:12.4.1-cudnn-devel-ubuntu22.04
+        # image: nvidia/cuda:12.4.1-cudnn-devel-ubuntu22.04
+        image: nvidia/cuda:11.0-base
         command: ["/bin/bash", "-c", "nvidia-smi && sleep infinity"]
