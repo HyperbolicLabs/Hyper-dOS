@@ -10,7 +10,7 @@
 
 https://microk8s.io/docs/getting-started
 
-   #+begin_src
+   #+begin_src fish
 sudo snap install microk8s --classic --channel=1.30
 sudo usermod -a -G microk8s $USER # allow non-sudo use of microk8s command
 newgrp microk8s # reload shell
@@ -23,7 +23,7 @@ microk8s enable nvidia # install the nvidia GPU operator
 
 ** Install HyperdOS
 
-   #+begin_src bash
+   #+begin_src fish
 curl https://raw.githubusercontent.com/HyperbolicLabs/Hyper-dOS/main/install.yaml | microk8s.kubectl apply -f -
    #+end_src
 
@@ -64,7 +64,7 @@ spec:
 
 - if you already have nvidia drivers and container toolkit installed, use this command instead:
 
-  #+begin_src
+  #+begin_src fish
   microk8s enable nvidia --gpu-operator-driver host
   #+end_src
 
