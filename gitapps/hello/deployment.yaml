@@ -14,7 +14,7 @@ spec:
         app: hello
     spec:
       runtimeClassName: nvidia
-      # containers:
+      containers:
       # - name: cuda-vector-add
       #   image: "k8s.gcr.io/cuda-vector-add:v0.1"
       #   resources:
