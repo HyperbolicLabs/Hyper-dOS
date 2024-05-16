@@ -1,27 +1,4 @@
-# ---
-# apiVersion: apps/v1
-# kind: Deployment
-# metadata:
-#   name: hello
-# spec:
-#   replicas: 1
-#   selector:
-#     matchLabels:
-#       app: hello
-#   template:
-#     metadata:
-#       labels:
-#         app: hello
-#     spec:
-#       runtimeClassName: nvidia
-#       - name: nvidia-smi
-#         resources:
-#           limits:
-#             nvidia.com/gpu: 1
-#         image: nvidia/cuda:12.4.1-runtime-ubuntu22.04
-#         command: ["/bin/bash", "-c", "nvidia-smi && sleep infinity"]
 ---
-# job
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -38,7 +15,7 @@ spec:
           - nvidia-smi
       - name: cuda-vector-add
         image: "k8s.gcr.io/cuda-vector-add:v0.1"
-        resources:
-          limits:
-            nvidia.com/gpu: 1
+        # resources:
+        #   limits:
+        #     nvidia.com/gpu: 1
   backoffLimit: 2
