@@ -20,12 +20,6 @@ microk8s enable community argocd
 microk8s enable nvidia
    #+end_src
 
-**** notes
-
-   - if you already have nvidia drivers and container toolkit installed, use this command instead: ~microk8s enable nvidia --gpu-operator-driver host~
-
-   - we do not officially support operating systems other than Linux. That being said, if you would like to join the Hyperbolic Supply Network from a Windows or MacOS device, you are welcome to give it a shot: https://microk8s.io/docs/install-alternatives
-
 
 ** Installation
 
@@ -66,3 +60,14 @@ spec:
       allowEmpty: true
       selfHeal: true
    #+end_src
+
+
+* Notes
+
+- if you already have nvidia drivers and container toolkit installed, use this command instead: ~microk8s enable nvidia --gpu-operator-driver host~
+
+  - you can override more NVIDIA GPU Operator settings by using the ~--values~ flag and referring to the values.yaml file here: https://github.com/NVIDIA/gpu-operator/blob/master/deployments/gpu-operator/values.yaml
+
+  - see further configuration options here: https://microk8s.io/docs/addon-gpu
+
+- we do not officially support operating systems other than Linux. That being said, if you would like to join the Hyperbolic Supply Network from a Windows or MacOS device, you are welcome to give it a shot: https://microk8s.io/docs/install-alternatives
