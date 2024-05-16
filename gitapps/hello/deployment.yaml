@@ -25,6 +25,7 @@ spec:
         # image: nvidia/cuda:12.4.1-base-ubuntu20.04
         image: nvidia/cuda:12.4.1-runtime-ubuntu22.04
         command: ["/bin/sh", "-c"]
+        args: ["sleep infinity"]
         # command: ["nvidia-smi && sleep infinity"]
         # args: ["nvidia-smi && tail -f /dev/null"]
         # command: ["/bin/bash", "-c", "nvidia-smi && sleep infinity"]
