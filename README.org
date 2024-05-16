@@ -24,7 +24,8 @@ microk8s enable nvidia # install the nvidia GPU operator
 ** Install HyperdOS
 
    #+begin_src fish
-curl https://raw.githubusercontent.com/HyperbolicLabs/Hyper-dOS/main/install.yaml | microk8s.kubectl apply -f -
+   curl https://raw.githubusercontent.com/HyperbolicLabs/Hyper-dOS/main/install.yaml \
+      | microk8s.kubectl apply -f -
    #+end_src
 
 
