@@ -13,6 +13,13 @@ spec:
     helm:
       valueFiles:
         - values.yaml
+      parameters:
+        - name: 'tailscale-operator.operatorConfig.defaultTags[0]'
+          value: 'tag:baron-CHANGEME'
+        - name: tailscale-operator.operatorConfig.hostname
+          value: baron-CHANGEME
+        - name: tailscale-operator.proxyConfig.defaultTags
+          value: 'tag:baron-CHANGEME-subtag'
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: tailscale
