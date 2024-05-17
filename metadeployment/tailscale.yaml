@@ -15,11 +15,11 @@ spec:
         - values.yaml
       parameters:
         - name: 'tailscale-operator.operatorConfig.defaultTags[0]'
-          value: 'tag:baron-CHANGEME'
+          value: 'tag:baron-${CLUSTERTITLE}'
         - name: tailscale-operator.operatorConfig.hostname
-          value: baron-CHANGEME
+          value: baron-${CLUSTERTITLE}
         - name: tailscale-operator.proxyConfig.defaultTags
-          value: 'tag:baron-CHANGEME-subtag'
+          value: 'tag:baron-${CLUSTERTITLE}-subtag'
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: tailscale

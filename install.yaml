@@ -14,6 +14,9 @@ spec:
     directory:
       recurse: true
       jsonnet: {}
+    env:
+      - name: CLUSTERTITLE
+        value: willchangeme
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: argocd
