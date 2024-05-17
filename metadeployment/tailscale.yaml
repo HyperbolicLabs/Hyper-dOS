@@ -10,9 +10,9 @@ spec:
     repoURL: 'https://gitlab.com/squire-exchange/public/cluster-dos.git'
     path: gitops/tailscale
     targetRevision: main
-    directory:
-      recurse: true
-      jsonnet: {}
+    helm:
+      valueFiles:
+        - values.yaml
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: tailscale
