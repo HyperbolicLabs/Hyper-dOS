@@ -35,7 +35,7 @@ spec:
       elements:
         # you should put your username here.
         # this manifest will fail to activate (by design) if you do not
-      - username: CHANGEME
+      - username: {{stand-in}}
   template:
     metadata:
       name: tailscale
