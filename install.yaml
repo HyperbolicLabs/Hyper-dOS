@@ -14,15 +14,55 @@ spec:
     directory:
       recurse: true
       jsonnet: {}
-    env:
-      - name: CLUSTERTITLE
-        value: willchangeme
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: argocd
-  syncPolicy:
-    # https://argo-cd.readthedocs.io/en/stable/user-guide/auto_sync/
+  syncPolicy: # argo-cd.readthedocs.io/en/stable/user-guide/auto_sync/
     automated:
       prune: true
       allowEmpty: true
       selfHeal: true
+---
+# https://argo-cd.readthedocs.io/en/stable/operator-manual/applicationset/
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: tailscale
+  namespace: argocd
+spec:
+  generators:
+  - list:
+      elements:
+        # you should put your username here.
+        # this manifest will fail to activate (by design) if you do not
+      - username: CHANGEME
+  template:
+    metadata:
+      name: tailscale
+      namespace: argocd
+    spec:
+      project: default
+      source:
+        repoURL: 'https://gitlab.com/squire-exchange/public/cluster-dos.git'
+        path: gitops/tailscale
+        targetRevision: main
+        helm:
+          valueFiles:
+            - values.yaml
+          parameters:
+            - name: 'tailscale-operator.operatorConfig.defaultTags[0]'
+              value: 'tag:baron-{{username}}'
+            - name: tailscale-operator.operatorConfig.hostname
+              value: baron-{{username}}
+            - name: tailscale-operator.proxyConfig.defaultTags
+              value: 'tag:baron-{{username}}-subtag'
+      destination:
+        server: 'https://kubernetes.default.svc'
+        namespace: tailscale
+      syncPolicy:
+        syncOptions:
+          - CreateNamespace=true
+        automated:
+          prune: true
+          allowEmpty: true
+          selfHeal: true
