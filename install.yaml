@@ -27,7 +27,7 @@ spec:
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: tailscale
+  name: hyperweb
   namespace: argocd
 spec:
   generators:
@@ -38,7 +38,7 @@ spec:
       - username: {{stand-in}}
   template:
     metadata:
-      name: tailscale
+      name: hyperweb
       namespace: argocd
     spec:
       project: default
@@ -58,7 +58,7 @@ spec:
               value: 'tag:baron-{{username}}-subtag'
       destination:
         server: 'https://kubernetes.default.svc'
-        namespace: tailscale
+        namespace: hyperweb
       syncPolicy:
         syncOptions:
           - CreateNamespace=true
