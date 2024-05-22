@@ -1,0 +1,25 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: epitome
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/hyperboliclabs/hyper-dos.git'
+    path: gitapps/epitome
+    targetRevision: main
+    directory:
+      recurse: true
+      jsonnet: {}
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: hyperdos
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+    automated:
+      prune: true
+      allowEmpty: true
+      selfHeal: true

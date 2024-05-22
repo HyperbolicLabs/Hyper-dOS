@@ -1,0 +1,23 @@
+---
+# kubernetes deployment for epitome image
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: epitome
+  labels:
+    app: epitome
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: epitome
+  template:
+    metadata:
+      labels:
+        app: epitome
+    spec:
+      runtimeClassName: nvidia
+      containers:
+      - name: epitome
+        image: ghcr.io/hyperboliclabs/hyper-dos/epitome:latest
+      restartPolicy: Always
