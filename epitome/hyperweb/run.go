@@ -1,27 +1,48 @@
 package hyperweb
 
 import (
+	"time"
+
 	"github.com/sirupsen/logrus"
 	"k8s.io/client-go/kubernetes"
 )
 
-func Run(clientset kubernetes.Clientset, gatewayUrl string, token string) {
-	// check if operator-oauth.hyperweb.secrets.cluster.local exists
-	if !SecretExists(clientset, hyperwebNamespace, "operator-oauth") {
+var clusterName *string
+
+func Runloop(clientset kubernetes.Clientset, gatewayUrl string, token string) {
+
+	for {
+		// run once every 30 seconds
+		reconcile(clientset, gatewayUrl, token)
+		time.Sleep(30 * time.Second)
+	}
+}
+
+func reconcile(clientset kubernetes.Clientset, gatewayUrl string, token string) {
+	if !secretExists(clientset, hyperwebNamespace, "operator-oauth") {
 		// if it does not, query the gateway for oauth credentials using our token
 
-		clientId, clientSecret, err := handshake(gatewayUrl, token)
+		response, err := handshake(gatewayUrl, token)
 		if err != nil {
 			logrus.Warnf("failed to handshake with gateway: %v", err)
 			return
-		} else {
-			mustCreateOperatorOAuthSecret(
-				clientset,
-				hyperwebNamespace,
-				"operator-oauth",
-				*clientId,
-				*clientSecret,
-			)
 		}
+
+		mustCreateOperatorOAuthSecret(
+			clientset,
+			hyperwebNamespace,
+			"operator-oauth",
+			response.ClientID,
+			response.ClientSecret,
+			response.ClusterName,
+		)
+
+		clusterName = &response.ClusterName
 	}
+
+	logrus.Info("TODO: check if hyperweb is installed")
+
+	// if !applicationExists(clientset, "argocd", "hyperweb") {
+	// 	mustCreateApplication(clientset, "argocd", "hyperweb", hyperwebNamespace)
+	// }
 }

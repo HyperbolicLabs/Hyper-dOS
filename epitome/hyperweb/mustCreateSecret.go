@@ -15,12 +15,13 @@ func mustCreateOperatorOAuthSecret(
 	name string,
 	clientId string,
 	clientSecret string,
+	clusterName string,
 ) (err error) {
 
 	// create secret
 	secret := &v1.Secret{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      "operator-oauth",
+			Name:      name,
 			Namespace: hyperwebNamespace,
 		},
 		Data: map[string][]byte{
@@ -29,7 +30,7 @@ func mustCreateOperatorOAuthSecret(
 		},
 	}
 
-	_, err = clientset.CoreV1().Secrets(hyperwebNamespace).Create(context.TODO(), secret, metav1.CreateOptions{})
+	_, err = clientset.CoreV1().Secrets(namespace).Create(context.TODO(), secret, metav1.CreateOptions{})
 	if err != nil {
 		logrus.Fatalf("failed to create secret: %v", err)
 	}

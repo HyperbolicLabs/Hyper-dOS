@@ -17,6 +17,9 @@ build:
 	go build -o ./epitome
 
 run-epitome:
+	$(eval export HYPERBOLIC_TOKEN=dummy)
+	$(eval export HYPERBOLIC_GATEWAY_URL=dummy)
+
 	cd epitome; \
 	go run . -loglevel debug
 

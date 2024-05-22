@@ -6,7 +6,7 @@ import (
 
 const hyperwebNamespace = "hyperweb"
 
-func SecretExists(
+func secretExists(
 	clientset kubernetes.Clientset,
 	namespace string,
 	name string,
