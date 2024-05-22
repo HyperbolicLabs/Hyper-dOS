@@ -22,6 +22,8 @@ spec:
         image: ghcr.io/hyperboliclabs/hyper-dos/epitome:latest
       restartPolicy: Always
       env:
+      - name: HYPERBOLIC_GATEWAY_URL
+        value: "https://api.hyperbolic.xyz"
       - name: HYPERBOLIC_TOKEN
         valueFrom:
           secretKeyRef:

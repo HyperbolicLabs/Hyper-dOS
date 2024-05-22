@@ -14,8 +14,12 @@ const VERSION = "v1-alpha"
 
 func main() {
 	var token = os.Getenv("HYPERBOLIC_TOKEN")
+	var gatewayUrl = os.Getenv("HYPERBOLIC_GATEWAY_URL")
 	if token == "" {
 		logrus.Fatalf("token not set")
+	}
+	if gatewayUrl == "" {
+		logrus.Fatalf("gatewayUrl not set")
 	}
 
 	var help = flag.Bool("help", false, "Show help")
@@ -32,7 +36,7 @@ func main() {
 
 	logrus.Infof("connecting to in-cluster kube api-server")
 	clientset := cluster.MustConnect()
-	hyperweb.Initialize(clientset)
+	go hyperweb.Run(clientset, gatewayUrl, token)
 
 	for {
 		// do nothing
