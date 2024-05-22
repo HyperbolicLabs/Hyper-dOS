@@ -1,0 +1,44 @@
+---
+# https://argo-cd.readthedocs.io/en/stable/operator-manual/applicationset/
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: hyperweb
+  namespace: argocd
+spec:
+  generators:
+  - list:
+      elements:
+        # epitome should put your cluster name here.
+        # this manifest will fail to activate otherwise (by design)
+      - cluster: {{stand-in}}
+  template:
+    metadata:
+      name: hyperweb
+      namespace: argocd
+    spec:
+      project: default
+      source:
+        repoURL: 'https://gitlab.com/squire-exchange/public/cluster-dos.git'
+        path: gitops/tailscale
+        targetRevision: main
+        helm:
+          valueFiles:
+            - values.yaml
+          parameters:
+            - name: 'tailscale-operator.operatorConfig.defaultTags[0]'
+              value: 'tag:baron'
+            - name: tailscale-operator.operatorConfig.hostname
+              value: baron-{{cluster}}
+            - name: tailscale-operator.proxyConfig.defaultTags
+              value: 'tag:baron-subtag'
+      destination:
+        server: 'https://kubernetes.default.svc'
+        namespace: hyperweb
+      syncPolicy:
+        syncOptions:
+          - CreateNamespace=true
+        automated:
+          prune: true
+          allowEmpty: true
+          selfHeal: true

@@ -21,3 +21,9 @@ spec:
       - name: epitome
         image: ghcr.io/hyperboliclabs/hyper-dos/epitome:latest
       restartPolicy: Always
+      env:
+      - name: HYPERBOLIC_TOKEN
+        valueFrom:
+          secretKeyRef:
+            name: hyperbolic-token
+            key: token

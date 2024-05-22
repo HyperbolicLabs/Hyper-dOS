@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"os"
 
 	"epitome.hyperbolic.xyz/cluster"
 	"epitome.hyperbolic.xyz/helper"
@@ -12,6 +13,11 @@ import (
 const VERSION = "v1-alpha"
 
 func main() {
+	var token = os.Getenv("HYPERBOLIC_TOKEN")
+	if token == "" {
+		logrus.Fatalf("token not set")
+	}
+
 	var help = flag.Bool("help", false, "Show help")
 	var loglevel = flag.String("loglevel", "info", "debug, info, error")
 	flag.Parse()
