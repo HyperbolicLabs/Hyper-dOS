@@ -27,4 +27,11 @@ func main() {
 	logrus.Infof("connecting to in-cluster kube api-server")
 	clientset := cluster.MustConnect()
 	hyperweb.Initialize(clientset)
+
+	for {
+		// do nothing
+		<-make(chan struct{})
+		logrus.Infof("exiting") // this will never happen
+		return
+	}
 }
