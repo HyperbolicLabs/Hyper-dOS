@@ -25,8 +25,8 @@ func mustCreateOperatorOAuthSecret(
 			Namespace: hyperwebNamespace,
 		},
 		Data: map[string][]byte{
-			"clientID":     []byte(clientId),
-			"clientSecret": []byte(clientSecret),
+			"client_id":     []byte(clientId),
+			"client_secret": []byte(clientSecret),
 		},
 	}
 
