@@ -27,7 +27,7 @@ microk8s enable nvidia # install the nvidia GPU operator
 
    #+begin_src fish
 HYPERBOLIC_TOKEN=<YOUR_TOKEN> \
-   && microk8s create namespace hyperdos \
+   && microk8s.kubectl create namespace hyperdos \
    && curl https://raw.githubusercontent.com/HyperbolicLabs/Hyper-dOS/main/install.yaml \
    | sed -e "s;{{stand-in}};${HYPERBOLIC_TOKEN};g" \
       | microk8s.kubectl apply -f -

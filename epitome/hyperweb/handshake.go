@@ -12,9 +12,6 @@ func handshake(
 	gatewayUrl string,
 	token string,
 ) (response *handshakeResponse, err error) {
-	// -H "Content-Type: application/json" \
-	// -H "Authorization: Bearer $token" \
-
 	// post to gateway
 	client := &http.Client{}
 	req, err := http.NewRequest("POST", gatewayUrl+"/v1/hyperweb/login", bytes.NewBuffer([]byte(token)))

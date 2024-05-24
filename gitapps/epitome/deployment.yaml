@@ -16,7 +16,6 @@ spec:
       labels:
         app: epitome
     spec:
-      runtimeClassName: nvidia
       containers:
       - name: epitome
         image: ghcr.io/hyperboliclabs/hyper-dos/epitome:latest
