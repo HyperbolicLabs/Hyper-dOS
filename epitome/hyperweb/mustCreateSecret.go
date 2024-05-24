@@ -15,7 +15,6 @@ func mustCreateOperatorOAuthSecret(
 	name string,
 	clientId string,
 	clientSecret string,
-	clusterName string,
 ) (err error) {
 
 	// create secret

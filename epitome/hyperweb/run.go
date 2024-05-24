@@ -4,13 +4,18 @@ import (
 	"time"
 
 	"github.com/sirupsen/logrus"
+	"k8s.io/client-go/dynamic"
 	"k8s.io/client-go/kubernetes"
 )
 
 var clusterName *string
 
-func Runloop(clientset kubernetes.Clientset, gatewayUrl string, token string) {
-
+func Runloop(
+	clientset kubernetes.Clientset,
+	dynamicClient dynamic.DynamicClient,
+	gatewayUrl string,
+	token string,
+) {
 	for {
 		// run once every 30 seconds
 		reconcile(clientset, gatewayUrl, token)
@@ -21,6 +26,7 @@ func Runloop(clientset kubernetes.Clientset, gatewayUrl string, token string) {
 func reconcile(clientset kubernetes.Clientset, gatewayUrl string, token string) {
 	if !secretExists(clientset, hyperwebNamespace, "operator-oauth") {
 		// if it does not, query the gateway for oauth credentials using our token
+		logrus.Infof("operator-oauth secret does not exist in namespace: %v", hyperwebNamespace)
 
 		response, err := handshake(gatewayUrl, token)
 		if err != nil {
@@ -34,7 +40,6 @@ func reconcile(clientset kubernetes.Clientset, gatewayUrl string, token string) 
 			"operator-oauth",
 			response.ClientID,
 			response.ClientSecret,
-			response.ClusterName,
 		)
 
 		clusterName = &response.ClusterName

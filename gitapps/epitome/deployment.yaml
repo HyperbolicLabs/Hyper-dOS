@@ -21,7 +21,7 @@ spec:
         image: ghcr.io/hyperboliclabs/hyper-dos/epitome:latest
         env:
         - name: HYPERBOLIC_GATEWAY_URL
-          value: "https://api.hyperbolic.xyz"
+          value: "https://api.dev-hyperbolic.xyz"
         - name: HYPERBOLIC_TOKEN
           valueFrom:
             secretKeyRef:

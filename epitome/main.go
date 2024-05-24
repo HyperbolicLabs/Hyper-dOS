@@ -15,6 +15,8 @@ const VERSION = "v1-alpha"
 func main() {
 	var help = flag.Bool("help", false, "Show help")
 	var loglevel = flag.String("loglevel", "info", "debug, info, error")
+	var kubeconfig string
+	flag.StringVar(&kubeconfig, "kubeconfig", "", "optional kubeconfig path")
 	flag.Parse()
 
 	helper.SetLogLevel(*loglevel)
@@ -36,8 +38,8 @@ func main() {
 	}
 
 	logrus.Infof("connecting to in-cluster kube api-server")
-	clientset := cluster.MustConnect()
-	go hyperweb.Runloop(clientset, gatewayUrl, token)
+	clientset, dynamicClient := cluster.MustConnect(kubeconfig)
+	go hyperweb.Runloop(clientset, dynamicClient, gatewayUrl, token)
 
 	for {
 		// do nothing

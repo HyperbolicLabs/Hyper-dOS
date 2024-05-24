@@ -17,11 +17,9 @@ build:
 	go build -o ./epitome
 
 run-epitome:
-	$(eval export HYPERBOLIC_TOKEN=dummy)
-	$(eval export HYPERBOLIC_GATEWAY_URL=dummy)
-
 	cd epitome; \
-	go run . -loglevel debug
+	export HYPERBOLIC_GATEWAY_URL='https://api.dev-hyperbolic.xyz' && \
+	go run . -loglevel debug -kubeconfig ~/.kube/config
 
 epitome-help:
 	cd epitome; \
