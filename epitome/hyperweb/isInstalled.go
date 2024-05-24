@@ -22,8 +22,8 @@ func IsInstalled(dynamicClient dynamic.DynamicClient) bool {
 
 	if err != nil {
 		// logrus.Errorf("list: %v, err: %v", appset, err)
-		panic(err)
-
+		// panic(err)
+		return false
 	}
 
 	// print the unstructured object in json format
