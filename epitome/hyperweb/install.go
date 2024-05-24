@@ -7,11 +7,12 @@ import (
 	"os"
 
 	"github.com/sirupsen/logrus"
-	"gopkg.in/yaml.v2"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/client-go/dynamic"
+
+	yaml "k8s.io/apimachinery/pkg/util/yaml"
 )
 
 func InstallHyperWeb(
@@ -35,7 +36,8 @@ func InstallHyperWeb(
 	}
 
 	obj := &unstructured.Unstructured{}
-	yaml.Unmarshal(buff.Bytes(), obj)
+	yaml.NewYAMLOrJSONDecoder(buff, buff.Len()).Decode(obj)
+	logrus.Debugf("unstructured: %+v", obj)
 
 	_, err = dynamicClient.
 		Resource(argoGVR).

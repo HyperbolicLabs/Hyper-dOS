@@ -39,6 +39,9 @@ func main() {
 
 	logrus.Infof("connecting to in-cluster kube api-server")
 	clientset, dynamicClient := cluster.MustConnect(kubeconfig)
+
+	// hyperweb.InstallHyperWeb(dynamicClient, "asdf")
+	// logrus.Fatalf("dirtytest")
 	go hyperweb.Runloop(clientset, dynamicClient, gatewayUrl, token)
 
 	for {
