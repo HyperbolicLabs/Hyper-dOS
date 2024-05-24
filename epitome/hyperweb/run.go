@@ -61,8 +61,7 @@ func reconcile(
 		logrus.Infof("hyperweb application is installed, nothing to do")
 		return
 	} else {
-		logrus.Infof("appset is not installed")
-
+		logrus.Infof("hyperweb application is not installed")
 	}
 
 	// if !applicationExists(clientset, "argocd", "hyperweb") {

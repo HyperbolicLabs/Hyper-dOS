@@ -16,6 +16,7 @@ sudo usermod -a -G microk8s $USER # allow non-sudo use of microk8s command
 newgrp microk8s # reload shell
 
 microk8s start # boot the cluster
+microk8s enable community # add the community repos
 microk8s enable community argocd # install argocd
 microk8s enable nvidia # install the nvidia GPU operator
    #+end_src
