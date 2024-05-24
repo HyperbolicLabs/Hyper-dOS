@@ -1,0 +1,64 @@
+package hyperweb
+
+import (
+	"bytes"
+	"context"
+	"html/template"
+	"log"
+	"os"
+
+	"github.com/sirupsen/logrus"
+	"gopkg.in/yaml.v2"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
+	"k8s.io/apimachinery/pkg/runtime/schema"
+	"k8s.io/client-go/dynamic"
+)
+
+func InstallHyperWeb(
+	dynamicClient dynamic.DynamicClient,
+	clusterName string,
+) error {
+	yamlFile, err := os.ReadFile("application.yaml")
+	if err != nil {
+		log.Printf("yamlFile.Get err   #%v ", err)
+	}
+
+	templatedapp := template.Must(template.New("index").Parse(string(yamlFile)))
+	buff := new(bytes.Buffer)
+	err = templatedapp.Execute(
+		buff,
+		map[string]interface{}{
+			"ClusterName": clusterName})
+
+	if err != nil {
+		logrus.Fatal("failed to generate application template", err)
+	}
+
+	obj := &unstructured.Unstructured{}
+	yaml.Unmarshal(buff.Bytes(), obj)
+
+	_, err = dynamicClient.
+		Resource(argoGVR).
+		Namespace("argocd").
+		Apply(
+			context.TODO(),
+			"hyperweb",
+			obj,
+			metav1.ApplyOptions{
+				FieldManager: "epitome",
+			})
+
+	if err != nil {
+		logrus.Errorf("could not apply yaml application: %v", err)
+		panic(err)
+	}
+
+	return nil
+}
+
+var argoGVR = schema.GroupVersionResource{
+	Group:    "argoproj.io",
+	Version:  "v1alpha1",
+	Resource: "applications",
+}

@@ -18,12 +18,17 @@ func Runloop(
 ) {
 	for {
 		// run once every 30 seconds
-		reconcile(clientset, gatewayUrl, token)
+		reconcile(clientset, dynamicClient, gatewayUrl, token)
 		time.Sleep(30 * time.Second)
 	}
 }
 
-func reconcile(clientset kubernetes.Clientset, gatewayUrl string, token string) {
+func reconcile(
+	clientset kubernetes.Clientset,
+	dynamicClient dynamic.DynamicClient,
+	gatewayUrl string,
+	token string,
+) {
 	if !secretExists(clientset, hyperwebNamespace, "operator-oauth") {
 		// if it does not, query the gateway for oauth credentials using our token
 		logrus.Infof("operator-oauth secret does not exist in namespace: %v", hyperwebNamespace)
@@ -43,9 +48,22 @@ func reconcile(clientset kubernetes.Clientset, gatewayUrl string, token string) 
 		)
 
 		clusterName = &response.ClusterName
+
+		err = InstallCM(dynamicClient, *clusterName)
+		if err != nil {
+			logrus.Fatalf("failed to save cluster name in configmap: %v", err)
+		}
+
+		InstallHyperWeb(dynamicClient, *clusterName)
 	}
 
-	logrus.Info("TODO: check if hyperweb is installed")
+	if IsInstalled(dynamicClient) {
+		logrus.Infof("hyperweb application is installed, nothing to do")
+		return
+	} else {
+		logrus.Infof("appset is not installed")
+
+	}
 
 	// if !applicationExists(clientset, "argocd", "hyperweb") {
 	// 	mustCreateApplication(clientset, "argocd", "hyperweb", hyperwebNamespace)
