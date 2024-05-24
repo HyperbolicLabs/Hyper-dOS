@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"context"
 	"html/template"
-	"log"
 	"os"
 
 	"github.com/sirupsen/logrus"
@@ -21,7 +20,7 @@ func InstallHyperWeb(
 ) error {
 	yamlFile, err := os.ReadFile("application.yaml")
 	if err != nil {
-		log.Printf("yamlFile.Get err   #%v ", err)
+		logrus.Fatalf("failed to read application.yaml: %v", err)
 	}
 
 	templatedapp := template.Must(template.New("index").Parse(string(yamlFile)))
