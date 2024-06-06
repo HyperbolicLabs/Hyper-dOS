@@ -1,0 +1,10 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: app-manager
+rules:
+- apiGroups: ["argoproj.io"]
+  # this is necessary to create the tailscale operator application controller
+  resources: ["applications"]
+  verbs: ["create", "get", "watch", "list", "update", "patch"]
