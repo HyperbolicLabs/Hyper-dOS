@@ -57,12 +57,6 @@ func reconcile(
 			logrus.Errorf("failed to save cluster name in configmap: %v", err)
 			return err
 		}
-
-		err = InstallHyperWeb(dynamicClient, *clusterName)
-		if err != nil {
-			logrus.Errorf("failed to install hyperweb application: %v", err)
-			return err
-		}
 	}
 
 	if IsInstalled(dynamicClient) {
@@ -70,6 +64,14 @@ func reconcile(
 		return nil
 	} else {
 		logrus.Infof("hyperweb application is not installed - installing now")
+
+		clusterName, err := GetClusterName(clientset)
+
+		err = InstallHyperWeb(dynamicClient, *clusterName)
+		if err != nil {
+			logrus.Errorf("failed to install hyperweb application: %v", err)
+			return err
+		}
 	}
 
 	// if !applicationExists(clientset, "argocd", "hyperweb") {

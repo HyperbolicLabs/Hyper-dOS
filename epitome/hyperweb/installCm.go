@@ -24,11 +24,17 @@ data:
   clusterName: {{.ClusterName}}
 `
 
+var cmGVR = schema.GroupVersionResource{
+	Group:    "",
+	Version:  "v1",
+	Resource: "configmaps",
+}
+
 func InstallCM(dynamicClient dynamic.DynamicClient, clusterName string) error {
 	templatedcm := template.Must(template.New("index").Parse(yamlConfigMap))
 	buff := new(bytes.Buffer)
 	err := templatedcm.Execute(buff, map[string]interface{}{
-		"ClusterName": clusterName})
+		"clusterName": clusterName})
 
 	if err != nil {
 		logrus.Fatal(err)
@@ -56,10 +62,4 @@ func InstallCM(dynamicClient dynamic.DynamicClient, clusterName string) error {
 	logrus.Infof("applied unstructured: %+v", us)
 
 	return nil
-}
-
-var cmGVR = schema.GroupVersionResource{
-	Group:    "",
-	Version:  "v1",
-	Resource: "configmaps",
 }

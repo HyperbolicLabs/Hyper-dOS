@@ -1,6 +1,7 @@
 package hyperweb
 
 import (
+	"epitome.hyperbolic.xyz/helper"
 	"github.com/sirupsen/logrus"
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/client-go/kubernetes"
@@ -11,7 +12,7 @@ func secretExists(
 	namespace string,
 	name string,
 ) bool {
-	_, err := GetSecret(clientset, namespace, name)
+	_, err := helper.GetSecret(clientset, namespace, name)
 	if err != nil {
 		if errors.IsNotFound(err) {
 			return false
