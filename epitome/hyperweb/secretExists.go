@@ -6,8 +6,6 @@ import (
 	"k8s.io/client-go/kubernetes"
 )
 
-const hyperwebNamespace = "hyperweb"
-
 func secretExists(
 	clientset kubernetes.Clientset,
 	namespace string,

@@ -9,15 +9,13 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-// const hyperwebNamespace = "hyperweb"
-
 func IsInstalled(dynamicClient dynamic.DynamicClient) bool {
 	_, err := dynamicClient.
 		Resource(argoAppGVR).
-		Namespace("argocd").
+		Namespace(argocdNamespace).
 		Get(
 			context.TODO(),
-			"hyperweb",
+			hyperwebNamespace,
 			metav1.GetOptions{})
 
 	if err != nil {

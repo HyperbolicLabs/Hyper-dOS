@@ -24,6 +24,6 @@ RUN CGO_ENABLED=0 go build -o /epitome
 FROM alpine:latest
 
 COPY --from=builder /epitome /epitome
-COPY ./hyperweb/application.yaml /application.yaml
+COPY ./application.yaml /application.yaml
 
 ENTRYPOINT ["/epitome"]
