@@ -1,6 +1,8 @@
 package hyperweb
 
 const (
-	hyperwebNamespace = "hyperweb"
-	argocdNamespace   = "argocd"
+	hyperwebNamespace    = "hyperweb"
+	argocdNamespace      = "argocd"
+	hyperdosNamespace    = "hyperdos"
+	clusterNameDataField = "clusterName"
 )

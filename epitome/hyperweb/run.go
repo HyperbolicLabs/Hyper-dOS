@@ -8,8 +8,6 @@ import (
 	"k8s.io/client-go/kubernetes"
 )
 
-var clusterName *string
-
 func Runloop(
 	clientset kubernetes.Clientset,
 	dynamicClient dynamic.DynamicClient,
@@ -50,9 +48,7 @@ func reconcile(
 			response.ClientSecret,
 		)
 
-		clusterName = &response.ClusterName
-
-		err = InstallCM(dynamicClient, *clusterName)
+		err = InstallCM(dynamicClient, response.ClusterName)
 		if err != nil {
 			logrus.Errorf("failed to save cluster name in configmap: %v", err)
 			return err
@@ -65,9 +61,13 @@ func reconcile(
 	} else {
 		logrus.Infof("hyperweb application is not installed - installing now")
 
-		clusterName, err := GetClusterName(clientset)
+		name, err := GetClusterName(clientset)
+		if err != nil {
+			logrus.Errorf("failed to get cluster name: %v", err)
+			return err
+		}
 
-		err = InstallHyperWeb(dynamicClient, *clusterName)
+		err = InstallHyperWeb(dynamicClient, *name)
 		if err != nil {
 			logrus.Errorf("failed to install hyperweb application: %v", err)
 			return err

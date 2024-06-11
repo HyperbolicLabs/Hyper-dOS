@@ -9,7 +9,7 @@ import (
 
 func GetClusterName(clientSet kubernetes.Clientset) (*string, error) {
 
-	cm, err := helper.GetConfigMap(clientSet, hyperwebNamespace, "cluster-name")
+	cm, err := helper.GetConfigMap(clientSet, hyperdosNamespace, "cluster-name")
 	if err != nil {
 		return nil, err
 	}
@@ -24,12 +24,12 @@ func GetClusterName(clientSet kubernetes.Clientset) (*string, error) {
 		return nil, err
 	}
 
+	name := cm.Data[clusterNameDataField]
 	// check if clusterName is set in configmap data
-	if cm.Data["clusterName"] == "" {
-		err = fmt.Errorf("cluster-name configmap data is empty")
+	if name == "" {
+		err = fmt.Errorf("cluster-name configmap data is empty for field %v", clusterNameDataField)
 		return nil, err
 	}
 
-	name := cm.Data["clusterName"]
 	return &name, nil
 }

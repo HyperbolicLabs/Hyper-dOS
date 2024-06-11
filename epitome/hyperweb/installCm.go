@@ -19,9 +19,9 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: cluster-name
-  namespace: hyperweb
+  namespace: {{.Namespace}}
 data:
-  clusterName: {{.ClusterName}}
+  {{.ClusterNameDataField}}: {{.ClusterName}}
 `
 
 var cmGVR = schema.GroupVersionResource{
@@ -33,8 +33,15 @@ var cmGVR = schema.GroupVersionResource{
 func InstallCM(dynamicClient dynamic.DynamicClient, clusterName string) error {
 	templatedcm := template.Must(template.New("index").Parse(yamlConfigMap))
 	buff := new(bytes.Buffer)
-	err := templatedcm.Execute(buff, map[string]interface{}{
-		"clusterName": clusterName})
+
+	err := templatedcm.Execute(
+		buff,
+		map[string]interface{}{
+			"Namespace":            hyperdosNamespace,
+			"ClusterNameDataField": clusterNameDataField,
+			"ClusterName":          clusterName,
+		},
+	)
 
 	if err != nil {
 		logrus.Fatal(err)
@@ -45,10 +52,10 @@ func InstallCM(dynamicClient dynamic.DynamicClient, clusterName string) error {
 
 	us, err := dynamicClient.
 		Resource(cmGVR).
-		Namespace("hyperweb").
+		Namespace(hyperdosNamespace).
 		Apply(
 			context.TODO(),
-			"cluster-name",
+			clusterNameDataField,
 			obj,
 			metav1.ApplyOptions{
 				FieldManager: "epitome",
