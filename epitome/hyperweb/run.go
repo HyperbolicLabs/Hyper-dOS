@@ -48,7 +48,7 @@ func reconcile(
 			response.ClientSecret,
 		)
 
-		err = InstallCM(dynamicClient, response.ClusterName)
+		err = installClusterNameConfigMap(clientset, response.ClusterName)
 		if err != nil {
 			logrus.Errorf("failed to save cluster name in configmap: %v", err)
 			return err
