@@ -74,8 +74,12 @@ func register(
 
 	err = json.Unmarshal(body, &response)
 	if err != nil {
-		logrus.Errorf("failed to unmarshal register_cluster response: %v", err)
-		return
+		if string(body) == "Internal Server Error" {
+			return nil, fmt.Errorf("cluster registration failed")
+		} else {
+			logrus.Errorf("failed to unmarshal register_cluster response: %v", err)
+			return
+		}
 	}
 
 	logrus.Infof("register_cluster response: %+v", response)
