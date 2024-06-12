@@ -12,3 +12,10 @@ metadata:
   name: hyperdos
   labels:
     name: hyperdos
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ping
+  labels:
+    name: ping
