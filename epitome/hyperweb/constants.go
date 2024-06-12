@@ -5,4 +5,5 @@ const (
 	argocdNamespace      = "argocd"
 	hyperdosNamespace    = "hyperdos"
 	clusterNameDataField = "clusterName"
+	pingNamespace        = "ping"
 )

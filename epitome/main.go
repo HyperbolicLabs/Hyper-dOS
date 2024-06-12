@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"os"
+	"time"
 
 	"epitome.hyperbolic.xyz/cluster"
 	"epitome.hyperbolic.xyz/helper"
@@ -40,9 +41,13 @@ func main() {
 	logrus.Infof("connecting to in-cluster kube api-server")
 	clientset, dynamicClient := cluster.MustConnect(kubeconfig)
 
-	// hyperweb.InstallHyperWeb(dynamicClient, "asdf")
-	// logrus.Fatalf("dirtytest")
-	go hyperweb.Runloop(clientset, dynamicClient, gatewayUrl, token)
+	go hyperweb.RunLoop(
+		clientset,
+		dynamicClient,
+		gatewayUrl,
+		token,
+		60*time.Second,
+	)
 
 	for {
 		// do nothing

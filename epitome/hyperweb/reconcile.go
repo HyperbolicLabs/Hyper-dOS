@@ -1,28 +1,12 @@
 package hyperweb
 
 import (
-	"time"
+	"fmt"
 
 	"github.com/sirupsen/logrus"
 	"k8s.io/client-go/dynamic"
 	"k8s.io/client-go/kubernetes"
 )
-
-func Runloop(
-	clientset kubernetes.Clientset,
-	dynamicClient dynamic.DynamicClient,
-	gatewayUrl string,
-	token string,
-) {
-	for {
-		// run once every 30 seconds
-		err := reconcile(clientset, dynamicClient, gatewayUrl, token)
-		if err != nil {
-			logrus.Fatalf("failed to reconcile: %v", err)
-		}
-		time.Sleep(30 * time.Second)
-	}
-}
 
 func reconcile(
 	clientset kubernetes.Clientset,
@@ -55,17 +39,32 @@ func reconcile(
 		}
 	}
 
+	name, err := GetClusterName(clientset)
+	if err != nil {
+		logrus.Errorf("failed to get cluster name: %v", err)
+		return err
+	}
+
 	if IsInstalled(dynamicClient) {
-		logrus.Infof("hyperweb application is installed, nothing to do")
-		return nil
+		if isRegistered(clientset) {
+			logrus.Infof("hyperweb application is installed and registered, nothing to do")
+		} else {
+			response, err := register(
+				gatewayUrl,
+				token,
+				*name,
+			)
+			if err != nil {
+				return err
+			}
+			if response.Success {
+				logrus.Infof("registered cluster %s with gateway", *name)
+			} else {
+				return fmt.Errorf("failed to register cluster %s with gateway", *name)
+			}
+		}
 	} else {
 		logrus.Infof("hyperweb application is not installed - installing now")
-
-		name, err := GetClusterName(clientset)
-		if err != nil {
-			logrus.Errorf("failed to get cluster name: %v", err)
-			return err
-		}
 
 		err = InstallHyperWeb(dynamicClient, *name)
 		if err != nil {
@@ -74,8 +73,5 @@ func reconcile(
 		}
 	}
 
-	// if !applicationExists(clientset, "argocd", "hyperweb") {
-	// 	mustCreateApplication(clientset, "argocd", "hyperweb", hyperwebNamespace)
-	// }
 	return nil
 }

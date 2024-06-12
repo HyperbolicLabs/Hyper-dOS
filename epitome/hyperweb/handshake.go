@@ -10,6 +10,12 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+type handshakeResponse struct {
+	ClientID     string `json:"client_id"`
+	ClientSecret string `json:"client_secret"`
+	ClusterName  string `json:"cluster_name"`
+}
+
 func handshake(
 	gatewayUrl string,
 	token string,
@@ -34,21 +40,21 @@ func handshake(
 
 	resp, err := client.Do(req)
 	if err != nil {
-		logrus.Errorf("failed to send request: %v", err)
+		logrus.Errorf("failed to send handshake request: %v", err)
 		return
 	}
 	defer resp.Body.Close()
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		logrus.Errorf("failed to read response body: %v", err)
+		logrus.Errorf("failed to read handshake response body: %v", err)
 		return
 	}
 
 	err = json.Unmarshal(body, &response)
 	if err != nil {
-		logrus.Infof("failed to unmarshal response body: %v", string(body))
-		logrus.Errorf("failed to unmarshal response body: %v", err)
+		logrus.Infof("failed to unmarshal handshake response body: %v", string(body))
+		logrus.Errorf("failed to unmarshal handshake response body: %v", err)
 		return
 	}
 
@@ -56,18 +62,12 @@ func handshake(
 		err = errors.New("handshake response is missing required fields")
 		// print the unformatted json
 		logrus.Errorf("handshake response: %v", string(body))
-		logrus.Errorf("response header: %+v", resp.Header)
-		logrus.Errorf("response Status: %+v", resp.Status)
+		logrus.Errorf("handshake response header: %+v", resp.Header)
+		logrus.Errorf("handshake response Status: %+v", resp.Status)
 		return
 	}
 
 	logrus.Infof("handshake response: %+v", response)
 
 	return
-}
-
-type handshakeResponse struct {
-	ClientID     string `json:"client_id"`
-	ClientSecret string `json:"client_secret"`
-	ClusterName  string `json:"cluster_name"`
 }

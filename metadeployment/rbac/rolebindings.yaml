@@ -29,6 +29,21 @@ roleRef:
   name: configmap-manager
   apiGroup: rbac.authorization.k8s.io
 ---
+# hyperdos namespace can read configmaps in the ping namespace
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: read-configmaps
+  namespace: ping
+subjects:
+- kind: ServiceAccount
+  name: default
+  namespace: hyperdos
+roleRef:
+  kind: ClusterRole
+  name: configmap-reader
+  apiGroup: rbac.authorization.k8s.io
+---
 apiVersion: rbac.authorization.k8s.io/v1
 # hyperdos namespace can crud secrets in hyperweb namespace
 kind: RoleBinding
