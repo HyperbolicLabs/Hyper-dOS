@@ -18,7 +18,7 @@ func installClusterNameConfigMap(
 
 	configmap := &v1.ConfigMap{}
 	configmap.Name = "cluster-name"
-	configmap.Namespace = hyperwebNamespace
+	configmap.Namespace = hyperdosNamespace
 	configmap.Data = map[string]string{
 		clusterNameDataField: clusterName,
 	}
