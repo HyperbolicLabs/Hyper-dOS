@@ -36,8 +36,6 @@ func handshake(
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Authorization", "bearer "+token)
 
-	logrus.Infof("submitting request with headers %+v", req.Header)
-
 	resp, err := client.Do(req)
 	if err != nil {
 		logrus.Errorf("failed to send handshake request: %v", err)

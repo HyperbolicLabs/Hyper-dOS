@@ -57,8 +57,6 @@ func register(
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Authorization", "bearer "+token)
 
-	logrus.Infof("submitting register_cluster request with headers %+v", req.Header)
-
 	resp, err := client.Do(req)
 	if err != nil {
 		logrus.Errorf("failed to send register_cluster request: %v", err)
