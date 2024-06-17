@@ -19,3 +19,10 @@ metadata:
   name: ping
   labels:
     name: ping
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: instance
+  labels:
+    name: instance
