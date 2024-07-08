@@ -1,0 +1,34 @@
+##
+# hyperdos
+#
+# @file
+# @version v1-alpha
+
+build-epitome-image:
+	docker build -t epitome ./epitome
+
+run-epitome-image:
+	docker run --rm -it epitome
+
+build-and-run-epitome-image: build-epitome-image run-epitome-image
+
+build:
+	cd epitome; \
+	go build -o ./epitome
+
+run-epitome:
+	cd epitome; \
+	export HYPERBOLIC_GATEWAY_URL='https://api.dev-hyperbolic.xyz' && \
+	go run . -loglevel debug -kubeconfig ~/.kube/config
+
+epitome-help:
+	cd epitome; \
+	go run . -help
+
+mod-tidy:
+	cd epitome; \
+	go mod tidy
+
+test:
+	cd epitome; \
+	go test ./...

@@ -2,20 +2,20 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: hello-world
+  name: epitome
   namespace: argocd
 spec:
   project: default
   source:
     repoURL: 'https://github.com/hyperboliclabs/hyper-dos.git'
-    path: gitapps/hello
+    path: gitapps/epitome
     targetRevision: main
     directory:
       recurse: true
       jsonnet: {}
   destination:
     server: 'https://kubernetes.default.svc'
-    namespace: hello
+    namespace: hyperdos
   syncPolicy:
     syncOptions:
       - CreateNamespace=true

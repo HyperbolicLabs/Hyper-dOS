@@ -1,0 +1,5 @@
+vendor/
+./epitome
+.gitignore
+.git/
+.Dockerfile

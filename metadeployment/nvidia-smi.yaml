@@ -1,33 +1,25 @@
 ---
-# Note: install.yaml is automatically generated from README.org
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: hyperdos
+  name: nvidia-smi
   namespace: argocd
 spec:
   project: default
   source:
     repoURL: 'https://github.com/hyperboliclabs/hyper-dos.git'
-    path: metadeployment/
+    path: gitapps/nvidia-smi
     targetRevision: main
     directory:
       recurse: true
       jsonnet: {}
   destination:
     server: 'https://kubernetes.default.svc'
-    namespace: argocd
-  syncPolicy: # argo-cd.readthedocs.io/en/stable/user-guide/auto_sync/
+    namespace: hyperdos
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
     automated:
       prune: true
       allowEmpty: true
       selfHeal: true
----
-apiVersion: v1
-kind: Secret
-metadata:
-  namespace: hyperdos
-  name: hyperbolic-token
-type: Opaque
-stringData:
-  token: {{stand-in}}

@@ -1,0 +1,23 @@
+---
+# https://argo-cd.readthedocs.io/en/stable/user-guide/projects/
+# https://argo-cd.readthedocs.io/en/stable/operator-manual/project-specification/
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: hyperdos
+  namespace: argocd
+  # Finalizer that ensures that project is not deleted until it is not referenced by any application
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: hyperdos gitapps
+  # TODO reduce privileges
+  clusterResourceWhitelist:
+  - group: '*'
+    kind: '*'
+  destinations:
+  - namespace: '*'
+    server: '*'
+  sourceRepos:
+  - '*'
+---
