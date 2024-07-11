@@ -1,5 +1,4 @@
 ---
-# Note: install.yaml is automatically generated from README.org
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
