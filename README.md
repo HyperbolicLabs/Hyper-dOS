@@ -31,10 +31,8 @@ HYPERBOLIC_TOKEN=<YOUR_TOKEN> \
    && curl https://raw.githubusercontent.com/HyperbolicLabs/Hyper-dOS/main/install.yaml \
    | sed -e "s;{{stand-in}};${HYPERBOLIC_TOKEN};g" \
       | microk8s kubectl apply -f -
-   #+end_src
 ```
 
-  * [ ] 
 # Notes
 
 - if you already have nvidia drivers and container toolkit installed, use this command instead:
@@ -62,10 +60,9 @@ microk8s enable nvidia --gpu-operator-driver host
     Failed to create symlinks under /dev/char that point to all possible NVIDIA charact er devices. The existence of these symlinks is required to address the following bug: https://github.com/NVIDIA/gpu-operator/issues/430 bug impacts container runtimes configured with systemd cgroup management enabled.
 
     To disable the symlink creation, set the following envvar in ClusterPolicy:
-    #+end_quote
-
-    Try creating the relevant envvar in the nvidia ClusterPolicy resource. There's a good chance the system will boot and operate normally.
 ```
+
+Try creating the relevant envvar in the nvidia ClusterPolicy resource. There's a good chance the system will boot and operate normally. Edit the Nvidia ClusterPolicy validator.driver.env like so:
 
 ``` shell
         apiVersion: nvidia.com/v1
