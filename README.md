@@ -23,13 +23,15 @@ microk8s enable ngrok
 
 ## Install HyperdOS
 
-( make sure to insert your token from the supplier dashboard in the command below )
+1. login to <https://app.hyperbolic.xyz> and select 'settings'
+
+2. copy your API Key and make sure to insert it in place of "<YOUR_API_KEY>" to run the installation command below:
 
 ``` shell
-HYPERBOLIC_TOKEN=<YOUR_TOKEN> \
+HYPERBOLIC_API_KEY=<YOUR_API_KEY> \
    && microk8s kubectl create namespace hyperdos \
    && curl https://raw.githubusercontent.com/HyperbolicLabs/Hyper-dOS/main/install.yaml \
-   | sed -e "s;{{stand-in}};${HYPERBOLIC_TOKEN};g" \
+   | sed -e "s;{{stand-in}};${HYPERBOLIC_API_KEY};g" \
       | microk8s kubectl apply -f -
 ```
 
