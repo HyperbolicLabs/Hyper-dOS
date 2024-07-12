@@ -6,7 +6,7 @@
 
 ### install microk8s (Linux)
 
-https://microk8s.io/docs/getting-started
+<https://microk8s.io/docs/getting-started>
 
 ``` shell
 sudo snap install microk8s --classic --channel=1.30
@@ -42,10 +42,10 @@ microk8s enable nvidia --gpu-operator-driver host
 ```
 
   - you can override more NVIDIA GPU Operator settings by using the ~--values~ flag and referring to the values.yaml file here:
-    - https://github.com/NVIDIA/gpu-operator/blob/master/deployments/gpu-operator/values.yaml
+    - <https://github.com/NVIDIA/gpu-operator/blob/master/deployments/gpu-operator/values.yaml>
 
   - see further configuration options here:
-    - https://microk8s.io/docs/addon-gpu
+    - <https://microk8s.io/docs/addon-gpu>
 
   - if the driver-validation container fails with this message:
 
@@ -76,7 +76,7 @@ Try creating the relevant envvar in the nvidia ClusterPolicy resource. There's a
 ```
 
 - we do not officially support operating systems other than Linux. That being said, if you would like to join the Hyperbolic Supply Network from a Windows or MacOS device, you are welcome to give it a shot:
-  - https://microk8s.io/docs/install-alternatives
+  - <https://microk8s.io/docs/install-alternatives>
 
 
 - While most properly configured Kubernetes clusters should be able to run HyperdOS, for single-node clusters we officially support the microk8s distro only.
