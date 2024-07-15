@@ -9,7 +9,7 @@ spec:
   source:
     repoURL: "https://github.com/hyperboliclabs/hyper-dos.git"
     path: metadeployment/
-    targetRevision: main
+    targetRevision: ngrok-addition
     directory:
       recurse: true
       jsonnet: {}

@@ -8,7 +8,7 @@
 
 <https://microk8s.io/docs/getting-started>
 
-``` shell
+```shell
 sudo snap install microk8s --classic --channel=1.30
 sudo usermod -a -G microk8s $USER # allow non-sudo use of microk8s command
 newgrp microk8s # reload shell
@@ -27,11 +27,17 @@ microk8s enable ngrok
 
 2. copy your API Key and make sure to insert it in place of "<YOUR_API_KEY>" to run the installation command below:
 
-``` shell
+3. create an ngrok account and copy the two pieces of information `api_key` and `authtoken` into the appropriate environment variables
+
+```shell
+NGROK_AUTH_TOKEN=<YOUR_NGROK_AUTH_TOKEN> \
+NGROK_API_KEY=<YOUR_NGROK_API_KEY> \
 HYPERBOLIC_API_KEY=<YOUR_API_KEY> \
    && microk8s kubectl create namespace hyperdos \
    && curl https://raw.githubusercontent.com/HyperbolicLabs/Hyper-dOS/main/install.yaml \
    | sed -e "s;{{stand-in}};${HYPERBOLIC_API_KEY};g" \
+   | sed -e "s;{{ngrok-authtoken}};${NGROK_AUTH_TOKEN};g" \
+   | sed -e "s;{{ngrok-apikey}};${NGROK_API_KEY};g" \
       | microk8s kubectl apply -f -
 ```
 
@@ -39,19 +45,21 @@ HYPERBOLIC_API_KEY=<YOUR_API_KEY> \
 
 - if you already have nvidia drivers and container toolkit installed, use this command instead:
 
-``` shell
+```shell
 microk8s enable nvidia --gpu-operator-driver host
 ```
 
-  - you can override more NVIDIA GPU Operator settings by using the ~--values~ flag and referring to the values.yaml file here:
-    - <https://github.com/NVIDIA/gpu-operator/blob/master/deployments/gpu-operator/values.yaml>
+- you can override more NVIDIA GPU Operator settings by using the ~--values~ flag and referring to the values.yaml file here:
 
-  - see further configuration options here:
-    - <https://microk8s.io/docs/addon-gpu>
+  - <https://github.com/NVIDIA/gpu-operator/blob/master/deployments/gpu-operator/values.yaml>
 
-  - if the driver-validation container fails with this message:
+- see further configuration options here:
 
-``` shell
+  - <https://microk8s.io/docs/addon-gpu>
+
+- if the driver-validation container fails with this message:
+
+```shell
     Error: error validating driver installation:
      error creating symlink creator:
       failed to create NVIDIA device nodes:
@@ -66,7 +74,7 @@ microk8s enable nvidia --gpu-operator-driver host
 
 Try creating the relevant envvar in the nvidia ClusterPolicy resource. There's a good chance the system will boot and operate normally. Edit the Nvidia ClusterPolicy validator.driver.env like so:
 
-``` shell
+```shell
         apiVersion: nvidia.com/v1
         kind: ClusterPolicy
 ...
@@ -78,17 +86,16 @@ Try creating the relevant envvar in the nvidia ClusterPolicy resource. There's a
 ```
 
 - we do not officially support operating systems other than Linux. That being said, if you would like to join the Hyperbolic Supply Network from a Windows or MacOS device, you are welcome to give it a shot:
+
   - <https://microk8s.io/docs/install-alternatives>
 
-
 - While most properly configured Kubernetes clusters should be able to run HyperdOS, for single-node clusters we officially support the microk8s distro only.
-
 
 # Customized installation
 
 If you would like to apply the installation manifest yourself rather than curling from github, you are welcome to copy and edit the yaml below:
 
-``` yaml
+```yaml
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -98,14 +105,14 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: 'https://github.com/hyperboliclabs/hyper-dos.git'
+    repoURL: "https://github.com/hyperboliclabs/hyper-dos.git"
     path: metadeployment/
     targetRevision: main
     directory:
       recurse: true
       jsonnet: {}
   destination:
-    server: 'https://kubernetes.default.svc'
+    server: "https://kubernetes.default.svc"
     namespace: argocd
   syncPolicy: # argo-cd.readthedocs.io/en/stable/user-guide/auto_sync/
     automated:
@@ -120,5 +127,5 @@ metadata:
   name: hyperbolic-token
 type: Opaque
 stringData:
-  token: {{stand-in}}
+  token: { { stand-in } }
 ```
