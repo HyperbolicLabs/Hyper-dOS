@@ -127,5 +127,33 @@ metadata:
   name: hyperbolic-token
 type: Opaque
 stringData:
-  token: { { stand-in } }
+  token: {{ stand-in }}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: ngrok
+  namespace: argocd
+spec:
+  project: default
+  source:
+    chart: kubernetes-ingress-controller
+    repoURL: "https://ngrok.github.io/kubernetes-ingress-controller"
+    targetRevision: 0.14.0
+    helm:
+      releaseName: ngrok-ingress
+      valuesObject:
+        credentials:
+          authtoken: {{ngrok-authtoken}}
+          apiKey: {{ngrok-apikey}}
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: ngrok-ingress
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+    automated:
+      prune: true
+      allowEmpty: true
+      selfHeal: true
 ```
