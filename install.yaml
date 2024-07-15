@@ -46,8 +46,8 @@ spec:
       releaseName: ngrok-ingress
       valuesObject:
         credentials:
-          authtoken: {{standin-authtoken}}
-          apiKey: {{standin-apikey}}
+          authtoken: {{ngrok-authtoken}}
+          apiKey: {{ngrok-apikey}}
   destination:
     server: "https://kubernetes.default.svc"
     namespace: ngrok-ingress
