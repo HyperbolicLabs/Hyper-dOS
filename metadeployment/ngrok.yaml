@@ -1,0 +1,21 @@
+apiVersion: ingress.k8s.ngrok.com/v1alpha1
+kind: TCPEdge
+metadata:
+  name: ssh-edge
+  namespace: instance
+spec:
+  backend:
+    labels:
+      app: ssh-server
+---
+apiVersion: ingress.k8s.ngrok.com/v1alpha1
+kind: Tunnel
+metadata:
+  name: ssh-tunnel
+  namespace: instance
+spec:
+  backend:
+    protocol: TCP
+  forwardsTo: orange.instance.svc:2222
+  labels:
+    app: ssh-server
