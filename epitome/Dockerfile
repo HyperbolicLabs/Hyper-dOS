@@ -3,6 +3,8 @@
 ###
 FROM golang:1.22 as builder
 
+ARG TARGETARCH
+
 WORKDIR /app
 
 COPY . .
@@ -14,16 +16,18 @@ RUN go mod download
 COPY *.go ./
 
 # CGO_ENABLED=0 allows us to create a statically-linked binary that can run without any external dependencies.
-RUN CGO_ENABLED=0 go build -o /epitome
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=${TARGETARCH:amd64} go build -o /epitome
 
 
 ###
 # 2) keep the binary, install requirements, discard the rest.
 ###
 
-FROM alpine:latest
+# FROM alpine:latest
+FROM --platform=${BUILDPLATFORM:-linux/amd64} gcr.io/distroless/static:nonroot
 
 COPY --from=builder /epitome /epitome
 COPY ./application.yaml /application.yaml
+USER nonroot:nonroot
 
 ENTRYPOINT ["/epitome"]
