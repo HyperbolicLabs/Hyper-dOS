@@ -2,7 +2,7 @@
 
 ## Prerequisites
 
-- You will need a Kubernetes cluster with argocd, ngrok, and the NVIDIA operator installed.
+- You will need a Kubernetes cluster with argocd, and the NVIDIA operator installed.
 
 ### install microk8s (Linux)
 
@@ -18,7 +18,6 @@ microk8s enable rbac # improve security
 sudo microk8s enable community # add the community repos
 microk8s enable argocd # install argocd
 microk8s enable nvidia # install the nvidia GPU operator
-microk8s enable ngrok
 ```
 
 ## Install HyperdOS
