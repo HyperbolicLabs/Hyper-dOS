@@ -1,7 +1,10 @@
 ###
 # 1) build the binary
 ###
-FROM golang:1.22 as builder
+FROM --platform=${BUILDPLATFORM:-linux/amd64} golang:1.22 AS builder
+
+ARG TARGETARCH
+ENV GOOS=linux GOARCH=$TARGETARCH
 
 WORKDIR /app
 
@@ -21,9 +24,11 @@ RUN CGO_ENABLED=0 go build -o /epitome
 # 2) keep the binary, install requirements, discard the rest.
 ###
 
-FROM alpine:latest
+FROM --platform=${TARGETPLATFORM:-linux/amd64} alpine:latest
+# FROM --platform=${TARGETPLATFORM:-linux/amd64} gcr.io/distroless/static:nonroot
 
 COPY --from=builder /epitome /epitome
 COPY ./application.yaml /application.yaml
+# USER nonroot:nonroot
 
 ENTRYPOINT ["/epitome"]
