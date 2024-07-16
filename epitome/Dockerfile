@@ -1,7 +1,7 @@
 ###
 # 1) build the binary
 ###
-FROM golang:1.22 as builder
+FROM --platform=${BUILDPLATFORM:-linux/amd64} golang:1.22 as builder
 
 ARG TARGETARCH
 
