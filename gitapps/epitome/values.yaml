@@ -2,4 +2,4 @@
 ref: "v0.0.1"
 
 gatewayURL: "https://api.hyperbolic.xyz"
-image: ghcr.io/hyperboliclabs/hyper-dos/epitome:latest
+image: ghcr.io/hyperboliclabs/hyper-dos/epitome
