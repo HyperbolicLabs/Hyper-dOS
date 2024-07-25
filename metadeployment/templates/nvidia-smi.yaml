@@ -9,7 +9,7 @@ spec:
   source:
     repoURL: 'https://github.com/hyperboliclabs/hyper-dos.git'
     path: gitapps/nvidia-smi
-    targetRevision: dev
+    targetRevision: {{ .Values.ref }}
     helm:
       parameters:
         - name: ref
