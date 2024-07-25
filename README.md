@@ -85,39 +85,6 @@ Try creating the relevant envvar in the nvidia ClusterPolicy resource. There's a
 
 # Customized installation
 
-If you would like to apply the installation manifest yourself rather than curling from github, you are welcome to copy and edit the yaml below:
+If you would like to apply the installation manifest yourself rather than curling from github, you are welcome to download and edit the [install.yaml](install.yaml) file before applying it to your cluster
 
-``` yaml
----
-apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
-  name: hyperdos
-  namespace: argocd
-spec:
-  project: default
-  source:
-    repoURL: 'https://github.com/hyperboliclabs/hyper-dos.git'
-    path: metadeployment/
-    targetRevision: main
-    directory:
-      recurse: true
-      jsonnet: {}
-  destination:
-    server: 'https://kubernetes.default.svc'
-    namespace: argocd
-  syncPolicy: # argo-cd.readthedocs.io/en/stable/user-guide/auto_sync/
-    automated:
-      prune: true
-      allowEmpty: true
-      selfHeal: true
----
-apiVersion: v1
-kind: Secret
-metadata:
-  namespace: hyperdos
-  name: hyperbolic-token
-type: Opaque
-stringData:
-  token: {{stand-in}}
-```
+
