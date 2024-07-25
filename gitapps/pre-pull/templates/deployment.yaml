@@ -10,7 +10,7 @@ spec:
       restartPolicy: Never
       containers:
       - name: nvidia-smi
-        image: registry.gitlab.com/christian-ondaatje/public/k8s-controller-demo/ssh-box:latest
+        image: {{ .Values.image }}:{{ .Values.ref }}
         command:
           - nvidia-smi
   backoffLimit: 2

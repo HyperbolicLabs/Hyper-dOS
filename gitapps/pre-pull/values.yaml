@@ -1,0 +1,4 @@
+---
+# TODO list of images (whitelist?)
+image: ghcr.io/hyperboliclabs/hyper-dos/sshbox
+ref: 'v0.0.1'

@@ -12,8 +12,6 @@ spec:
     targetRevision: main
     helm:
       parameters:
-        - name: env
-          value: prod
         - name: ref
           value: $ARGOCD_APP_SOURCE_TARGET_REVISION
   destination:
