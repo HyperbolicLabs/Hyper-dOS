@@ -10,6 +10,10 @@ spec:
     repoURL: 'https://github.com/hyperboliclabs/hyper-dos.git'
     path: gitapps/nvidia-smi
     targetRevision: {{ .Values.ref }}
+    helm:
+      parameters:
+        - name: ref
+          value: $ARGOCD_APP_SOURCE_TARGET_REVISION
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: hyperdos
