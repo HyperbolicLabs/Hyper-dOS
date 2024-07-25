@@ -21,7 +21,11 @@ spec:
         image: {{ .Values.image }}:{{ .Values.ref }}
         env:
         - name: HYPERBOLIC_GATEWAY_URL
-          value: {{ .Values.gatewayURL }}
+        {{- if contains "dev" .Values.ref }}
+          value: {{ .Values.devGatewayURL }}
+        {{- else }}
+          value: {{ .Values.prodGatewayURL }}
+        {{- end }}
         - name: HYPERBOLIC_TOKEN
           valueFrom:
             secretKeyRef:

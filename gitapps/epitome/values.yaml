@@ -1,5 +1,6 @@
 ---
 ref: "v0.0.1"
 
-gatewayURL: "https://api.hyperbolic.xyz"
+prodGatewayURL: "https://api.hyperbolic.xyz"
+devGatewayURL: "https://api.dev-hyperbolic.xyz"
 image: ghcr.io/hyperboliclabs/hyper-dos/epitome

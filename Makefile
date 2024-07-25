@@ -35,12 +35,22 @@ test:
 
 .PHONY: helm-test
 helm-test:
-	cd metadeployment; \
+	@cd metadeployment; \
 	helm template metadeployment \
 		--set ref="dev" \
 		.
 
-	cd gitapps/nvidia-smi; \
+	@cd gitapps/nvidia-smi; \
 	helm template nvidia-smi \
 		--set ref="dev" \
+		.
+
+	@cd gitapps/epitome; \
+	helm template epitome \
+		--set ref="dev" \
+		.
+
+	@cd gitapps/epitome; \
+	helm template epitome \
+		--set ref="main" \
 		.
