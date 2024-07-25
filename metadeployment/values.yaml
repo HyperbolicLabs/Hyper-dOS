@@ -1,0 +1,8 @@
+---
+ref: "v0.0.1"
+
+hyperdosURL: 'https://github.com/hyperboliclabs/hyper-dos.git'
+
+clusterdosURL: 'https://gitlab.com/squire-exchange/public/cluster-dos.git'
+
+env: prod

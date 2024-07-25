@@ -32,3 +32,10 @@ mod-tidy:
 test:
 	cd epitome; \
 	go test ./...
+
+.PHONY: helm-test
+helm-test:
+	cd metadeployment; \
+	helm template metadeployment \
+		--set ref="dev" \
+		.

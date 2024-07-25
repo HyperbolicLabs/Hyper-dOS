@@ -10,9 +10,12 @@ spec:
     repoURL: 'https://github.com/hyperboliclabs/hyper-dos.git'
     path: metadeployment/
     targetRevision: main
-    directory:
-      recurse: true
-      jsonnet: {}
+    helm:
+      parameters:
+        - name: env
+          value: prod
+        - name: ref
+          value: $ARGOCD_APP_SOURCE_TARGET_REVISION
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: argocd
