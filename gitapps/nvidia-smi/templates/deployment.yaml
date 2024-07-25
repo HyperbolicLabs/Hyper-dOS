@@ -10,7 +10,7 @@ spec:
       restartPolicy: Never
       containers:
       - name: nvidia-smi
-        image: nvidia/cuda:12.4.1-base-ubuntu22.04
+        image: nvidia/cuda:{{ .Values.imagetags.smi }}
         command:
           - nvidia-smi
       - name: cuda-vector-add

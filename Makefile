@@ -39,3 +39,8 @@ helm-test:
 	helm template metadeployment \
 		--set ref="dev" \
 		.
+
+	cd gitapps/nvidia-smi; \
+	helm template nvidia-smi \
+		--set ref="dev" \
+		.

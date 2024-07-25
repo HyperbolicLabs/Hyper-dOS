@@ -9,10 +9,7 @@ spec:
   source:
     repoURL: 'https://github.com/hyperboliclabs/hyper-dos.git'
     path: gitapps/nvidia-smi
-    targetRevision: main
-    directory:
-      recurse: true
-      jsonnet: {}
+    targetRevision: {{ .Values.ref }}
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: hyperdos
