@@ -19,6 +19,11 @@ spec:
       containers:
       - name: epitome
         image: {{ .Values.image }}:{{ .Values.ref }}
+        args:
+          {{- if contains "dev" .Values.ref }}
+          - "--loglevel"
+          - "debug"
+          {{- end }}
         env:
         - name: HYPERBOLIC_GATEWAY_URL
         {{- if contains "dev" .Values.ref }}
