@@ -70,6 +70,11 @@ func register(
 		return
 	}
 
+	if resp.StatusCode != http.StatusOK {
+		logrus.Errorf("handshake response status: %v", resp.Status)
+		return
+	}
+
 	err = json.Unmarshal(body, &response)
 	if err != nil {
 		if string(body) == "Internal Server Error" {
