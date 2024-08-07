@@ -18,10 +18,19 @@ spec:
     spec:
       containers:
       - name: epitome
-        image: ghcr.io/hyperboliclabs/hyper-dos/epitome:latest
+        image: {{ .Values.image }}:{{ .Values.ref }}
+        args:
+          {{- if contains "dev" .Values.ref }}
+          - "--loglevel"
+          - "debug"
+          {{- end }}
         env:
         - name: HYPERBOLIC_GATEWAY_URL
-          value: "https://api.hyperbolic.xyz"
+        {{- if contains "dev" .Values.ref }}
+          value: {{ .Values.devGatewayURL }}
+        {{- else }}
+          value: {{ .Values.prodGatewayURL }}
+        {{- end }}
         - name: HYPERBOLIC_TOKEN
           valueFrom:
             secretKeyRef:

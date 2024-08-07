@@ -1,0 +1,7 @@
+---
+apiVersion: v2
+name: nvidia-smi
+description: deploys nvidia-smi according to configuration
+type: application
+version: 0.0.1
+appVersion: "v0.0.1"

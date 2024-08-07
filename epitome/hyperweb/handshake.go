@@ -49,6 +49,11 @@ func handshake(
 		return
 	}
 
+	if resp.StatusCode != http.StatusOK {
+		logrus.Errorf("handshake response status: %v", resp.Status)
+		return
+	}
+
 	err = json.Unmarshal(body, &response)
 	if err != nil {
 		logrus.Infof("failed to unmarshal handshake response body: %v", string(body))

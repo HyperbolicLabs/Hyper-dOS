@@ -1,0 +1,16 @@
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: pull-sshbox-image
+spec:
+  template:
+    spec:
+      runtimeClassName: nvidia
+      restartPolicy: Never
+      containers:
+      - name: nvidia-smi
+        image: {{ .Values.image }}:{{ .Values.ref }}
+        command:
+          - nvidia-smi
+  backoffLimit: 2
