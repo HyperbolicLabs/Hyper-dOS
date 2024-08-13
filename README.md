@@ -46,13 +46,13 @@ HYPERBOLIC_API_KEY=<YOUR_API_KEY> \
 
 - you only have to run this command on one node, and all your nodes will be added to the hyperweb
 
-- if you already have nvidia drivers and container toolkit installed, use this command instead:
+- if you already have nvidia drivers and container toolkit installed, use this command instead of `microk8s enable gpu`:
 
 ``` shell
-microk8s enable nvidia --gpu-operator-driver host
+microk8s enable gpu --gpu-operator-driver host
 ```
 
-  - you can override more NVIDIA GPU Operator settings by using the ~--values~ flag and referring to the values.yaml file here:
+  - you can override more NVIDIA GPU Operator settings by using the `--values` flag and referring to the values.yaml file here:
     - <https://github.com/NVIDIA/gpu-operator/blob/master/deployments/gpu-operator/values.yaml>
 
   - see further configuration options here:
