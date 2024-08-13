@@ -15,6 +15,7 @@ func isRegistered(
 
 	// if doesn't exist
 	if errors.IsNotFound(err) {
+		logrus.Warnf("king cluster ping configmap not found: %v", err)
 		return false
 	}
 
