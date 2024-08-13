@@ -22,6 +22,8 @@ microk8s enable nvidia # install the nvidia GPU operator
 
 ### (optional) add more nodes to your cluster
 
+<https://microk8s.io/docs/clustering>
+
 1. (on the new node) `sudo snap install microk8s --classic --channel=1.30`
 2. (on the original node) `microk8s add-node`
 3. (on the new node) `microk8s join <output-from-original-node>`
