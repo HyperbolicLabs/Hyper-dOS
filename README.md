@@ -20,6 +20,12 @@ microk8s enable argocd # install argocd
 microk8s enable nvidia # install the nvidia GPU operator
 ```
 
+### (optional) add more nodes to your cluster
+
+1. (on the new node) `sudo snap install microk8s --classic --channel=1.30`
+2. (on the original node) `microk8s add-node`
+3. (on the new node) `microk8s join <output-from-original-node>`
+
 ## Install HyperdOS
 
 1. login to <https://app.hyperbolic.xyz> and select 'settings'
@@ -35,6 +41,8 @@ HYPERBOLIC_API_KEY=<YOUR_API_KEY> \
 ```
 
 # Notes
+
+- you only have to run this command on one node, and all your nodes will be added to the hyperweb
 
 - if you already have nvidia drivers and container toolkit installed, use this command instead:
 
