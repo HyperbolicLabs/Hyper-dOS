@@ -9,12 +9,6 @@ on:
     paths:
       - "epitome/**"
       - ".github/workflows/epitome.yml"
-  pull_request:
-    branches:
-      - main
-      - dev
-# schedule:
-#   - cron: "0 10 * * *"
 
 env:
  BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
