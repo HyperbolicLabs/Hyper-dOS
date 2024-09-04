@@ -1,0 +1,18 @@
+name: Docker Build and Push TensorFlow Latest GPU
+on:
+  push:
+    branches:
+      - dev
+      - main
+    paths:
+      - 'tensorflow/tensorflow/latest-gpu/**'
+      - '.github/workflows/tensorflow_tensorflow_latest-gpu.yml'
+  schedule:
+    - cron: "0 0 * * *"
+
+jobs:
+  build-tensorflow-latest-gpu:
+    uses: ./.github/workflows/docker-build-template.yml
+    with:
+      image_name: tensorflow_tensorflow_latest-gpu
+      image_path: tensorflow/tensorflow/latest-gpu
