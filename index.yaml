@@ -1,0 +1,14 @@
+apiVersion: v1
+entries:
+  hyperdos:
+  - apiVersion: v3
+    appVersion: 0.0.1-alpha.4
+    created: "2024-09-10T23:03:55.821520718Z"
+    description: a helm chart to install hyperdos
+    digest: ec5379c1532821f4e7406b722e147d4369f6f25e7559a7585b53d8fbac019ff4
+    name: hyperdos
+    type: application
+    urls:
+    - https://github.com/HyperbolicLabs/Hyper-dOS/releases/download/hyperdos-0.0.1-alpha.4/hyperdos-0.0.1-alpha.4.tgz
+    version: 0.0.1-alpha.4
+generated: "2024-09-10T23:03:55.82152746Z"
