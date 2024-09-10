@@ -1,0 +1,38 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: hyperdos
+  namespace: argocd
+  finalizers:
+    # The default behaviour is foreground cascading deletion
+    - resources-finalizer.argocd.argoproj.io
+    # Alternatively, you can use background cascading deletion
+    # - resources-finalizer.argocd.argoproj.io/background
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/hyperboliclabs/hyper-dos.git'
+    path: metadeployment/
+    targetRevision: {{ .Values.ref }}
+    helm:
+      parameters:
+        - name: ref
+          value: $ARGOCD_APP_SOURCE_TARGET_REVISION
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: argocd
+  syncPolicy: # argo-cd.readthedocs.io/en/stable/user-guide/auto_sync/
+    automated:
+      prune: true
+      allowEmpty: true
+      selfHeal: true
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  namespace: hyperdos
+  name: hyperbolic-token
+type: Opaque
+stringData:
+  token: {{ .Values.token }}
