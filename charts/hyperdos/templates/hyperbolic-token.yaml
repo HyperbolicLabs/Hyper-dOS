@@ -1,0 +1,9 @@
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  namespace: hyperdos
+  name: hyperbolic-token
+type: Opaque
+stringData:
+  token: {{ .Values.token }}

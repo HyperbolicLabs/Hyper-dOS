@@ -54,3 +54,10 @@ helm-test:
 	helm template epitome \
 		--set ref="main" \
 		.
+
+test-helm-install:
+	@cd charts/hyperdos; \
+	helm template hyperdos \
+		--debug \
+		--set ref="dev" \
+		.

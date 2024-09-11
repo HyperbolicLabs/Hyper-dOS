@@ -3,6 +3,7 @@
 ## Prerequisites
 
 - You will need a Kubernetes cluster with argocd, and the NVIDIA operator installed.
+- You will need to create the `hyperdos` namespace in your cluster
 
 ### install microk8s (Linux)
 
@@ -18,6 +19,8 @@ microk8s enable rbac # improve security
 sudo microk8s enable community # add the community repos
 microk8s enable argocd # install argocd
 microk8s enable nvidia # install the nvidia GPU operator
+
+microk8s kubectl create namespace hyperdos # create the necessary namespace
 ```
 
 ### (optional) add more nodes to your cluster
@@ -36,7 +39,6 @@ microk8s enable nvidia # install the nvidia GPU operator
 
 ``` shell
 HYPERBOLIC_API_KEY=<YOUR_API_KEY> \
-   && microk8s kubectl create namespace hyperdos \
    && curl https://raw.githubusercontent.com/HyperbolicLabs/Hyper-dOS/main/install.yaml \
    | sed -e "s;{{stand-in}};${HYPERBOLIC_API_KEY};g" \
       | microk8s kubectl apply -f -
@@ -49,7 +51,7 @@ HYPERBOLIC_API_KEY=<YOUR_API_KEY> \
 - if you already have nvidia drivers and container toolkit installed, use this command instead of `microk8s enable gpu`:
 
 ``` shell
-microk8s enable gpu --gpu-operator-driver host
+microk8s enable nvidia --gpu-operator-driver host
 ```
 
   - you can override more NVIDIA GPU Operator settings by using the `--values` flag and referring to the values.yaml file here:
@@ -98,3 +100,17 @@ Try creating the relevant envvar in the nvidia ClusterPolicy resource. There's a
 If you would like to apply the installation manifest yourself rather than curling from github, you are welcome to download and edit the [install.yaml](install.yaml) file before applying it to your cluster
 
 
+# (unstable preview) helm installation
+
+```
+sudo microk8s helm repo add hyperdos https://hyperboliclabs.github.io/Hyper-dOS
+sudo microk8s helm install --dry-run hyperdos hyperdos/hyperdos --version 0.0.1-alpha.4 --set ref="main" --set token="<TODO_INSERT_TOKEN>"
+
+
+# once confident:
+sudo microk8s helm install hyperdos hyperdos/hyperdos --version 0.0.1-alpha.4 --set ref="main" token="<TODO_INSERT_TOKEN>"
+
+# to disable automatic updates and pin to a specific git ref
+sudo microk8s helm install hyperdos hyperdos/hyperdos --version 0.0.1-alpha.4 --set ref="0.0.1-alpha.4" token="<TODO_INSERT_TOKEN>"
+
+```
