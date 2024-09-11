@@ -102,15 +102,28 @@ If you would like to apply the installation manifest yourself rather than curlin
 
 # (unstable preview) helm installation
 
-```
+
+## configure helm repo and dry-run
+```shell
 sudo microk8s helm repo add hyperdos https://hyperboliclabs.github.io/Hyper-dOS
-sudo microk8s helm install --dry-run hyperdos hyperdos/hyperdos --version 0.0.1-alpha.4 --set ref="main" --set token="<TODO_INSERT_TOKEN>"
+sudo microk8s helm install --dry-run hyperdos hyperdos/hyperdos --version 0.0.1-alpha.4 --set ref="main" --set token="DRY_RUN_NO_TOKEN"
+```
 
 
-# once confident:
-sudo microk8s helm install hyperdos hyperdos/hyperdos --version 0.0.1-alpha.4 --set ref="main" token="<TODO_INSERT_TOKEN>"
+## install
+``` shell
+sudo microk8s helm install hyperdos hyperdos/hyperdos --version 0.0.1-alpha.4 --set token="<YOUR_API_KEY>"
+```
 
+## install (without rolling updates)
+``` shell
 # to disable automatic updates and pin to a specific git ref
-sudo microk8s helm install hyperdos hyperdos/hyperdos --version 0.0.1-alpha.4 --set ref="0.0.1-alpha.4" token="<TODO_INSERT_TOKEN>"
+sudo microk8s helm install hyperdos hyperdos/hyperdos --version 0.0.1-alpha.4 --set ref="0.0.1-alpha.4" --set token="<YOUR_API_KEY>"
+```
 
+## uninstall hyperdos
+```shell
+# to uninstall
+sudo microk8s helm uninstall hyperdos
+sudo microk8s kubectl delete app hyperweb -n argocd
 ```
