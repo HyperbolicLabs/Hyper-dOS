@@ -112,7 +112,7 @@ sudo microk8s helm install --dry-run hyperdos hyperdos/hyperdos --version 0.0.1-
 
 ## install
 ``` shell
-sudo microk8s helm install hyperdos hyperdos/hyperdos --version 0.0.1-alpha.4 --set ref="main" token="<YOUR_API_KEY>"
+sudo microk8s helm install hyperdos hyperdos/hyperdos --version 0.0.1-alpha.4 token="<YOUR_API_KEY>"
 ```
 
 ## install (without rolling updates)
