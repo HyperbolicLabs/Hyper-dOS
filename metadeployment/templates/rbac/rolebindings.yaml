@@ -6,9 +6,9 @@ metadata:
   name: manage-configmaps
   namespace: hyperdos
 subjects:
-- kind: ServiceAccount
-  name: default
-  namespace: hyperdos
+  - kind: ServiceAccount
+    name: default
+    namespace: hyperdos
 roleRef:
   kind: ClusterRole
   name: configmap-manager
@@ -21,9 +21,9 @@ metadata:
   name: manage-configmaps
   namespace: hyperweb
 subjects:
-- kind: ServiceAccount
-  name: default
-  namespace: hyperdos
+  - kind: ServiceAccount
+    name: default
+    namespace: hyperdos
 roleRef:
   kind: ClusterRole
   name: configmap-manager
@@ -36,9 +36,9 @@ metadata:
   name: read-configmaps
   namespace: ping
 subjects:
-- kind: ServiceAccount
-  name: default
-  namespace: hyperdos
+  - kind: ServiceAccount
+    name: default
+    namespace: hyperdos
 roleRef:
   kind: ClusterRole
   name: configmap-reader
@@ -51,24 +51,23 @@ metadata:
   name: manage-secrets
   namespace: hyperweb
 subjects:
-- kind: ServiceAccount
-  name: default
-  namespace: hyperdos
+  - kind: ServiceAccount
+    name: default
+    namespace: hyperdos
 roleRef:
   kind: ClusterRole
   name: secret-manager
   apiGroup: rbac.authorization.k8s.io
 ---
 apiVersion: rbac.authorization.k8s.io/v1
-# hyperdos namespace can crud applications in argocd namespace
 kind: RoleBinding
 metadata:
   name: manage-apps
   namespace: argocd
 subjects:
-- kind: ServiceAccount
-  name: default
-  namespace: hyperdos
+  - kind: ServiceAccount
+    name: default
+    namespace: hyperdos
 roleRef:
   kind: ClusterRole
   name: app-manager
