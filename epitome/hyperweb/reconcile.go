@@ -79,13 +79,13 @@ func reconcile(
 		}
 	}
 
-	parentCtx := context.Background()
-
 	gvr := schema.GroupVersionResource{
 		Group:    "nvidia.com",
 		Version:  "v1",
 		Resource: "clusterpolicies",
 	}
+
+	parentCtx := context.Background()
 
 	getCtx, cancel := context.WithTimeout(parentCtx, 5*time.Second)
 	defer cancel()
