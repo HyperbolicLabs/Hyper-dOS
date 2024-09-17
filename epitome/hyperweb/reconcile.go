@@ -81,7 +81,6 @@ func reconcile(
 
 	parentCtx := context.Background()
 
-	// Get the ClusterPolicy resource
 	gvr := schema.GroupVersionResource{
 		Group:    "nvidia.com",
 		Version:  "v1",
@@ -97,7 +96,6 @@ func reconcile(
 		return err
 	}
 
-	// Check if .spec.validator.driver field exists
 	_, found, err := unstructured.NestedMap(clusterPolicy.Object, "spec", "validator", "driver")
 	if err != nil {
 		logrus.Errorf("error checking .spec.validator.driver: %v", err)
@@ -108,7 +106,6 @@ func reconcile(
 		patchCtx, cancel := context.WithTimeout(parentCtx, 5*time.Second)
 		defer cancel()
 
-		// Patch the ClusterPolicy with the required field
 		patch := []byte(`{"spec":{"validator":{"driver":{"env":[{"name":"DISABLE_DEV_CHAR_SYMLINK_CREATION","value":"true"}]}}}}`)
 		_, err = dynamicClient.Resource(gvr).Patch(patchCtx, "cluster-policy", types.MergePatchType, patch, metav1.PatchOptions{})
 		if err != nil {
