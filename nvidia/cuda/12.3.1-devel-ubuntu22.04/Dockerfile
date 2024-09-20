@@ -14,6 +14,10 @@ RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 RUN mkdir /home/ubuntu/.ssh
 RUN echo "TODO" > /home/ubuntu/.ssh/authorized_keys
 
+# Add CUDA binaries to PATH and CUDA libraries to LD_LIBRARY_PATH
+ENV PATH="/usr/local/cuda/bin:${PATH}"
+ENV LD_LIBRARY_PATH="/usr/local/cuda/lib64:${LD_LIBRARY_PATH}"
+
 # switch port to 2222
 RUN sed -i 's/#Port 22/Port 2222/' /etc/ssh/sshd_config
 
