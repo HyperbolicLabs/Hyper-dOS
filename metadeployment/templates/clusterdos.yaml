@@ -16,10 +16,10 @@ spec:
       parameters:
         # - name: alloy.enabled
         #   value: 'true'
-        - name: kubeStateMetrics.enabled
-          value: 'true'
-        # - name: metricsServer.enabled
-          # value: 'true' # necessary for HPA
+        # - name: kubeStateMetrics.enabled
+        #   value: 'true'
+        - name: metricsServer.enabled
+          value: 'true' # necessary for HPA
         - name: clusterdos.ref
           value: $ARGOCD_APP_SOURCE_TARGET_REVISION
   destination:
