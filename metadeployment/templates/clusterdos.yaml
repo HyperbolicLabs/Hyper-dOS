@@ -1,0 +1,36 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: clusterdos
+  namespace: argocd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: {{ .Values.clusterdos.url }}
+    path: helm-meta
+    targetRevision: {{ .Values.clusterdos.ref }}
+    helm:
+      parameters:
+        # - name: alloy.enabled
+        #   value: 'true'
+        # - name: kubeStateMetrics.enabled
+        #   value: 'true'
+        - name: metricsServer.enabled
+          value: 'true' # necessary for HPA
+        - name: clusterdos.ref
+          value: $ARGOCD_APP_SOURCE_TARGET_REVISION
+  destination:
+    name: in-cluster
+    namespace: argocd
+  syncPolicy:
+    automated:
+      prune: true
+      allowEmpty: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
+    - PruneLast=true
+    - ApplyOutOfSyncOnly=true
