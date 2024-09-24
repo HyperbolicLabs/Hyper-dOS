@@ -10,7 +10,7 @@
 <https://microk8s.io/docs/getting-started>
 
 ``` shell
-sudo snap install microk8s --classic --channel=1.30
+sudo snap install microk8s --classic --channel=1.31
 sudo usermod -a -G microk8s $USER # allow non-sudo use of microk8s command
 newgrp microk8s # reload shell
 
