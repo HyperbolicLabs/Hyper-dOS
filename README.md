@@ -4,6 +4,7 @@
 
 - You will need a Kubernetes cluster with argocd, and the NVIDIA operator installed.
 - You will need to create the `hyperdos` namespace in your cluster
+- When selecting a GPU, please ensure your disk image meets the minimum requirement of 150GB. Insufficient disk space can cause performance issues, particularly during training workloads, and may prevent your instance from functioning properly.
 
 ## Install HyperdOS
 
