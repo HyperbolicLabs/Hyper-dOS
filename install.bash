@@ -24,4 +24,8 @@ sudo microk8s kubectl create namespace hyperdos
 sudo microk8s helm repo add hyperdos https://hyperboliclabs.github.io/Hyper-dOS
 
 echo "Starting hyperdos software..."
+if [[ "$DEV" == "true" ]]; then
+  echo "Install in dev mode..."
+fi
+
 sudo microk8s helm install hyperdos hyperdos/hyperdos --version 0.0.1-alpha.4 --set token=$TOKEN $EXTRA_PARAMS
