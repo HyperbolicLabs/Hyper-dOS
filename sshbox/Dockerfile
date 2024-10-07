@@ -5,8 +5,8 @@ RUN apt-get update && \
     apt-get install -y openssh-server sudo git && \
     apt-get clean
 
-# RUN adduser --disabled-password --gecos '' docker
 RUN useradd -m -s /bin/bash ubuntu
+RUN update-alternatives --install /usr/bin/python python /opt/conda/bin/python 1
 
 RUN adduser ubuntu sudo
 RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
