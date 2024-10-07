@@ -4,6 +4,7 @@
 
 - You will need a Kubernetes cluster with argocd, and the NVIDIA operator installed.
 - You will need to create the `hyperdos` namespace in your cluster
+- Please ensure at least 150GB of free disk space on each node before installing HyperdOS. Low disk space may lead to issues with your cluster, and failed rentals.
 
 ## Install HyperdOS
 
