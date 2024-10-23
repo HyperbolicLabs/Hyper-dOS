@@ -21,6 +21,9 @@ sudo microk8s enable argocd
 sudo microk8s enable nvidia
 
 sudo microk8s kubectl create namespace hyperdos
+sudo microk8s kubectl create namespace hyperweb
+sudo microk8s kubectl create namespace instance 
+sudo microk8s kubectl create namespace ping
 sudo microk8s helm repo add hyperdos https://hyperboliclabs.github.io/Hyper-dOS
 
 echo "Starting hyperdos software..."
