@@ -11,6 +11,30 @@ fi
 
 sudo snap install microk8s --classic --channel=1.31
 
+# https://microk8s.io/docs/how-to-ceph
+# https://canonical-microceph.readthedocs-hosted.com/en/reef-stable/tutorial/single-node/
+sudo snap install microceph
+sudo microceph cluster bootstrap
+
+
+# TODO how much disk to create?
+# sudo microceph disk add loop,4G,3
+
+# may need to add:
+# sudo modprobe rbd
+
+# https://docs.ceph.com/en/reef/
+# TODO we probably want pool size to be 1 for our use-case, or else storage
+# will be duplicated without reason.
+# sudo microceph.ceph config set global osd_pool_default_size 2
+# sudo microceph.ceph config set mgr mgr_standby_modules false
+# sudo microceph.ceph config set osd osd_crush_chooseleaf_type 0
+
+
+# wait for this to be "HEALTH_OK"
+sudo microceph.ceph status
+
+
 echo "Starting microk8s..."
 sudo microk8s start
 
@@ -19,6 +43,9 @@ sudo microk8s enable rbac
 sudo microk8s enable community
 sudo microk8s enable argocd
 sudo microk8s enable nvidia
+
+sudo microk8s enable rook-ceph
+sudo microk8s connect-external-ceph
 
 sudo microk8s kubectl create namespace hyperdos
 sudo microk8s kubectl create namespace hyperweb
