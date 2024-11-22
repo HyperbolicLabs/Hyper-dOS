@@ -20,8 +20,6 @@
 #           value: 'false'
 #         - name: engines.local.zfs.enabled
 #           value: 'false'
-#     #     - name: clusterdos.ref
-#     #       value: $ARGOCD_APP_SOURCE_TARGET_REVISION
 #   destination:
 #     name: in-cluster
 #     namespace: openebs
