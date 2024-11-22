@@ -87,4 +87,5 @@ done
 echo "Installing hyperdos now..."
 sleep 20 
 
-sudo microk8s helm install hyperdos hyperdos/hyperdos --version 0.0.1-alpha.4 --set token=$TOKEN $EXTRA_PARAMS
+sudo microk8s helm install hyperdos hyperdos/hyperdos \
+    --version 0.0.1-alpha.4 --set token=$TOKEN $EXTRA_PARAMS
