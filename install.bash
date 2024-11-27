@@ -220,7 +220,8 @@ echo "----------------------"
 
 
 echo "Starting microk8s..."
-sudo env "PATH=$PATH" microk8s start && microk8s status --wait-ready
+sudo env "PATH=$PATH" microk8s start
+sudo env "PATH=$PATH" microk8s status --wait-ready
 echo "----------------------"
 
 # check if number of nodes is greater than 1
