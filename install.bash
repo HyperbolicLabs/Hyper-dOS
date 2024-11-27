@@ -254,10 +254,6 @@ echo "----------------------"
 microceph_osd_count="$(sudo env "PATH=$PATH" microceph.ceph osd ls | wc -l)"
 echo "microceph disks/osds: $microceph_osd_count"
 
-# will either be empty
-
-cancel
-
 if (( $microceph_osd_count >= 1 )); then
   echo "microceph virtual disk appears to be set up already, skipping"
 else
