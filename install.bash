@@ -1,19 +1,34 @@
 #!/bin/bash
 
 set -e
-# set -x
 
+# configuration
+API_URL="https://api.hyperbolic.xyz"
+HYPERDOS_VERSION=0.0.1-alpha.4
+MICROK8S_VERSION=1.31
 TOKEN=$TOKEN
 EXTRA_PARAMS=""
 PATH=$PATH:/var/lib/snapd/snap/bin
 
 if [[ "$DEV" == "true" ]]; then
+  set -x
   EXTRA_PARAMS="--set ref=dev"
+  API_URL="https://api.dev-hyperbolic.xyz"
 fi
+
 
 ###
 ## some helper functions
 ###
+
+check_for_linux() {
+  ostype=$(uname -s)
+  if [ "$ostype" != "Linux" ]; then
+    echo "This script can only be run on Linux"
+    cancel
+  fi
+}
+
 check_for_snap() {
   if ! command -v snap >/dev/null 2>&1; then
     echo "snap is not installed"
@@ -29,6 +44,28 @@ check_for_token() {
   fi
 }
 
+validate_token() {
+  echo "querying Hyperbolic supply API to validate api key..."
+
+  # curl -s -I -X \
+  #   GET $API_URL/v1/marketplace/instances/supplied \
+  #   -H "Authorization: Bearer $TOKEN"
+  
+  status_code=$(curl -s -o /dev/null -w "%{http_code}" -X \
+    GET $API_URL/v1/marketplace/instances/supplied \
+    -H "Authorization: Bearer $TOKEN")
+  
+  echo "status code: $status_code"
+  
+  if [ $status_code -ne 200 ]; then
+    echo "received status code $status_code, expected 200"
+    echo "api key is not valid"
+    cancel
+  fi
+  
+  echo "success! api key is valid"
+}
+
 check_installed() {
   if ! command -v $1 >/dev/null 2>&1; then
   return 1
@@ -38,8 +75,26 @@ check_installed() {
 
 install_microk8s() {
   echo "Installing microk8s..."
-  sudo snap install microk8s --classic --channel=1.31
+  sudo snap install microk8s --classic --channel=$MICROK8S_VERSION
   echo "----------------------"
+}
+
+install_hyperdos_if_not_installed() {
+  if grep -q hyperdos <<< "$(sudo env "PATH=$PATH" microk8s helm list --all-namespaces)"; then
+    echo "hyperdos appears to be installed already, skipping"
+  else 
+    echo "----------------------"
+    echo "hyperdos appears not to be installed in the cluster yet, would you like to install it now?"
+    if confirm; then
+      sudo env "PATH=$PATH" microk8s helm repo add hyperdos https://hyperboliclabs.github.io/Hyper-dOS
+      sudo env "PATH=$PATH" microk8s helm install hyperdos hyperdos/hyperdos \
+          --version $HYPERDOS_VERSION \
+          --set token=$TOKEN $EXTRA_PARAMS
+    else
+      echo "hyperdos installation canceled by user"
+      cancel
+    fi
+  fi
 }
 
 install_microceph() {
@@ -78,8 +133,10 @@ read_disk_size_gb() {
   while true; do
     read -r -p "
     Please enter an integer to set the size of the new microceph virtual disk 
-    (estimated free space: $free_space GB)
-      GB to allocate to microceph: " disk_size_gb
+    (estimated free space: $free_space)
+    Note: it is recommended to leave at least 100GB of free space for ephemeral storage etc.
+      
+      Enter the number of GB to allocate to the microceph virtual disk: " disk_size_gb
     
     if [[ $disk_size_gb =~ ^[0-9]+$ ]]; then
       # if (( $disk_size_gb > $free_space )); then
@@ -118,12 +175,18 @@ count_microceph_nodes() {
 }
 
 
+
+
+
+
 ### 
 ## main script
 ###
 echo "----------------------"
 echo "Beginning HyperdOS installation..."
 echo "----------------------"
+
+check_for_linux
 
 # first, decide whether to install microk8s
 if ! check_installed microk8s; then
@@ -206,6 +269,7 @@ sudo env "PATH=$PATH" microceph.ceph status
 
 echo "----------------------"
 echo "Enabling microk8s components..."
+# this is idempotent already
 echo "-------------"
 sudo env "PATH=$PATH" microk8s enable rbac
 echo "-------------"
@@ -228,6 +292,7 @@ echo "done!"
 
 echo "----------------------"
 echo "Creating namespaces..."
+# note: these are idempotent
 sudo env "PATH=$PATH" microk8s kubectl create namespace hyperdos || true
 sudo env "PATH=$PATH" microk8s kubectl create namespace hyperweb || true
 sudo env "PATH=$PATH" microk8s kubectl create namespace instance || true
@@ -237,11 +302,6 @@ echo "done!"
 
 echo "----------------------"
 namespace="argocd"
-echo "Waiting for $namespace components to be ready..."
-if [[ "$DEV" == "true" ]]; then
-  echo "Installing in dev mode..."
-fi
-
 while true; do
   pods=$(sudo env "PATH=$PATH" microk8s kubectl get pods -n "$namespace" --no-headers 2>&1)
 
@@ -266,20 +326,62 @@ done
 echo "----------------------"
 echo "----------------------"
 echo "And finally: Installing hyperdos into the cluster..."
+
+
 # get the token from the user if necessary
 check_for_token
 
-sleep 20 
+# make a test query to the Hyperbolic API
+validate_token
 
-cancel
-
-sudo env "PATH=$PATH" microk8s helm repo add hyperdos https://hyperboliclabs.github.io/Hyper-dOS
-sudo microk8s helm install hyperdos hyperdos/hyperdos \
-    --version 0.0.1-alpha.4 --set token=$TOKEN $EXTRA_PARAMS
+install_hyperdos_if_not_installed
 
 echo "==========================="
 echo "Installation complete!"
 echo "you can view your new cluster at https://app.hyperbolic.xyz/supply"
-echo "..."
+
+echo "
+
+@@@@@:@@@:@@@@-:@@@@:-=@@@:#@:@:@:@@@@@@:@@@@@@@@:@@@@:@@:@@@@@:@@@@@@
+@@@#=@=-=.@:-:#@#@@@:.@@@:+#*#:@::@*@=:%@-::@@=#*=:@@#@*=@@@=@@:=*#=@@
+@=@-=*@=@-::@@+*@=#=@@=%-@::@:@@=#:@*%=-:@-::=@@@@=#:@@@@@#:%::#--#+:@
+@*=%#+@::*=#@-+@.%:@*@:=*:-@  =-*: :  .:.@::@: . *@#+#@=@--#@@@@**@=@@
+@@@:@-@=@@@-: @-#*     :+  #                     :%:@:@*@=#.::@@=@:@@@
+@:+#:@*@@=: .:+ :-::@.:@#+* *: --       *@: #-.:.:.* .. :@:=@=-@#-*.@@
+@%:.-@===*+@::@@-*.@::::@-@*..-@@:    :@@:@#@.#:@.::=@::-@:  @ @+:@=@@
+@@-=*@:-=@:@@@-@-:=#.#-@:---@.%@:    :@=-@=::=:@@@@.@@@@@@@*=  ::@@+@@
+@@=@@+  #::@@@@@#@::@+::.:%@@@@@@    @+@@@@%:=.:@-#@@@@@@@@%#  :=-@@:@
+@:+=:   :@@@@@@@@:@@==::*@@@@@@:      -@@@@@@-=-::=@@@@@@@@@#  .-@@:%@
+@@@##=:     .#@@@@#=::==@@@-+*@          @:@.@--=@@:@@@@@       @@:@=@
+@.:@:@-       =*+@:@==.+@@@--#-%         .-@@#%+*@:@-@:%@        @:%.@
+@=::#%:        @@@@=#@=+@@@:#+ =          @:::-:@@%@@@#          #:+:@
+@@*#:      ::- :::@*==@=@@:@           :@#@-.@#:%@@@@#-@       @%@@*@@
+@-:*=:@     @@=-=:@@%.=:*-.@            ::@@:++=%@@@@*:         %:@:@@
+@:@-@+         @+@@#:-=#@#:##   . %     :-@@:+=--#@@#+:         #=+#:@
+@@@+%          @@@%*=:@@##@-:#:-.@-:#-: +@@@@:-@@#@@@:%          -@-@@
+@@@          +# ::@@==@%+-@-@@--:-@-%-=-::%@:-@=@*@@@@* :         @:@@
+@::@#        @#@=@@%#=@@--@@-.:@++@-*..:@::@:##-@-@@+@#@         ::#@@
+@@%=%@        ::@%@#@#:@@@#@@@@@@@@@@@@@@@@#@@@+@@@@+=@@@        :#+:@
+@@==@:     @@   #@@@@+=#@@@@@@@@@@@@@@@@@@@@@@@-.:@@@:@          @:=:@
+@@*:@      @*@#--@@+@%@#@@@@@ %@@@@ @#@@@ #@%@#=%@@@@+:        :#.-@@@
+@:#@         +:*%@@@=*%#+++     @     @   #%@@%@@@@@%@:        #*:#:-@
+@@:.@@:      :+:@+@@@##@@@@*             @=%.@@@%-@@@=@%:       -=@@=@
+@::@==@     :+ :@@@#@@@@@*%-@           :@::-@@##@@@@*:.+*@     .::::@
+@:=@:@=:=      .@@@@@#.@@@@=             +@#@@%@+*@+@@.      :#::@=:@@
+@@::@#.       -:-%@#@%@@@:*               @=:-#@##@@@@#:-     =@:##=#@
+@@-:-+#-@: == @::@@@:@%@@*:=:             ==@#%+%@@@@+@:*   @-=:@@:.@@
+@-=:@::@%@@ -+##+@@@+@@@@@=:  =        @+::@@+@+@:@@@@#-    :#:-@.@+@@
+@@:=@::@=..%==@@-##@@@@@@@@@:#-        @@::=*@%@@@@#@@##=@@:@:@=@@@:@@
+@:@%:@*+-@:+@@*+##@@@@@@%%=@@@@%+*   #-@+@@=:@@@%@#@@@%##@@* :@@@-:+:@
+@@::@@.*:::@@@@*@@@@@@+%@:@@@@@@+  -- @@@@@@@@*@@:@@@@@@@@@@@#.:=@@@@@
+@:@@*+:@-:*@#@@@@@@@@@@@@@@@@@@@.  =##-#@@@@@@@@@@@@@@@@@@*=.:@==:-:@@
+@-#*@=--@@@@%@@@@@@@-#@@@@@@@@@@-: @# :%@@@@@@@%@@@@@@@@@@=@-@-#=#+=@@
+@:*@##=#+@@@@@:@:%:@-@@-+@@:: @@@:%%:@@ :%@..#@:%@@@@@@%@:@@=@#+*+@@%@
+@@:*%##@#@:*:#::@:@#*@@=@:@%:%:::@@:@*#+.@@@@:###=*-:@*##@.:%#@@  #=:@
+@@=*##-=@##@@++:#=@+##=@=-=%@+@@@:=@@:#*@@=:=:*###@.@:@@%:@=@#:@##@@@@
+@@@@@+@@:@@@@@@@@@@@@@:=@@@@@@@@@@@@@:@@@@@@@@:@@@@@@@@%@@@@@:@@:@@@@@
+
+"
+
 echo "Welcome to the rAInforest!"
-echo "===========================
+echo "==========================="
