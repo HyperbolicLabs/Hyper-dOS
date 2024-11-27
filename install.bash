@@ -68,7 +68,7 @@ validate_token() {
 
 check_installed() {
   if ! command -v $1 >/dev/null 2>&1; then
-  return 1
+    return 1
   fi
   return 0
 }
@@ -251,10 +251,14 @@ else
 fi
 echo "----------------------"
 
-microceph_disk_count=$(sudo env "PATH=$PATH" microceph disk list | grep '/' | wc -l)
-echo "microceph disks: $microceph_disk_count"
+microceph_osd_count="$(sudo env "PATH=$PATH" microceph.ceph osd ls | wc -l)"
+echo "microceph disks/osds: $microceph_osd_count"
 
-if (( $microceph_disk_count >= 1 )); then
+# will either be empty
+
+cancel
+
+if (( $microceph_osd_count >= 1 )); then
   echo "microceph virtual disk appears to be set up already, skipping"
 else
   echo "setting up the microceph virtual disk..."
