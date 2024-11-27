@@ -108,9 +108,9 @@ configure_microceph() {
   # this install script is designed to set up a single-node cluster
   # so we set the replication factor to 1
 
-  microceph.ceph config set global osd_pool_default_size 1
-  microceph.ceph config set mgr mgr_standby_modules false
-  microceph.ceph config set osd osd_crush_chooseleaf_type 0
+  sudo env "PATH=$PATH" microceph.ceph config set global osd_pool_default_size 1
+  sudo env "PATH=$PATH" microceph.ceph config set mgr mgr_standby_modules false
+  sudo env "PATH=$PATH" microceph.ceph config set osd osd_crush_chooseleaf_type 0
   # modprobe rbd
 }
 
@@ -246,7 +246,7 @@ else
   # https://microk8s.io/docs/how-to-ceph
   # https://canonical-microceph.readthedocs-hosted.com/en/reef-stable/tutorial/single-node/
   sudo env "PATH=$PATH" microceph cluster bootstrap
-  sudo env "PATH=$PATH" configure_microceph
+  configure_microceph
   echo "done!"
 fi
 echo "----------------------"
