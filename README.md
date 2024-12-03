@@ -8,7 +8,7 @@
 2. Copy your API Key and make sure to insert it in place of "<YOUR_API_KEY>" to run the installation command below:
 
 ```bash
-curl https://raw.githubusercontent.com/HyperbolicLabs/Hyper-dOS/refs/heads/main/install.bash | sh
+curl -s https://raw.githubusercontent.com/HyperbolicLabs/Hyper-dOS/refs/heads/main/install.bash | sh
 ```
 
 ### (optional) add more nodes to your cluster
