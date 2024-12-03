@@ -44,14 +44,14 @@ curl https://raw.githubusercontent.com/HyperbolicLabs/Hyper-dOS/refs/heads/main/
 ## configure helm repo and dry-run
 
 ```bash
-sudo microk8s helm install --dry-run hyperdos hyperdos/hyperdos --version 0.0.1-alpha.4 --set ref="main" --set token="DRY_RUN_NO_TOKEN"
+sudo microk8s helm install --dry-run hyperdos hyperdos/hyperdos --version 0.0.1-alpha.5 --set ref="main" --set token="DRY_RUN_NO_TOKEN"
 ```
 
 ## install (without rolling updates)
 
 ```bash
 # to disable automatic updates and pin to a specific git ref
-sudo microk8s helm install hyperdos hyperdos/hyperdos --version 0.0.1-alpha.4 --set ref="0.0.1-alpha.4" --set token="<YOUR_API_KEY>"
+sudo microk8s helm install hyperdos hyperdos/hyperdos --version 0.0.1-alpha.5 --set ref="0.0.1-alpha.5" --set token="<YOUR_API_KEY>"
 ```
 
 ## uninstall hyperdos
