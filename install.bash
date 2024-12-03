@@ -118,11 +118,29 @@ allocate_microceph_disk() {
   # check how much free space is present in this filesystem (.)
   free_space=$(df -kh . | grep '/' | awk '{print $4}')
   
+  # this fills the 'disk_size_gb' variable
   read_disk_size_gb $free_space
 
   echo "Allocating microceph virtual disk with size: ${disk_size_gb}G"
   # microceph disk add loop,<size in G>,<replication factor>
   sudo env "PATH=$PATH" microceph disk add loop,${disk_size_gb}G,1
+  
+  # save 20% of the disk to avoid ceph weirdness
+  quota_size_gb=$((($disk_size_gb * 80) / 100)))
+  
+  # create a resource quota in the instance namespace
+  cat <<EOF | sudo env "PATH=$PATH" microk8s kubectl apply -f - 
+  apiVersion: v1
+  kind: ResourceQuota
+  metadata:
+    name: hyperstore
+    namespace: instance
+  spec:
+    hard:
+      # persistentvolumeclaims: "100"  # maximum 100 PVCs
+      requests.storage: "${quota_size_gb}G"
+EOF
+
 }
 
 # Ask the user how much space they want to allocate to microceph
@@ -230,6 +248,17 @@ if (( count_microk8s_nodes > 1 )) ; then
   cancel
 fi
 
+
+echo "----------------------"
+echo "Creating namespaces..."
+# note: these are idempotent
+sudo env "PATH=$PATH" microk8s kubectl create namespace hyperdos || true
+sudo env "PATH=$PATH" microk8s kubectl create namespace hyperweb || true
+# note that the instance namespace must be created before the hyperstore resourcequota
+sudo env "PATH=$PATH" microk8s kubectl create namespace instance || true
+sudo env "PATH=$PATH" microk8s kubectl create namespace ping || true
+echo "done!"
+
 microceph_node_count=$(count_microceph_nodes)
 echo "microceph nodes: $microceph_node_count"
 
@@ -291,14 +320,6 @@ sudo env "PATH=$PATH" microk8s connect-external-ceph
 echo "done!"
 
 
-echo "----------------------"
-echo "Creating namespaces..."
-# note: these are idempotent
-sudo env "PATH=$PATH" microk8s kubectl create namespace hyperdos || true
-sudo env "PATH=$PATH" microk8s kubectl create namespace hyperweb || true
-sudo env "PATH=$PATH" microk8s kubectl create namespace instance || true
-sudo env "PATH=$PATH" microk8s kubectl create namespace ping || true
-echo "done!"
 
 
 echo "----------------------"
