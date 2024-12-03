@@ -126,7 +126,7 @@ allocate_microceph_disk() {
   sudo env "PATH=$PATH" microceph disk add loop,${disk_size_gb}G,1
   
   # save 20% of the disk to avoid ceph weirdness
-  quota_size_gb=$((($disk_size_gb * 80) / 100)))
+  quota_size_gb=$(((disk_size_gb * 80) / 100))
   
   # create a resource quota in the instance namespace
   cat <<EOF | sudo env "PATH=$PATH" microk8s kubectl apply -f - 
