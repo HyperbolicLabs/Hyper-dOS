@@ -1,0 +1,28 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: hyperweb
+  labels:
+    name: hyperweb
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: hyperdos
+  labels:
+    name: hyperdos
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ping
+  labels:
+    name: ping
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: instance
+  labels:
+    name: instance
