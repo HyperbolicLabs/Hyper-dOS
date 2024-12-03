@@ -1,0 +1,35 @@
+# ---
+# {{- if contains "dev" .Values.ref }}
+# apiVersion: argoproj.io/v1alpha1
+# kind: Application
+# metadata:
+#   name: clusterdos
+#   namespace: argocd
+#   finalizers:
+#   - resources-finalizer.argocd.argoproj.io
+# spec:
+#   project: default
+#   source:
+#     repoURL: https://github.com/openebs/openebs
+#     path: charts
+#     targetRevision: v4.1.1
+#     helm:
+#       parameters:
+#       # https://github.com/openebs/openebs/blob/main/charts/values.yaml
+#         - name: engines.replicated.mayastor.enabled
+#           value: 'false'
+#         - name: engines.local.zfs.enabled
+#           value: 'false'
+#   destination:
+#     name: in-cluster
+#     namespace: openebs
+#   syncPolicy:
+#     automated:
+#       prune: true
+#       allowEmpty: true
+#       selfHeal: true
+#     syncOptions:
+#     - CreateNamespace=true
+#     - PruneLast=true
+#     - ApplyOutOfSyncOnly=true
+# {{- end }}
