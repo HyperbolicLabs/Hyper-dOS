@@ -30,7 +30,12 @@ RUN echo 'export LD_LIBRARY_PATH="/usr/local/cuda/lib64:${LD_LIBRARY_PATH}"' >> 
 COPY scripts/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
-COPY scripts/99-hypercloud-motd.sh /etc/update-motd.d/99-hypercloud-motd.sh
+# clean out default motd
+# TODO 60-unminimize is actually helpful
+RUN rm /etc/update-motd.d/*
+
+# install hypercloud motd script
+COPY scripts/99-hypercloud-motd.sh /etc/update-motd.d/99-hypercloud-motd
 RUN chmod +x /etc/update-motd.d/99-hypercloud-motd
 
 # switch port to 2222

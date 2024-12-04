@@ -1,10 +1,18 @@
 #!/bin/sh
 
 echo "
-Note: outside of /home/ubuntu, please be aware that ephemeral disk usage above 1 GB will trigger a pod reset.
+This system has been minimized to reduce unneeded packages.
+To restore them, you can run the 'unminimize' command.
 "
 
-neofetch
+echo "
+Note: outside of /home/ubuntu, please be aware that
+ephemeral disk usage above 1 GB will trigger a pod reset.
+"
 
-echo "Welcome to the rAInforest!
+# sudo -H -u ubuntu neofetch # sudo isn't always installed
+su ubuntu -c neofetch
+
+echo "
+...Welcome to the rAInforest!
 "

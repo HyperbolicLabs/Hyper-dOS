@@ -18,7 +18,7 @@ metadata:
   name: ssh-public-key
 data:
   auth_key: |
-    your-ssh-pubkey-here
+    TODO
 ---
 apiVersion: v1
 kind: Pod
@@ -28,7 +28,7 @@ spec:
   containers:
     - name: sshbox
       image: sshbox:latest
-      imagePullPolicy: IfNotPresent
+      imagePullPolicy: Never # get locally
       ports:
         - containerPort: 2222
       volumeMounts:
