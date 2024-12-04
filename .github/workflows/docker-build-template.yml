@@ -31,6 +31,15 @@ jobs:
             type=semver,pattern={{major}}
             type=sha
 
+      - name: Remove unnecessary directories to free up space
+        run: |
+          sudo rm -rf /usr/local/.ghcup
+          sudo rm -rf /opt/hostedtoolcache/CodeQL
+          sudo rm -rf /usr/local/lib/android/sdk/ndk
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /opt/ghc
+          sudo rm -rf /usr/local/share/boost
+
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
 
@@ -53,3 +62,5 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           file: ${{ inputs.image_path }}/Dockerfile
+          # cache-from: type=gha
+          # no-cache: true

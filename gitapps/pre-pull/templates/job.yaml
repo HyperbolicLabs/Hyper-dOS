@@ -1,8 +1,9 @@
+{{- range .Values.images }}
 ---
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: pull-sshbox-image
+  name: pull-{{ .name }}-image
 spec:
   template:
     spec:
@@ -10,7 +11,8 @@ spec:
       restartPolicy: Never
       containers:
       - name: nvidia-smi
-        image: {{ .Values.image }}:{{ .Values.ref }}
+        image: {{ .url }}:{{ $.Values.ref }}
         command:
           - nvidia-smi
   backoffLimit: 2
+{{- end }}

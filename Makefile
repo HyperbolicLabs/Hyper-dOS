@@ -10,7 +10,16 @@ build-epitome-image:
 run-epitome-image:
 	docker run --rm -it epitome
 
+minikube-import-images:
+	minikube --profile hyperbolic --alsologtostderr image load 'TODO-image-name:latest'
+
 build-and-run-epitome-image: build-epitome-image run-epitome-image
+
+build-sshbox-image:
+	docker build -t sshbox -f sshbox/Dockerfile .
+
+run-sshbox-image:
+	docker run -t sshbox --rm -d -p '2222:2222' sshbox
 
 build:
 	cd epitome; \
@@ -52,6 +61,11 @@ helm-test:
 
 	@cd gitapps/epitome; \
 	helm template epitome \
+		--set ref="main" \
+		.
+
+	@cd gitapps/pre-pull; \
+	helm template pre-pull \
 		--set ref="main" \
 		.
 
