@@ -5,10 +5,11 @@ on:
       - dev
       - main
     paths:
-      - 'pytorch/pytorch/2.4.0-cuda12.4-cudnn9-devel/**'
-      - '.github/workflows/pytorch_pytorch_2.4.0-cuda12.4-cudnn9-devel.yml'
+      - "pytorch/pytorch/2.4.0-cuda12.4-cudnn9-devel/**"
+      - ".github/workflows/pytorch_pytorch_2.4.0-cuda12.4-cudnn9-devel.yml"
   schedule:
     - cron: "0 0 * * *"
+  workflow_dispatch:
 
 jobs:
   build-pytorch-2-4-0-cuda12-4-cudnn9-devel:

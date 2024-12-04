@@ -5,10 +5,11 @@ on:
       - dev
       - main
     paths:
-      - 'nvidia/cuda/12.4.1-cudnn-devel-ubuntu22.04/**'
-      - '.github/workflows/nvida_cuda_12.4.1-cudnn-devel-ubuntu22.04.yml'
+      - "nvidia/cuda/12.4.1-cudnn-devel-ubuntu22.04/**"
+      - ".github/workflows/nvida_cuda_12.4.1-cudnn-devel-ubuntu22.04.yml"
   schedule:
     - cron: "0 0 * * *"
+  workflow_dispatch:
 
 jobs:
   build-nvida-cuda-12-4-1-cudnn-devel-ubuntu22-04:
