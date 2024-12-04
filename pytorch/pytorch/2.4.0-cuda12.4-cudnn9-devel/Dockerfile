@@ -14,6 +14,9 @@ RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 RUN mkdir /home/ubuntu/.ssh
 RUN echo "TODO" > /home/ubuntu/.ssh/authorized_keys
 
+COPY scripts/entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
 # switch port to 2222
 RUN sed -i 's/#Port 22/Port 2222/' /etc/ssh/sshd_config
 
@@ -24,4 +27,4 @@ EXPOSE 2222
 # USER ubuntu
 
 # chown authorized keys file and start the SSH service. Then keep the container alive
-ENTRYPOINT cat /home/ubuntu/auth/auth > /home/ubuntu/.ssh/authorized_keys && chown -R ubuntu:ubuntu /home/ubuntu/.ssh && chmod 600 /home/ubuntu/.ssh/authorized_keys && service ssh start && tail -f /dev/null
+ENTRYPOINT ["/entrypoint.sh"]

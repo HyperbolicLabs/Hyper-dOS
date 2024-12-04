@@ -18,6 +18,9 @@ RUN echo "TODO" > /home/ubuntu/.ssh/authorized_keys
 RUN echo 'export PATH="/usr/local/cuda/bin:${PATH}"' >> /etc/bash.bashrc
 RUN echo 'export LD_LIBRARY_PATH="/usr/local/cuda/lib64:${LD_LIBRARY_PATH}"' >> /etc/bash.bashrc
 
+COPY scripts/entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
 # switch port to 2222
 RUN sed -i 's/#Port 22/Port 2222/' /etc/ssh/sshd_config
 
@@ -26,4 +29,4 @@ EXPOSE 22
 EXPOSE 2222
 
 # chown authorized keys file and start the SSH service. Then keep the container alive
-ENTRYPOINT cat /home/ubuntu/auth/auth > /home/ubuntu/.ssh/authorized_keys && chown -R ubuntu:ubuntu /home/ubuntu/.ssh && chmod 600 /home/ubuntu/.ssh/authorized_keys && service ssh start && tail -f /dev/null
+ENTRYPOINT ["/entrypoint.sh"]
