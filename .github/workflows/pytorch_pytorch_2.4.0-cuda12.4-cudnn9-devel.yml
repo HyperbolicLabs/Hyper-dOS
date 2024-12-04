@@ -11,6 +11,7 @@ on:
     - cron: "0 0 * * *"
   workflow_dispatch:
 
+
 jobs:
   build-pytorch-2-4-0-cuda12-4-cudnn9-devel:
     uses: ./.github/workflows/docker-build-template.yml
