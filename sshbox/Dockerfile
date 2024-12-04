@@ -31,7 +31,6 @@ COPY scripts/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
 # clean out default motd
-# TODO 60-unminimize is actually helpful
 RUN rm /etc/update-motd.d/*
 
 # install hypercloud motd script
