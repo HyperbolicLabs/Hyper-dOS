@@ -5,10 +5,11 @@ on:
       - dev
       - main
     paths:
-      - 'tensorflow/tensorflow/latest-gpu/**'
-      - '.github/workflows/tensorflow_tensorflow_latest-gpu.yml'
+      - "tensorflow/tensorflow/latest-gpu/**"
+      - ".github/workflows/tensorflow_tensorflow_latest-gpu.yml"
   schedule:
     - cron: "0 0 * * *"
+  workflow_dispatch:
 
 jobs:
   build-tensorflow-latest-gpu:
