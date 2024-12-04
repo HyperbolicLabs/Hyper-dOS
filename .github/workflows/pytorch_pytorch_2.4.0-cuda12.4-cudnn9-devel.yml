@@ -17,5 +17,3 @@ jobs:
     with:
       image_name: pytorch_pytorch_2.4.0-cuda12.4-cudnn9-devel
       image_path: pytorch/pytorch/2.4.0-cuda12.4-cudnn9-devel
-      cache-from: type=gha
-      no-cache: true
