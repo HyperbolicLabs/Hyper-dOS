@@ -64,6 +64,11 @@ helm-test:
 		--set ref="main" \
 		.
 
+	@cd gitapps/pre-pull; \
+	helm template pre-pull \
+		--set ref="main" \
+		.
+
 test-helm-install:
 	@cd charts/hyperdos; \
 	helm template hyperdos \

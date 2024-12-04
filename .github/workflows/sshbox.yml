@@ -13,6 +13,7 @@ on:
     - cron: "0 0 * * *"
   workflow_dispatch:
 
+
 jobs:
   build-and-push-sshbox:
     uses: ./.github/workflows/docker-build-template.yml
