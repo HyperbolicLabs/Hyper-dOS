@@ -30,8 +30,8 @@ RUN echo 'export LD_LIBRARY_PATH="/usr/local/cuda/lib64:${LD_LIBRARY_PATH}"' >> 
 COPY scripts/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
-# COPY scripts/99-hypercloud-motd.sh /etc/update-motd.d/99-hypercloud-motd.sh
-# RUN chmod +x /etc/update-motd.d/99-hypercloud-motd
+COPY scripts/99-hypercloud-motd.sh /etc/update-motd.d/99-hypercloud-motd.sh
+RUN chmod +x /etc/update-motd.d/99-hypercloud-motd
 
 # switch port to 2222
 RUN sed -i 's/#Port 22/Port 2222/' /etc/ssh/sshd_config
