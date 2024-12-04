@@ -1,9 +1,6 @@
 ---
-# TODO list of images (whitelist?)
 images:
-  # - name: pytorch
-  #   url: TODO
-  - name: sshbox
+  - name: pytorch
     url:  ghcr.io/hyperboliclabs/hyper-dos/sshbox
   - name: tensorflow
     url:  ghcr.io/hyperboliclabs/hyper-dos/tensorflow_tensorflow_latest-gpu
