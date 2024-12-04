@@ -14,5 +14,6 @@ spec:
         image: {{ .url }}:{{ $.Values.ref }}
         command:
           - nvidia-smi
+      priorityClassName: pre-pull
   backoffLimit: 2
 {{- end }}

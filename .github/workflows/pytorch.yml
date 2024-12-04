@@ -18,5 +18,7 @@ jobs:
   build-and-push-sshbox:
     uses: ./.github/workflows/docker-build-template.yml
     with:
+      # frontend expects pytorch image to be named sshbox
+      # ...for historical reasons
       image_name: sshbox
       image_path: sshbox
