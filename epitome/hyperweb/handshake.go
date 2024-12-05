@@ -70,7 +70,7 @@ func handshake(
 		return
 	}
 
-	logrus.Infof("handshake response: %+v", response)
+	logrus.Infof("handshake response: cluster name is %+v", response.ClusterName)
 
 	return
 }
