@@ -15,16 +15,34 @@ spec:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: ssh-public-key
+  name: ssh-config
 data:
   auth_key: |
-    TODO
+    YOUR_PUBKEY_HERE
 ---
 apiVersion: v1
 kind: Pod
 metadata:
   name: sshbox
 spec:
+  initContainers:
+    - name: initialize
+      image: sshbox
+      imagePullPolicy: Never
+      command:
+        - sh
+        - -c
+        - |
+          cp -a /home/ubuntu/. /mnt/data
+          cat /mnt/config/auth_key
+          cat /mnt/config/auth_key > /mnt/data/.ssh/authorized_keys
+          chown -R ubuntu:ubuntu /mnt/data
+          chmod 600 /mnt/data/.ssh/authorized_keys
+      volumeMounts:
+        - name: ssh-config
+          mountPath: /mnt/config
+        - name: home
+          mountPath: /mnt/data
   containers:
     - name: sshbox
       image: sshbox:latest
@@ -32,14 +50,12 @@ spec:
       ports:
         - containerPort: 2222
       volumeMounts:
-        - name: ssh-public-key
-          mountPath: /tmp
         - name: home
           mountPath: /home/ubuntu
   volumes:
-    - name: ssh-public-key
+    - name: ssh-config
       configMap:
-        name: ssh-public-key
+        name: ssh-config
     - name: home
       persistentVolumeClaim:
         claimName: home

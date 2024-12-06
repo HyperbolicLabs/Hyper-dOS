@@ -31,6 +31,7 @@ RUN rm /etc/update-motd.d/*
 
 # install hypercloud motd script
 COPY scripts/99-hypercloud-motd.sh /etc/update-motd.d/99-hypercloud-motd
+COPY scripts/hypercloud.ascii /etc/update-motd.d/hypercloud.ascii
 RUN chmod +x /etc/update-motd.d/99-hypercloud-motd
 
 # switch port to 2222
