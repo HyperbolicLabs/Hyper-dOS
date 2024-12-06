@@ -11,7 +11,7 @@ ephemeral disk usage above 1 GB will trigger a pod reset.
 "
 
 # sudo -H -u ubuntu neofetch # sudo isn't always installed
-su ubuntu -c neofetch
+su ubuntu -c "neofetch --source /etc/update-motd.d/hypercloud.ascii"
 
 echo "
 ...Welcome to the rAInforest!
