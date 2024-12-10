@@ -3,10 +3,6 @@
 
 ## Install HyperdOS (single-node setup from scratch)
 
-1. Login to <https://app.hyperbolic.xyz> and select 'settings'
-
-2. Copy your API Key and make sure to insert it in place of "<YOUR_API_KEY>" to run the installation command below:
-
 ```bash
 curl -s https://raw.githubusercontent.com/HyperbolicLabs/Hyper-dOS/refs/heads/main/install.bash | bash
 ```
