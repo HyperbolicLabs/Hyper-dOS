@@ -1,17 +1,17 @@
 # Hyperbolic Distributed Operating System
 
 
-## Install HyperdOS (single-node setup)
+## Install HyperdOS (single-node setup from scratch)
 
 1. Login to <https://app.hyperbolic.xyz> and select 'settings'
 
 2. Copy your API Key and make sure to insert it in place of "<YOUR_API_KEY>" to run the installation command below:
 
 ```bash
-curl -s https://raw.githubusercontent.com/HyperbolicLabs/Hyper-dOS/refs/heads/main/install.bash | sh
+curl -s https://raw.githubusercontent.com/HyperbolicLabs/Hyper-dOS/refs/heads/main/install.bash | bash
 ```
 
-### (optional) add more nodes to your cluster
+### (optional) add more nodes to your microk8s cluster
 
 <https://microk8s.io/docs/clustering>
 
@@ -19,7 +19,14 @@ curl -s https://raw.githubusercontent.com/HyperbolicLabs/Hyper-dOS/refs/heads/ma
 2. (on the original node) `microk8s add-node`
 3. (on the new node) `microk8s join <output-from-original-node>`
 
-## Notes
+### (experimental) add more nodes to your microceph storage cluster
+
+<https://microk8s.io/docs/clustering>
+
+1. (on the new node) `sudo snap install microceph`
+2. (on the new node) `sudo microceph init`
+
+### Notes
 
 - If you would like to run the install script yourself rather than curling from github, you are welcome to download and edit the [install.bash](install.bash) file before running it on your node.
 
@@ -30,9 +37,12 @@ curl -s https://raw.githubusercontent.com/HyperbolicLabs/Hyper-dOS/refs/heads/ma
 - We officially support single-node microk8s+microceph clusters only, HOWEVER - a custom multi-node cluster should work smoothly if configured properly. See below for customized installation guidelines:
 
 
-# Customized installation
 
-## Prerequisites
+## Customized installation (existing kubernetes cluster)
+
+Please get in touch if you are planning to install hyperdos on an existing multi-node cluster, we can help you get set up smoothly.
+
+### Prerequisites
 - ArgoCD installed: <https://argo-cd.readthedocs.io/en/stable/operator-manual/installation/>
 - NVIDIA Operator installed: <https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/getting-started.html>
 - Namespaces `hyperdos` and `instance`
@@ -41,20 +51,21 @@ curl -s https://raw.githubusercontent.com/HyperbolicLabs/Hyper-dOS/refs/heads/ma
 - Please ensure at least 150GB of free disk space on each node before installing HyperdOS. Low disk space may lead to issues with your cluster, and failed rentals.
 
 
-## configure helm repo and dry-run
+### configure helm repo and dry-run
 
 ```bash
 sudo microk8s helm install --dry-run hyperdos hyperdos/hyperdos --version 0.0.1-alpha.6 --set ref="main" --set token="DRY_RUN_NO_TOKEN"
 ```
 
-## install (without rolling updates)
+### install (without rolling updates)
 
 ```bash
 # to disable automatic updates and pin to a specific git ref
 sudo microk8s helm install hyperdos hyperdos/hyperdos --version 0.0.1-alpha.6 --set ref="0.0.1-alpha.6" --set token="<YOUR_API_KEY>"
 ```
 
-## uninstall hyperdos
+
+## Uninstall
 
 ### remove hyperdos from the cluster
 
