@@ -4,23 +4,8 @@
 ## Install HyperdOS (single-node setup from scratch)
 
 ```bash
-curl -s https://raw.githubusercontent.com/HyperbolicLabs/Hyper-dOS/refs/heads/main/install.bash | bash
+curl -o install.bash https://raw.githubusercontent.com/HyperbolicLabs/Hyper-dOS/refs/heads/main/install.bash && bash install.bash
 ```
-
-### (optional) add more nodes to your microk8s cluster
-
-<https://microk8s.io/docs/clustering>
-
-1. (on the new node) `sudo snap install microk8s --classic --channel=1.31`
-2. (on the original node) `microk8s add-node`
-3. (on the new node) `microk8s join <output-from-original-node>`
-
-### (experimental) add more nodes to your microceph storage cluster
-
-<https://microk8s.io/docs/clustering>
-
-1. (on the new node) `sudo snap install microceph`
-2. (on the new node) `sudo microceph init`
 
 ### Notes
 
@@ -31,6 +16,27 @@ curl -s https://raw.githubusercontent.com/HyperbolicLabs/Hyper-dOS/refs/heads/ma
   - <https://microk8s.io/docs/install-alternatives>
 
 - We officially support single-node microk8s+microceph clusters only, HOWEVER - a custom multi-node cluster should work smoothly if configured properly. See below for customized installation guidelines:
+
+
+
+## (experimental) add more nodes to your cluster
+
+Note: please reach out before doing this so we can support your cluster smoothly. As of right now, only single-node clusters will be shown to rentors automatically.
+
+
+### add microk8s node
+<https://microk8s.io/docs/clustering>
+
+1. (on the new node) `sudo snap install microk8s --classic --channel=1.31`
+2. (on the original node) `microk8s add-node`
+3. (on the new node) `microk8s join <output-from-original-node>`
+
+### add microceph node
+
+<https://microk8s.io/docs/clustering>
+
+1. (on the new node) `sudo snap install microceph`
+2. (on the new node) `sudo microceph init`
 
 
 
