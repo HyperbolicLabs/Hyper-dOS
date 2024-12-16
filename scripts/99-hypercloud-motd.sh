@@ -7,7 +7,7 @@ To restore them, you can run the 'unminimize' command.
 
 echo "
 Note: outside of /home/ubuntu, please be aware that
-ephemeral disk usage above 1 GB will trigger a pod reset.
+ephemeral disk usage above 20 GB will trigger a pod reset.
 "
 
 # sudo -H -u ubuntu neofetch # sudo isn't always installed
