@@ -11,15 +11,19 @@ run-epitome-image:
 	docker run --rm -it epitome
 
 minikube-import-images:
-	minikube --profile hyperbolic --alsologtostderr image load 'TODO-image-name:latest'
+	minikube --profile hyperbolic --alsologtostderr image load 'local-sshbox:latest'
+
+deploy-local-yaml:
+	cd local; \
+	kubectl apply -f example.yaml
 
 build-and-run-epitome-image: build-epitome-image run-epitome-image
 
-build-sshbox-image:
-	docker build -t sshbox -f sshbox/Dockerfile .
+build-local-sshbox-image:
+	docker build -t local-sshbox -f local/Dockerfile .
 
 run-sshbox-image:
-	docker run -t sshbox --rm -d -p '2222:2222' sshbox
+	docker run -t local-sshbox --rm -d -p '2222:2222' local-sshbox
 
 build:
 	cd epitome; \

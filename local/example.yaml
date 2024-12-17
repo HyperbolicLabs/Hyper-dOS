@@ -23,11 +23,11 @@ data:
 apiVersion: v1
 kind: Pod
 metadata:
-  name: sshbox
+  name: local-sshbox
 spec:
   initContainers:
     - name: initialize
-      image: sshbox
+      image: local-sshbox
       imagePullPolicy: Never
       command:
         - sh
@@ -43,9 +43,12 @@ spec:
           mountPath: /mnt/config
         - name: home
           mountPath: /mnt/data
+      resources:
+        limits:
+          ephemeral-storage: 1G
   containers:
-    - name: sshbox
-      image: sshbox:latest
+    - name: local-sshbox
+      image: local-sshbox:latest
       imagePullPolicy: Never # get locally
       ports:
         - containerPort: 2222

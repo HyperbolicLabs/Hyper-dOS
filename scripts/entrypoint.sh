@@ -9,7 +9,15 @@ start_ssh_server() {
   # chmod 600 /home/ubuntu/.ssh/authorized_keys
   # chown -R ubuntu: /home/ubuntu
 
-  service ssh start && tail -f /dev/null
+  service ssh start #&& tail -f /dev/null
 }
 
 start_ssh_server
+
+pid="$(pgrep -f sshd)"
+
+# Trap the SIGTERM signal and forward it to the sshd process
+trap 'kill -SIGTERM $pid; wait $pid' SIGTERM
+
+# Wait for the sshd process to complete
+wait "$pid"
