@@ -7,6 +7,7 @@ on:
     paths:
       - "tensorflow/tensorflow/latest-gpu/**"
       - ".github/workflows/tensorflow_tensorflow_latest-gpu.yml"
+      - "scripts/**"
   schedule:
     - cron: "0 0 * * *"
   workflow_dispatch:
