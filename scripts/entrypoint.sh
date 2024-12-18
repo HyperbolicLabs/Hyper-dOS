@@ -19,5 +19,6 @@ start_ssh_server() {
 # Note: these can theoretically be replaced with a 'preStop.exec.command' lifecycle parameter in the pod yaml.
 trap 'killall sshd' EXIT # this 'EXIT' appears to be what actually occurs
 trap 'killall sshd' TERM # but including 'TERM' for extra coverage
+trap 'killall sshd' SIGTERM # and 'SIGTERM'
 
 start_ssh_server
