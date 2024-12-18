@@ -1,11 +1,10 @@
-FROM tensorflow/tensorflow:latest-gpu
+FROM ubuntu:latest
 
 COPY scripts/install-common-packages.sh /install-common-packages.sh
 RUN chmod +x /install-common-packages.sh
 RUN /install-common-packages.sh
 
-# RUN adduser --disabled-password --gecos '' docker
-RUN useradd -m -s /bin/bash ubuntu
+RUN useradd -m -s /bin/bash ubuntu || echo "user 'ubuntu' already exists"
 
 RUN adduser ubuntu sudo
 RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
@@ -31,9 +30,9 @@ RUN chmod +x /etc/update-motd.d/99-hypercloud-motd
 # switch port to 2222
 RUN sed -i 's/#Port 22/Port 2222/' /etc/ssh/sshd_config
 
+
 # SSH port
 EXPOSE 22
 EXPOSE 2222
 
-# chown authorized keys file and start the SSH service. Then keep the container alive
 ENTRYPOINT ["/entrypoint.sh"]

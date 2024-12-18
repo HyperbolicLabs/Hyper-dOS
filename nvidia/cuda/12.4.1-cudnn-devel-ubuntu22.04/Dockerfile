@@ -1,13 +1,8 @@
 FROM nvidia/cuda:12.4.1-cudnn-devel-ubuntu22.04 
 
-# Install SSH server
-RUN apt-get update && \
-    apt-get install -y \
-    openssh-server \
-    sudo \
-    git \
-    neofetch \
-    && apt-get clean
+COPY scripts/install-common-packages.sh /install-common-packages.sh
+RUN chmod +x /install-common-packages.sh
+RUN /install-common-packages.sh
 
 # RUN adduser --disabled-password --gecos '' docker
 RUN useradd -m -s /bin/bash ubuntu

@@ -23,11 +23,11 @@ data:
 apiVersion: v1
 kind: Pod
 metadata:
-  name: sshbox
+  name: local-sshbox
 spec:
   initContainers:
     - name: initialize
-      image: sshbox
+      image: local-sshbox
       imagePullPolicy: Never
       command:
         - sh
@@ -44,14 +44,27 @@ spec:
         - name: home
           mountPath: /mnt/data
   containers:
-    - name: sshbox
-      image: sshbox:latest
+    - name: local-sshbox
+      image: local-sshbox:latest
       imagePullPolicy: Never # get locally
       ports:
         - containerPort: 2222
       volumeMounts:
         - name: home
           mountPath: /home/ubuntu
+      resources:
+        requests:
+          ephemeral-storage: 0G
+        limits:
+          ephemeral-storage: 1G
+      # lifecycle:
+      #   preStop:
+      #     exec:
+      #     # note: for some reason this doesn't seem to work cleanly yet
+      #       command:
+      #         - /bin/sh
+      #         - -c
+      #         - killall -0 sshd
   volumes:
     - name: ssh-config
       configMap:

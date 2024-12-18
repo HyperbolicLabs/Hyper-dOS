@@ -12,4 +12,13 @@ start_ssh_server() {
   service ssh start && tail -f /dev/null
 }
 
+# Kubernetes sends a SIGTERM signal to the main process in a container when terminating a pod
+# in our case, we have an sshd process running in the container that needs to be cleaned up
+# otherwise, the container will not terminate smoothly
+# this can lead to problems with clean eviction and rescheduling of the instance
+# Note: these can theoretically be replaced with a 'preStop.exec.command' lifecycle parameter in the pod yaml.
+trap 'killall sshd' EXIT # this 'EXIT' appears to be what actually occurs
+trap 'killall sshd' TERM # but including 'TERM' for extra coverage
+trap 'killall sshd' SIGTERM # and 'SIGTERM'
+
 start_ssh_server
