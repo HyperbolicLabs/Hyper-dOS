@@ -16,8 +16,8 @@ start_ssh_server() {
 # in our case, we have an sshd process running in the container that needs to be cleaned up
 # otherwise, the container will not terminate smoothly
 # this can lead to problems with clean eviction and rescheduling of the instance
-#trap 'killall sshd' SIGTERM # this seems to have no effect
-trap 'killall sshd' EXIT
-
+# Note: these can theoretically be replaced with a 'preStop.exec.command' lifecycle parameter in the pod yaml.
+trap 'killall sshd' EXIT # this 'EXIT' appears to be what actually occurs
+trap 'killall sshd' TERM # but including 'TERM' for extra coverage
 
 start_ssh_server

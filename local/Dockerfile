@@ -1,14 +1,10 @@
 FROM ubuntu:latest
 
-# Install SSH server
-RUN apt-get update && apt-get install -y \
-    openssh-server \
-    sudo \
-    git \
-    neofetch \
-    vim \
-    psmisc \
-    && apt-get clean
+COPY scripts/install-common-packages.sh /install-common-packages.sh
+RUN chmod +x /install-common-packages.sh
+RUN /install-common-packages.sh
+
+RUN useradd -m -s /bin/bash ubuntu || echo "user 'ubuntu' already exists"
 
 RUN adduser ubuntu sudo
 RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers

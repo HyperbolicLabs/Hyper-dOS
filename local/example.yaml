@@ -43,9 +43,6 @@ spec:
           mountPath: /mnt/config
         - name: home
           mountPath: /mnt/data
-      resources:
-        limits:
-          ephemeral-storage: 1G
   containers:
     - name: local-sshbox
       image: local-sshbox:latest
@@ -55,6 +52,19 @@ spec:
       volumeMounts:
         - name: home
           mountPath: /home/ubuntu
+      resources:
+        requests:
+          ephemeral-storage: 0G
+        limits:
+          ephemeral-storage: 1G
+      # lifecycle:
+      #   preStop:
+      #     exec:
+      #     # note: for some reason this doesn't seem to work cleanly yet
+      #       command:
+      #         - /bin/sh
+      #         - -c
+      #         - killall -0 sshd
   volumes:
     - name: ssh-config
       configMap:
