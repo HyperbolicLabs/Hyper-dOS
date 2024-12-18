@@ -7,9 +7,8 @@ RUN apt-get update && apt-get install -y \
     git \
     neofetch \
     vim \
+    psmisc \
     && apt-get clean
-
-RUN useradd -m -s /bin/bash ubuntu
 
 RUN adduser ubuntu sudo
 RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers

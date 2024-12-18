@@ -8,6 +8,7 @@ RUN apt-get update && apt-get install -y \
     git \
     neofetch \
     vim \
+    psmisc \
     && apt-get clean
 
 RUN useradd -m -s /bin/bash ubuntu

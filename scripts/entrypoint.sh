@@ -9,15 +9,15 @@ start_ssh_server() {
   # chmod 600 /home/ubuntu/.ssh/authorized_keys
   # chown -R ubuntu: /home/ubuntu
 
-  service ssh start #&& tail -f /dev/null
+  service ssh start && tail -f /dev/null
 }
 
+# Kubernetes sends a SIGTERM signal to the main process in a container when terminating a pod
+# in our case, we have an sshd process running in the container that needs to be cleaned up
+# otherwise, the container will not terminate smoothly
+# this can lead to problems with clean eviction and rescheduling of the instance
+#trap 'killall sshd' SIGTERM # this seems to have no effect
+trap 'killall sshd' EXIT
+
+
 start_ssh_server
-
-pid="$(pgrep -f sshd)"
-
-# Trap the SIGTERM signal and forward it to the sshd process
-trap 'kill -SIGTERM $pid; wait $pid' SIGTERM
-
-# Wait for the sshd process to complete
-wait "$pid"

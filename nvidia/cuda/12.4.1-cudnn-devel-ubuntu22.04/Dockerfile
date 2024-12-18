@@ -7,6 +7,8 @@ RUN apt-get update && \
     sudo \
     git \
     neofetch \
+    vim \
+    psmisc \
     && apt-get clean
 
 # RUN adduser --disabled-password --gecos '' docker
