@@ -1,5 +1,4 @@
-FROM pytorch/pytorch:2.4.1-cuda12.4-cudnn9-devel
-# FROM ubuntu:latest
+FROM ubuntu:latest
 
 # Install SSH server
 RUN apt-get update && apt-get install -y \
@@ -10,9 +9,6 @@ RUN apt-get update && apt-get install -y \
     vim \
     psmisc \
     && apt-get clean
-
-RUN useradd -m -s /bin/bash ubuntu
-RUN update-alternatives --install /usr/bin/python python /opt/conda/bin/python 1
 
 RUN adduser ubuntu sudo
 RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
