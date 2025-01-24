@@ -68,6 +68,7 @@ func register(
 	}
 
 	if resp.StatusCode != http.StatusOK {
+		logrus.Errorf("register_cluster response status: %v, body: %v", resp.Status, string(body))
 		return nil, fmt.Errorf("cluster registration failed. register_cluster response status: %v", resp.Status)
 	}
 
