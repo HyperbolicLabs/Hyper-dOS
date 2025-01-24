@@ -19,6 +19,7 @@ spec:
       containers:
       - name: epitome
         image: {{ .Values.image }}:{{ .Values.ref }}
+        imagePullPolicy: Always
         args:
           {{- if contains "dev" .Values.ref }}
           - "--loglevel"
