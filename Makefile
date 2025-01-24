@@ -1,9 +1,3 @@
-##
-# hyperdos
-#
-# @file
-# @version v1-alpha
-
 build-local-sshbox-image:
 	docker build -t local-sshbox -f local/Dockerfile .
 
