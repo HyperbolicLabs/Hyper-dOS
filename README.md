@@ -11,7 +11,7 @@ curl -o install.bash https://raw.githubusercontent.com/HyperbolicLabs/Hyper-dOS/
 
 ### Notes
 
-- If you would like to run the install script yourself rather than curling from github, you are welcome to download and edit the [install.bash](install.bash) file before running it on your node.
+- If you would like to run the install script yourself rather than curling from github, you are welcome to download and edit the [install.bash](https://github.com/HyperbolicLabs/Hyper-dOS/blob/main/install.bash) file before running it on your node.
 
 - We do not officially support operating systems other than Linux. That being said, if you would like to join the Hyperbolic Supply Network from a Windows or MacOS device, you are welcome to give it a shot:
 
