@@ -3,7 +3,7 @@
 
 ## Install HyperdOS (single-node setup from scratch)
 
-<!-- TODO curl -fsSL https://install.hyperbolic.xyz/hyperdos.sh | bash -->
+[ TODO curl -fsSL https://install.hyperbolic.xyz/hyperdos.sh | bash ]: #
 
 ```bash
 curl -o install.bash https://raw.githubusercontent.com/HyperbolicLabs/Hyper-dOS/refs/heads/main/install.bash && bash install.bash
