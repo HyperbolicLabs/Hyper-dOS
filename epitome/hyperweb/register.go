@@ -27,7 +27,7 @@ func register(
 	gatewayUrl string,
 	token string,
 	clusterName string,
-) (response *registerResponse, err error) {
+) (*registerResponse, error) {
 
 	// post to gateway that we have successfully bootstrapped the cluster
 	// and are ready to join the Hyperbolic Supply Network
@@ -51,42 +51,38 @@ func register(
 		payload,
 	)
 	if err != nil {
-		logrus.Errorf("failed to create register_cluster request: %v", err)
-		return
+		return nil, fmt.Errorf("failed to create register_cluster request: %v", err)
 	}
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Authorization", "bearer "+token)
 
 	resp, err := client.Do(req)
 	if err != nil {
-		logrus.Errorf("failed to send register_cluster request: %v", err)
-		return
+		return nil, fmt.Errorf("failed to send register_cluster request: %v", err)
 	}
 	defer resp.Body.Close()
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		logrus.Errorf("failed to read register_cluster response: %v", err)
-		return
+		return nil, fmt.Errorf("failed to read register_cluster response: %v", err)
 	}
 
 	if resp.StatusCode != http.StatusOK {
-		logrus.Errorf("handshake response status: %v", resp.Status)
-		return
+		return nil, fmt.Errorf("cluster registration failed. register_cluster response status: %v", resp.Status)
 	}
 
+	response := &registerResponse{}
 	err = json.Unmarshal(body, &response)
 	if err != nil {
 		if string(body) == "Internal Server Error" {
 			logrus.Errorf("got internal server error: %v", err)
 			return nil, fmt.Errorf("cluster registration failed")
 		} else {
-			logrus.Errorf("failed to unmarshal register_cluster response: %v", err)
-			return
+			return nil, fmt.Errorf("failed to unmarshal register_cluster response: %v", err)
 		}
 	}
 
 	logrus.Infof("register_cluster response: %+v", response)
 
-	return
+	return response, nil
 }
