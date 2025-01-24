@@ -1,1 +1,18 @@
+.DS_Store
+.idea
+*.log
+tmp/
+*gomock_reflect*
+
+# ignore binary and support files
 epitome/epitome
+epitome/vendor/*
+
+# ignore potentially sensitive files
+epitome/.kube/*
+!epitome/.kube/*.example
+
+.vscode/*
+!.vscode/*.example
+
+

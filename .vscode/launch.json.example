@@ -1,0 +1,22 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Launch Remote Epitome",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "program": "epitome/main.go",
+            "args": [
+                "-kubeconfig=./.kube/config"
+            ],
+            "env": {
+                "HYPERBOLIC_TOKEN": "CHANGEME",
+                "HYPERBOLIC_GATEWAY_URL": "CHANGEME"
+                // "LOG_LEVEL": "debug",
+                // "LOCAL": "true",
+                // "KUBECONFIG_PATH": "./.kube/config"
+            }
+        }
+    ]
+}
