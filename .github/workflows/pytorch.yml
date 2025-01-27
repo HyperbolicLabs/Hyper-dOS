@@ -5,7 +5,7 @@ on:
       - dev
       - main
     tags:
-      - "v*.*.*"
+      - "v*.*"
     paths:
       - "sshbox/**"
       - ".github/workflows/sshbox.yml"

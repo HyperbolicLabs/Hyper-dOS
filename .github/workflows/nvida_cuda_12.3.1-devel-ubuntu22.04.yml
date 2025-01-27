@@ -4,6 +4,8 @@ on:
     branches:
       - dev
       - main
+    tags:
+      - "v*.*"
     paths:
       - "nvidia/cuda/12.3.1-devel-ubuntu22.04/**"
       - ".github/workflows/nvida_cuda_12.3.1-devel-ubuntu22.04.yml"
