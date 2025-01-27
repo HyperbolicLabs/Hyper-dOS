@@ -5,7 +5,7 @@ on:
       - dev
       - main
     tags:
-      - "v*.*.*"
+      - "v*.*"
     paths:
       - "epitome/**"
       - ".github/workflows/epitome.yml"
@@ -55,8 +55,9 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
+          build-args: version=$GH_TAG
           platforms: linux/amd64,linux/arm/v6,linux/arm64
           context: "{{defaultContext}}:epitome"
           push: ${{ github.event_name != 'pull_request' }}
