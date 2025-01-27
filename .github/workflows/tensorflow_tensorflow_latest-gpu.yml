@@ -4,6 +4,8 @@ on:
     branches:
       - dev
       - main
+    tags:
+      - "v*.*"
     paths:
       - "tensorflow/tensorflow/latest-gpu/**"
       - ".github/workflows/tensorflow_tensorflow_latest-gpu.yml"
