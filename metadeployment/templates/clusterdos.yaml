@@ -11,6 +11,7 @@ spec:
   source:
     repoURL: {{ .Values.clusterdos.url }}
     path: helm-meta
+    #TODO: clusterdos v0.1 moved to path: metadeployment
     targetRevision: {{ .Values.clusterdos.ref }}
     helm:
       parameters:
