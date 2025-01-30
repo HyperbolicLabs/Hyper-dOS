@@ -4,7 +4,7 @@ ref: "v0.0.1-beta.2"
 
 # hyperdosURL: 'https://github.com/hyperboliclabs/hyper-dos.git'
 clusterdos:
-  ref: 'main'
+  ref: 'v0.0.2'
   url: 'https://gitlab.com/squire-exchange/public/cluster-dos.git'
 
 env: prod
