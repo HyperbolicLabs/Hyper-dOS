@@ -21,7 +21,7 @@ spec:
         - name: metricsServer.enabled
           value: 'true' # necessary for HPA
         - name: clusterdos.ref
-          value: $ARGOCD_APP_SOURCE_TARGET_REVISION
+          value: {{ .Values.clusterdos.ref }}
   destination:
     name: in-cluster
     namespace: argocd

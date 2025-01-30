@@ -23,7 +23,7 @@ curl -o install.bash https://raw.githubusercontent.com/HyperbolicLabs/Hyper-dOS/
 
 ## (experimental) add more nodes to your cluster
 
-Note: please reach out before doing this so we can support your cluster smoothly. As of right now, only single-node clusters will be shown to rentors automatically.
+Note: please reach out before doing this so we can support your cluster smoothly. As of right now, only single-node clusters will be shown to renters automatically.
 
 
 ### add microk8s node
@@ -50,7 +50,7 @@ Please get in touch if you are planning to install hyperdos on an existing multi
 - ArgoCD installed: <https://argo-cd.readthedocs.io/en/stable/operator-manual/installation/>
 - NVIDIA Operator installed: <https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/getting-started.html>
 - Namespaces `hyperdos` and `instance`
-- You will need a `StorageClass` for rental instances to create PersistentVolumeClaims. We reccommend `microceph`: <https://github.com/canonical/microceph>
+- You will need a `StorageClass` for rental instances to create PersistentVolumeClaims. We recommend `microceph`: <https://github.com/canonical/microceph>
 - A ResourceQuota named `hyperstore` in the `instance` namespace. This will designate how much storage the network can use on your cluster.
 - Please ensure at least 150GB of free disk space on each node before installing HyperdOS. Low disk space may lead to issues with your cluster, and failed rentals.
 
