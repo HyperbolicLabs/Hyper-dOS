@@ -9,8 +9,8 @@ spec:
   project: default
   source:
     repoURL: 'https://gitlab.com/squire-exchange/public/cluster-dos.git'
-    path: gitops/tailscale
-    targetRevision: v0.0.1
+    path: gitapps/tailscale
+    targetRevision: v0.1
     helm:
       valueFiles:
         - values.yaml

@@ -4,7 +4,7 @@ set -e
 
 # configuration
 API_URL="https://api.hyperbolic.xyz"
-HYPERDOS_VERSION=0.0.1-beta.3
+HYPERDOS_VERSION=0.0.1-beta.4
 MICROK8S_VERSION=1.32
 TOKEN=$TOKEN
 EXTRA_PARAMS=""
