@@ -13,7 +13,7 @@ spec:
     helm:
       parameters:
         - name: hyperdos.ref
-          value: {{ .Values.hyperdos.ref }}
+          value: $ARGOCD_APP_SOURCE_TARGET_REVISION
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: hyperdos
