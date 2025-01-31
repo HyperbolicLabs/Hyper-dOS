@@ -7,12 +7,12 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: 'https://github.com/hyperboliclabs/hyper-dos.git'
+    repoURL: {{ .Values.hyperdos.url }}
     path: gitapps/epitome
-    targetRevision: {{ .Values.ref }}
+    targetRevision: {{ .Values.hyperdos.ref }}
     helm:
       parameters:
-        - name: ref
+        - name: hyperdos.ref
           value: $ARGOCD_APP_SOURCE_TARGET_REVISION
   destination:
     server: 'https://kubernetes.default.svc'

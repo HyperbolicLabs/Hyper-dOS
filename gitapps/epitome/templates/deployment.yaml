@@ -18,16 +18,16 @@ spec:
     spec:
       containers:
       - name: epitome
-        image: {{ .Values.image }}:{{ .Values.ref }}
+        image: {{ .Values.image }}:{{ .Values.hyperdos.ref }}
         imagePullPolicy: Always
         args:
-          {{- if contains "dev" .Values.ref }}
+          {{- if contains "dev" .Values.hyperdos.ref }}
           - "--loglevel"
           - "debug"
           {{- end }}
         env:
         - name: HYPERBOLIC_GATEWAY_URL
-        {{- if contains "dev" .Values.ref }}
+        {{- if contains "dev" .Values.hyperdos.ref }}
           value: {{ .Values.devGatewayURL }}
         {{- else }}
           value: {{ .Values.prodGatewayURL }}

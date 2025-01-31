@@ -11,6 +11,7 @@ spec:
   source:
     repoURL: {{ .Values.clusterdos.url }}
     path: helm-meta
+    #TODO: clusterdos v0.1 moved to path: metadeployment
     targetRevision: {{ .Values.clusterdos.ref }}
     helm:
       parameters:
@@ -21,7 +22,7 @@ spec:
         - name: metricsServer.enabled
           value: 'true' # necessary for HPA
         - name: clusterdos.ref
-          value: {{ .Values.clusterdos.ref }}
+          value: $ARGOCD_APP_SOURCE_TARGET_REVISION
   destination:
     name: in-cluster
     namespace: argocd

@@ -11,7 +11,7 @@ spec:
       restartPolicy: Never
       containers:
       - name: nvidia-smi
-        image: {{ .url }}:{{ $.Values.ref }}
+        image: {{ .url }}:{{ $.Values.hyperdos.ref }}
         command:
           - nvidia-smi
       priorityClassName: pre-pull

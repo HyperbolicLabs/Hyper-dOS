@@ -4,7 +4,7 @@ set -e
 
 # configuration
 API_URL="https://api.hyperbolic.xyz"
-HYPERDOS_VERSION=0.0.1-beta.2
+HYPERDOS_VERSION=0.0.1-beta.3
 MICROK8S_VERSION=1.32
 TOKEN=$TOKEN
 EXTRA_PARAMS=""
@@ -12,7 +12,7 @@ PATH=$PATH:/var/lib/snapd/snap/bin
 
 if [[ "$DEV" == "true" ]]; then
   set -x
-  EXTRA_PARAMS="--set ref=dev"
+  EXTRA_PARAMS="--set hyperdos.ref=dev"
   API_URL="https://api.dev-hyperbolic.xyz"
 fi
 
