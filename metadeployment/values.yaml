@@ -2,10 +2,10 @@
 # note: this is usually over-ridden by the helm chart install in charts/hyperdos
 hyperdos:
   url: 'https://github.com/hyperboliclabs/hyper-dos.git'
-  ref: "v0.0.1-beta.3"
+  ref: "v0.0.1-beta.4"
 
 clusterdos:
-  ref: 'v0.0.2'
+  ref: 'v0.1'
   url: 'https://gitlab.com/squire-exchange/public/cluster-dos.git'
 
 env: prod
