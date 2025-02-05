@@ -3,3 +3,4 @@ hyperdos:
   # this is the version of hyperdos that will get installed if the user does not specify
   # --set hyperdos.ref
   ref: "v0.0.1-beta.4"
+  url: 'https://github.com/hyperboliclabs/hyper-dos.git'
