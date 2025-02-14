@@ -4,7 +4,7 @@ set -e
 
 # configuration
 API_URL="https://api.hyperbolic.xyz"
-HYPERDOS_VERSION=0.0.1-beta.4
+HYPERDOS_VERSION=0.0.1-beta.5
 MICROK8S_VERSION=1.32
 TOKEN=$TOKEN
 EXTRA_PARAMS=""
@@ -15,7 +15,6 @@ if [[ "$DEV" == "true" ]]; then
   EXTRA_PARAMS="--set hyperdos.ref=dev"
   API_URL="https://api.dev-hyperbolic.xyz"
 fi
-
 
 ###
 ## some helper functions
@@ -50,19 +49,19 @@ validate_token() {
   # curl -s -I -X \
   #   GET $API_URL/v1/marketplace/instances/supplied \
   #   -H "Authorization: Bearer $TOKEN"
-  
+
   status_code=$(curl -s -o /dev/null -w "%{http_code}" -X \
     GET $API_URL/v1/marketplace/instances/supplied \
     -H "Authorization: Bearer $TOKEN")
-  
+
   echo "status code: $status_code"
-  
+
   if [ $status_code -ne 200 ]; then
     echo "received status code $status_code, expected 200"
     echo "api key is not valid"
     cancel
   fi
-  
+
   echo "success! api key is valid"
 }
 
@@ -76,20 +75,22 @@ check_installed() {
 install_microk8s() {
   echo "Installing microk8s..."
   sudo snap install microk8s --classic --channel=$MICROK8S_VERSION
+
+  sudo snap refresh --hold microk8s
   echo "----------------------"
 }
 
 install_hyperdos_if_not_installed() {
-  if grep -q hyperdos <<< "$(sudo env "PATH=$PATH" microk8s helm list --all-namespaces)"; then
+  if grep -q hyperdos <<<"$(sudo env "PATH=$PATH" microk8s helm list --all-namespaces)"; then
     echo "hyperdos appears to be installed already, skipping"
-  else 
+  else
     echo "----------------------"
     echo "hyperdos appears not to be installed in the cluster yet, would you like to install it now?"
     if confirm; then
       sudo env "PATH=$PATH" microk8s helm repo add hyperdos https://hyperboliclabs.github.io/Hyper-dOS
       sudo env "PATH=$PATH" microk8s helm install hyperdos hyperdos/hyperdos \
-          --version $HYPERDOS_VERSION \
-          --set token=$TOKEN $EXTRA_PARAMS
+        --version $HYPERDOS_VERSION \
+        --set token=$TOKEN $EXTRA_PARAMS
     else
       echo "hyperdos installation canceled by user"
       cancel
@@ -100,6 +101,9 @@ install_hyperdos_if_not_installed() {
 install_microceph() {
   echo "Installing microceph..."
   sudo snap install microceph
+
+  # hard lesson: sometimes canonical will break your entire market without warning
+  sudo snap refresh --hold microceph
   echo "----------------------"
 }
 
@@ -117,19 +121,19 @@ configure_microceph() {
 allocate_microceph_disk() {
   # check how much free space is present in this filesystem (.)
   free_space=$(df -kh . | grep '/' | awk '{print $4}')
-  
+
   # this fills the 'disk_size_gb' variable
   read_disk_size_gb $free_space
 
   echo "Allocating microceph virtual disk with size: ${disk_size_gb}G"
   # microceph disk add loop,<size in G>,<replication factor>
   sudo env "PATH=$PATH" microceph disk add loop,${disk_size_gb}G,1
-  
+
   # save 20% of the disk to avoid ceph weirdness
   quota_size_gb=$(((disk_size_gb * 80) / 100))
-  
+
   # create a resource quota in the instance namespace
-  cat <<EOF | sudo env "PATH=$PATH" microk8s kubectl apply -f - 
+  cat <<EOF | sudo env "PATH=$PATH" microk8s kubectl apply -f -
   apiVersion: v1
   kind: ResourceQuota
   metadata:
@@ -155,12 +159,12 @@ read_disk_size_gb() {
     Note: it is recommended to leave at least 100GB of free space for ephemeral storage etc.
       
       Enter the number of GB to allocate to the microceph virtual disk: " disk_size_gb
-    
+
     if [[ $disk_size_gb =~ ^[0-9]+$ ]]; then
       # if (( $disk_size_gb > $free_space )); then
       #   echo "The size specified ($disk_size_gb) is too large. It must be less than the free space on the filesystem."
       break
-    else 
+    else
       echo "Invalid input. Please enter an integer less than $free_space."
     fi
   done
@@ -173,13 +177,13 @@ cancel() {
   exit
 }
 
-confirm () {
+confirm() {
   while true; do
     read -r -p "$1 [y/n]: " yn
     case $yn in
-      [Yy]* ) return 0;;
-      [Nn]* ) return 1;;
-      * ) echo "Please answer yes or no.";;
+    [Yy]*) return 0 ;;
+    [Nn]*) return 1 ;;
+    *) echo "Please answer yes or no." ;;
     esac
   done
 }
@@ -192,12 +196,7 @@ count_microceph_nodes() {
   sudo env "PATH=$PATH" microceph cluster list | grep ONLINE | wc -l
 }
 
-
-
-
-
-
-### 
+###
 ## main script
 ###
 echo "----------------------"
@@ -216,26 +215,24 @@ if ! check_installed microk8s; then
     cancel
   fi
 
-else 
+else
   echo "microk8s is already installed, skipping"
 fi
-
 
 # then, decide whether to install microceph
 if ! check_installed microceph; then
   echo "microceph is not installed, would you like to install it now?"
-  
+
   if confirm; then
     install_microceph
   else
     cancel
   fi
 
-else 
+else
   echo "microceph is already installed, skipping"
 fi
 echo "----------------------"
-
 
 echo "Starting microk8s..."
 sudo env "PATH=$PATH" microk8s start
@@ -243,11 +240,10 @@ sudo env "PATH=$PATH" microk8s status --wait-ready
 echo "----------------------"
 
 # check if number of nodes is greater than 1
-if (( count_microk8s_nodes > 1 )) ; then
+if ((count_microk8s_nodes > 1)); then
   echo "ERROR: microk8s has more than 1 node, this is not currently supported by the install script"
   cancel
 fi
-
 
 echo "----------------------"
 echo "Creating namespaces..."
@@ -262,13 +258,12 @@ echo "done!"
 microceph_node_count=$(count_microceph_nodes)
 echo "microceph nodes: $microceph_node_count"
 
-if (( $microceph_node_count > 1 )); then
+if (($microceph_node_count > 1)); then
   echo "ERROR: microceph has more than 1 node, this is not currently supported by the install script"
   cancel
 fi
 
-
-if (( $microceph_node_count == 1 )); then
+if (($microceph_node_count == 1)); then
   echo "microceph server appears to be set up already, skipping"
 else
   echo "Setting up microceph..."
@@ -283,7 +278,7 @@ echo "----------------------"
 microceph_osd_count="$(sudo env "PATH=$PATH" microceph.ceph osd ls | wc -l)"
 echo "microceph disks/osds: $microceph_osd_count"
 
-if (( $microceph_osd_count >= 1 )); then
+if (($microceph_osd_count >= 1)); then
   echo "microceph virtual disk appears to be set up already, skipping"
 else
   echo "setting up the microceph virtual disk..."
@@ -291,11 +286,9 @@ else
   echo "done!"
 fi
 
-
 echo "----------------------"
 echo "microceph.ceph status:"
 sudo env "PATH=$PATH" microceph.ceph status
-
 
 echo "----------------------"
 echo "Enabling microk8s components..."
@@ -311,16 +304,12 @@ sudo env "PATH=$PATH" microk8s enable nvidia
 echo "-------------"
 sudo env "PATH=$PATH" microk8s enable rook-ceph
 
-
 echo "----------------------"
 echo "Connecting microk8s to microceph..."
 # sudo microk8s connect-external-ceph --no-rbd-pool-auto-create
 # TODO check if it's already connected? this is idempotent already though
 sudo env "PATH=$PATH" microk8s connect-external-ceph
 echo "done!"
-
-
-
 
 echo "----------------------"
 namespace="argocd"
@@ -348,7 +337,6 @@ done
 echo "----------------------"
 echo "----------------------"
 echo "And finally: Installing hyperdos into the cluster..."
-
 
 # get the token from the user if necessary
 check_for_token
