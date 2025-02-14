@@ -75,6 +75,8 @@ check_installed() {
 install_microk8s() {
   echo "Installing microk8s..."
   sudo snap install microk8s --classic --channel=$MICROK8S_VERSION
+
+  sudo snap refresh --hold microk8s
   echo "----------------------"
 }
 
@@ -99,6 +101,9 @@ install_hyperdos_if_not_installed() {
 install_microceph() {
   echo "Installing microceph..."
   sudo snap install microceph
+
+  # hard lesson: sometimes canonical will break your entire market without warning
+  sudo snap refresh --hold microceph
   echo "----------------------"
 }
 
