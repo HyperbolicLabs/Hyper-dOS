@@ -74,7 +74,7 @@ check_installed() {
 
 install_microk8s() {
   echo "Installing microk8s..."
-  sudo snap install microk8s --classic --channel=$MICROK8S_VERSION
+  sudo snap install microk8s --classic --channel=$MICROK8S_VERSION/stable
 
   sudo snap refresh --hold microk8s
   echo "----------------------"

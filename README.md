@@ -29,7 +29,7 @@ Note: please reach out before doing this so we can support your cluster smoothly
 ### add microk8s node
 <https://microk8s.io/docs/clustering>
 
-1. (on the new node) `sudo snap install microk8s --classic --channel=1.32`
+1. (on the new node) `sudo snap install microk8s --classic --channel=1.32/stable`
 2. (on the original node) `microk8s add-node`
 3. (on the new node) `microk8s join <output-from-original-node>`
 
