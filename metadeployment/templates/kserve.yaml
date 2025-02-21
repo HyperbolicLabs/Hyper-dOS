@@ -1,0 +1,67 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kserve-resources
+  namespace: argocd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/kserve/kserve/
+    path: charts/kserve-resources
+    targetRevision: release-0.13
+    # helm:
+      # https://github.com/kserve/kserve/blob/master/charts/kserve-resources/values.yaml
+      # parameters:
+        # - name: kserve.controller.gateway.disableIstioVirtualHost
+        #   value: 'true'
+        # - name: kserve.controller.gateway.ingressGateway.className
+        #   value: istio
+        # - name: kserve.controller.disableIngressCreation
+        #   value: 'true'
+        # - name: kserve.servingruntime.localmodel.enabled
+        #   value: 'true'
+  destination:
+    name: in-cluster
+    namespace: kserve
+  syncPolicy:
+    automated:
+      prune: true
+      allowEmpty: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
+    - PruneLast=true
+    - ApplyOutOfSyncOnly=true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kserve-crd
+  namespace: argocd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/kserve/kserve/
+    path: charts/kserve-crd
+    targetRevision: release-0.13
+    # helm:
+    #   parameters:
+    #     - name: metricsServer.enabled
+    #       value: 'true' # necessary for HPA
+  destination:
+    name: in-cluster
+    namespace: kserve
+  syncPolicy:
+    automated:
+      prune: true
+      allowEmpty: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
+    - PruneLast=true
+    - ApplyOutOfSyncOnly=true
