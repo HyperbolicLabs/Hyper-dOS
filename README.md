@@ -87,4 +87,3 @@ sudo snap remove --purge microk8s
 sudo snap remove --purge microceph
 ```
 
-
