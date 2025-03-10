@@ -53,6 +53,7 @@ Please get in touch if you are planning to install hyperdos on an existing multi
 - You will need a `StorageClass` for rental instances to create PersistentVolumeClaims. We recommend `microceph`: <https://github.com/canonical/microceph>
 - A ResourceQuota named `hyperstore` in the `instance` namespace. This will designate how much storage the network can use on your cluster.
 - Please ensure at least 150GB of free disk space on each node before installing HyperdOS. Low disk space may lead to issues with your cluster, and failed rentals.
+- Please disable auto-update for NVIDIA drivers - otherwise they may update at an inopportune time and cause your stake to be slashed.
 
 
 ### configure helm repo and dry-run
