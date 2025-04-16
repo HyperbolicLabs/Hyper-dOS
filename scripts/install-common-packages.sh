@@ -13,3 +13,5 @@ apt-get update &&
         psmisc \
         hashcat &&
     apt-get clean
+
+pip3 install jupyterlab
