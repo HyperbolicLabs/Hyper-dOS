@@ -9,6 +9,16 @@
 curl -o install.bash https://raw.githubusercontent.com/HyperbolicLabs/Hyper-dOS/refs/heads/main/install.bash && bash install.bash
 ```
 
+### Headless Install
+
+If you would like to install in a scripted environment, set these variables prior to running the install script:
+
+``` bash
+export HEADLESS=true
+export TOKEN=<your-hyperbolic-token>
+export ALLOCATE_ROOT_DISK_GB=<integer-gb-of-root-disk-to-allocate-to-microceph>
+```
+
 ### Notes
 
 - If you would like to run the install script yourself rather than curling from github, you are welcome to download and edit the [install.bash](https://github.com/HyperbolicLabs/Hyper-dOS/blob/main/install.bash) file before running it on your node.

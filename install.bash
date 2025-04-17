@@ -3,12 +3,23 @@
 set -e
 
 # configuration
+HEADLESS=false
+#ALLOCATE_ROOT_DISK_GB=100 - set this to automatically provision a ceph block store of a certain size
+TOKEN=$TOKEN
 API_URL="https://api.hyperbolic.xyz"
 HYPERDOS_VERSION=0.0.1-beta.5
 MICROK8S_VERSION=1.32
-TOKEN=$TOKEN
 EXTRA_PARAMS=""
 PATH=$PATH:/var/lib/snapd/snap/bin
+
+
+# if HEADLESS is set, check to make sure ALLOCATE_ROOT_DISK_GB is set to an integer
+if [[ "$HEADLESS" == "true" ]]; then
+  if ! [[ "$ALLOCATE_ROOT_DISK_GB" =~ ^[0-9]+$ ]]; then
+    echo "ALLOCATE_ROOT_DISK_GB must be an integer"
+    exit 1
+  fi
+fi
 
 if [[ "$DEV" == "true" ]]; then
   set -x
@@ -86,7 +97,7 @@ install_hyperdos_if_not_installed() {
   else
     echo "----------------------"
     echo "hyperdos appears not to be installed in the cluster yet, would you like to install it now?"
-    if confirm; then
+    if [ "$HEADLESS" = "true" ] || confirm; then
       sudo env "PATH=$PATH" microk8s helm repo add hyperdos https://hyperboliclabs.github.io/Hyper-dOS
       sudo env "PATH=$PATH" microk8s helm install hyperdos hyperdos/hyperdos \
         --version $HYPERDOS_VERSION \
@@ -122,8 +133,12 @@ allocate_microceph_disk() {
   # check how much free space is present in this filesystem (.)
   free_space=$(df -kh . | grep '/' | awk '{print $4}')
 
-  # this fills the 'disk_size_gb' variable
-  read_disk_size_gb $free_space
+  if [ "$HEADLESS" = "true" ]; then
+    disk_size_gb=$ALLOCATE_ROOT_DISK_GB
+  else
+    # this fills the 'disk_size_gb' variable with user input
+    read_disk_size_gb $free_space
+  fi
 
   echo "Allocating microceph virtual disk with size: ${disk_size_gb}G"
   # microceph disk add loop,<size in G>,<replication factor>
@@ -209,7 +224,7 @@ check_for_linux
 if ! check_installed microk8s; then
   echo "microk8s is not installed, would you like to install it now?"
 
-  if confirm; then
+  if [ "$HEADLESS" = "true" ] || confirm; then
     install_microk8s
   else
     cancel
@@ -223,7 +238,7 @@ fi
 if ! check_installed microceph; then
   echo "microceph is not installed, would you like to install it now?"
 
-  if confirm; then
+  if [ "$HEADLESS" = "true" ] || confirm; then
     install_microceph
   else
     cancel
