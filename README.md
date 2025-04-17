@@ -9,6 +9,16 @@
 curl -o install.bash https://raw.githubusercontent.com/HyperbolicLabs/Hyper-dOS/refs/heads/main/install.bash && bash install.bash
 ```
 
+### Headless Install
+
+If you would like to install in a scripted environment, set these variables prior to running the install script:
+
+``` bash
+export HEADLESS=true
+export TOKEN=<your-hyperbolic-token>
+export ALLOCATE_ROOT_DISK_GB=<integer-gb-of-root-disk-to-allocate-to-microceph>
+```
+
 ### Notes
 
 - If you would like to run the install script yourself rather than curling from github, you are welcome to download and edit the [install.bash](https://github.com/HyperbolicLabs/Hyper-dOS/blob/main/install.bash) file before running it on your node.
@@ -29,7 +39,7 @@ Note: please reach out before doing this so we can support your cluster smoothly
 ### add microk8s node
 <https://microk8s.io/docs/clustering>
 
-1. (on the new node) `sudo snap install microk8s --classic --channel=1.32`
+1. (on the new node) `sudo snap install microk8s --classic --channel=1.32/stable`
 2. (on the original node) `microk8s add-node`
 3. (on the new node) `microk8s join <output-from-original-node>`
 
@@ -53,6 +63,7 @@ Please get in touch if you are planning to install hyperdos on an existing multi
 - You will need a `StorageClass` for rental instances to create PersistentVolumeClaims. We recommend `microceph`: <https://github.com/canonical/microceph>
 - A ResourceQuota named `hyperstore` in the `instance` namespace. This will designate how much storage the network can use on your cluster.
 - Please ensure at least 150GB of free disk space on each node before installing HyperdOS. Low disk space may lead to issues with your cluster, and failed rentals.
+- Please disable auto-update for NVIDIA drivers - otherwise they may update at an inopportune time and cause your stake to be slashed.
 
 
 ### configure helm repo and dry-run
@@ -86,5 +97,4 @@ sudo microk8s kubectl delete app hyperweb -n argocd
 sudo snap remove --purge microk8s
 sudo snap remove --purge microceph
 ```
-
 

@@ -1,8 +1,11 @@
 module epitome.hyperbolic.xyz
 
 go 1.22.2
-
 // go 1.23
+
+replace (
+	jungle.proto => ./jungle/protos
+)
 
 require (
 	github.com/sirupsen/logrus v1.9.3

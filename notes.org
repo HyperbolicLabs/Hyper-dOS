@@ -1,0 +1,60 @@
+#+title: Notes
+
+* working with submodules
+
+https://git-scm.com/book/en/v2/Git-Tools-Submodules
+
+** clone and initialize submodules
+
+~git submodule init~ initializes your local configuration file, and ~git submodule update~ fetches all the data from that project and checks out the appropriate commit listed in your superproject
+
+#+begin_src
+git clone git@github.com:hyperboliclabs/jungle.proto.git
+git submodule update --init --recursive
+#+end_src
+
+or, more simply:
+
+#+begin_src
+git clone --recurse-submodules git@github.com:hyperboliclabs/jungle.proto.git
+#+end_src
+
+
+** get submodule updates from upstream protos repo
+
+If you want to check for new work in a submodule, you can go into the directory and run git fetch and git merge the upstream branch to update the local code.
+
+#+begin_src
+cd epitome/jungle
+git checkout main
+git pull --rebase
+#+end_src
+
+alternatively, to do this for all submodules:
+
+#+begin_src
+git submodule update --remote
+#+end_src
+
+This command will by default assume that you want to update the checkout to the default branch of the remote submodule repository (the one pointed to by HEAD on the remote)
+
+
+** set git pull to always recurse submodules
+
+#+begin_src
+git config --global submodule.recurse true
+#+end_src
+
+
+** move submodule to new path
+
+#+begin_src
+git mv jungle epitome/jungle
+#+end_src
+
+
+** add a new submodule
+
+#+begin_src
+git submodule add git@github.com:hyperboliclabs/jungle.proto.git
+#+end_src

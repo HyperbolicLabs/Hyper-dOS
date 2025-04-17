@@ -1,0 +1,3 @@
+[submodule "epitome/jungle"]
+	path = epitome/jungle
+	url = git@github.com:hyperboliclabs/jungle.proto.git

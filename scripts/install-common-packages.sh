@@ -11,5 +11,8 @@ apt-get update &&
         neofetch \
         vim \
         psmisc \
+        python3-pip \
         hashcat &&
     apt-get clean
+
+pip3 install jupyterlab
