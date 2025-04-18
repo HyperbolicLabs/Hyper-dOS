@@ -3,7 +3,7 @@
 set -e
 
 # configuration
-HEADLESS=false
+HEADLESS=$HEADLESS
 #ALLOCATE_ROOT_DISK_GB=100 - set this to automatically provision a ceph block store of a certain size
 TOKEN=$TOKEN
 API_URL="https://api.hyperbolic.xyz"
