@@ -50,7 +50,7 @@ check_for_token() {
   if [ -z "$TOKEN" ]; then
     echo "the TOKEN environment variable is not set"
     echo "your Hyperbolic API Key can be found at https://app.hyperbolic.xyz/settings"
-    read -r -p -s "Please enter your API Key (text will be hidden): " TOKEN
+    read -r -s -p "Please enter your API Key (text will be hidden): " TOKEN
   fi
 }
 
