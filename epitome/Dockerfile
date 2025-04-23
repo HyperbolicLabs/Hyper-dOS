@@ -1,7 +1,7 @@
 ###
 # 1) build the binary
 ###
-FROM --platform=${BUILDPLATFORM:-linux/amd64} golang:1.22 AS builder
+FROM --platform=${BUILDPLATFORM:-linux/amd64} golang:1.23 AS builder
 
 ARG TARGETARCH
 ENV GOOS=linux GOARCH=$TARGETARCH
