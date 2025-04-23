@@ -1,8 +1,6 @@
 package cluster
 
 import (
-	"fmt"
-
 	"k8s.io/client-go/dynamic"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
@@ -10,10 +8,7 @@ import (
 )
 
 func MustConnect(kubeconfig string) (kubernetes.Clientset, dynamic.DynamicClient) {
-
 	if kubeconfig != "" {
-		fmt.Println("using custom kubeconfig: ", kubeconfig)
-
 		// create the config object from kubeconfig
 		config, err := clientcmd.BuildConfigFromFlags("", kubeconfig)
 		if err != nil {

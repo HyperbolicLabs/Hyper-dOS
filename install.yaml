@@ -14,7 +14,7 @@ spec:
   source:
     repoURL: 'https://github.com/hyperboliclabs/hyper-dos.git'
     path: metadeployment/
-    targetRevision: v0.0.1-beta.5
+    targetRevision: v0.0.1-beta.6
     helm:
       parameters:
         - name: hyperdos.ref

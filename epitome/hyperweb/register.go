@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
 
 	"github.com/sirupsen/logrus"
 )
@@ -24,7 +25,7 @@ type registerResponse struct {
 }
 
 func register(
-	gatewayUrl string,
+	gatewayUrl url.URL,
 	token string,
 	clusterName string,
 ) (*registerResponse, error) {
@@ -47,7 +48,7 @@ func register(
 	client := &http.Client{}
 	req, err := http.NewRequest(
 		"POST",
-		gatewayUrl+"/v1/hyperweb/register_cluster",
+		gatewayUrl.String()+"/v1/hyperweb/register_cluster",
 		payload,
 	)
 	if err != nil {

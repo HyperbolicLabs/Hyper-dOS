@@ -2,57 +2,67 @@ package main
 
 import (
 	"flag"
-	"os"
 	"time"
 
 	"epitome.hyperbolic.xyz/cluster"
+	"epitome.hyperbolic.xyz/config"
 	"epitome.hyperbolic.xyz/helper"
 	"epitome.hyperbolic.xyz/hyperweb"
-	"github.com/sirupsen/logrus"
+	"github.com/caarlos0/env"
+	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 )
 
 const VERSION = "v1-alpha"
 
 func main() {
-	var help = flag.Bool("help", false, "Show help")
-	var loglevel = flag.String("loglevel", "info", "debug, info, error")
-	var kubeconfig string
-	flag.StringVar(&kubeconfig, "kubeconfig", "", "optional kubeconfig path")
+	help := flag.Bool("help", false, "Show help")
+	mode := flag.String("mode", "default", "Specify the mode to run.")
 	flag.Parse()
 
-	helper.SetLogLevel(*loglevel)
-	logrus.Infof("version: %v", VERSION)
+	var cfg config.Config
+	env.Parse(&cfg)
+	helper.SetLogLevel(cfg.LOG_LEVEL)
+
+	logCfg := zap.NewProductionConfig()
+	switch cfg.LOG_LEVEL {
+	case "debug":
+		logCfg.Level = zap.NewAtomicLevelAt(zap.DebugLevel)
+	case "info":
+		logCfg.Level = zap.NewAtomicLevelAt(zap.InfoLevel)
+	case "warn":
+		logCfg.Level = zap.NewAtomicLevelAt(zap.WarnLevel)
+	case "error":
+		logCfg.Level = zap.NewAtomicLevelAt(zap.ErrorLevel)
+	default:
+		logCfg.Level = zap.NewAtomicLevelAt(zap.InfoLevel)
+	}
 
 	if *help {
 		flag.PrintDefaults()
 		return
 	}
 
-	// parse environment variables
-	var token = os.Getenv("HYPERBOLIC_TOKEN")
-	var gatewayUrl = os.Getenv("HYPERBOLIC_GATEWAY_URL")
-	if token == "" {
-		logrus.Fatalf("token not set")
-	}
-	if gatewayUrl == "" {
-		logrus.Fatalf("gatewayUrl not set")
-	}
+	logCfg.EncoderConfig.TimeKey = "timestamp"
+	logCfg.EncoderConfig.EncodeTime = zapcore.ISO8601TimeEncoder
 
-	logrus.Infof("connecting to in-cluster kube api-server")
-	clientset, dynamicClient := cluster.MustConnect(kubeconfig)
+	logger, _ := logCfg.Build()
 
-	go hyperweb.RunLoop(
-		clientset,
-		dynamicClient,
-		gatewayUrl,
-		token,
-		60*time.Second,
-	)
+	logger = logger.With(zap.String("mode", *mode))
+	logger.Info("launching epitome")
 
-	for {
-		// do nothing
-		<-make(chan struct{})
-		logrus.Infof("exiting") // this will never happen
-		return
+	clientset, dynamicClient := cluster.MustConnect(cfg.KUBECONFIG)
+	switch *mode {
+	case "default":
+		hyperweb.RunLoop(
+			cfg,
+			logger,
+			clientset,
+			dynamicClient,
+			60*time.Second,
+		)
+		logger.Fatal("hyperweb runloop exited unexpectedly")
+	default:
+		logger.Fatal("unknown mode", zap.String("mode", *mode))
 	}
 }

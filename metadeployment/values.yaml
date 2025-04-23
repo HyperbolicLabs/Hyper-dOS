@@ -2,7 +2,7 @@
 # note: this is usually over-ridden by the helm chart install in charts/hyperdos
 hyperdos:
   url: 'https://github.com/hyperboliclabs/hyper-dos.git'
-  ref: "v0.0.1-beta.5"
+  ref: "v0.0.1-beta.6"
 
 clusterdos:
   ref: 'v0.1'
