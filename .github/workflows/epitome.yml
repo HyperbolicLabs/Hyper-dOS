@@ -20,7 +20,47 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          submodules: recursive
+          # # Number of commits to fetch. 0 indicates all history for all branches and tags.
+          # # Default: 1
+          # fetch-depth: 1
+
+          # # Whether to checkout submodules: `true` to checkout submodules or `recursive` to
+          # # recursively checkout submodules.
+          # #
+          # # When the `ssh-key` input is not provided, SSH URLs beginning with
+          # # `git@github.com:` are converted to HTTPS.
+          # #
+          # # Default: false
+          submodules: false
+
+          #
+          # # Known hosts in addition to the user and global host key database. The public SSH
+          # # keys for a host may be obtained using the utility `ssh-keyscan`. For example,
+          # # `ssh-keyscan github.com`. The public key for github.com is always implicitly
+          # # added.
+          # ssh-known-hosts: ''
+          #
+          # # The user to use when connecting to the remote SSH host. By default 'git' is
+          # # used.
+          # # Default: git
+          # ssh-user: 'git'
+          #
+          # # Whether to download Git-LFS files
+          # # Default: false
+          # lfs: ''
+
+      - name: Hack: convert submodule urls to https because github is stupid
+      # this is supposed to be done by the checkout@v4 action by default, but it doesn't work
+        run: |
+          perl -i -p -e 's|https://(.*?)/|git@\1:|g' .gitmodules
+
+      - name: Checkout again
+        uses: actions/checkout@v4
+        with:
+          # Number of commits to fetch. 0 indicates all history for all branches and tags.
+          # Default: 1
+          submodules: true
+
       - name: Docker meta
         id: meta
         uses: docker/metadata-action@v5
