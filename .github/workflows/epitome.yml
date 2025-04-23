@@ -49,7 +49,7 @@ jobs:
           # # Default: false
           # lfs: ''
 
-      - name: Hack: convert submodule urls to https because github is stupid
+      - name: 'Hack: convert submodule urls to https because github is stupid'
       # this is supposed to be done by the checkout@v4 action by default, but it doesn't work
         run: |
           perl -i -p -e 's|https://(.*?)/|git@\1:|g' .gitmodules
