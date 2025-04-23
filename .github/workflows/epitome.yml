@@ -92,8 +92,9 @@ jobs:
           # TODO try reproducible builds: https://docs.docker.com/build/ci/github-actions/reproducible-builds/
           build-args: version=$GH_TAG
           platforms: linux/amd64,linux/arm/v6,linux/arm64
-          source: "{{defaultContext}}" # if you don't set this, it will clone and fail because it doesn't understand submodules
-          context: "{{defaultContext}}:epitome"
+          # source: "{{defaultContext}}" # if you don't set this, it will clone and fail because it doesn't understand submodules
+          # context: "{{defaultContext}}:epitome"
+          context: ./epitome
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
