@@ -31,7 +31,7 @@ jobs:
           # # `git@github.com:` are converted to HTTPS.
           # #
           # # Default: false
-          submodules: false
+          submodules: true
 
           #
           # # Known hosts in addition to the user and global host key database. The public SSH
@@ -48,18 +48,6 @@ jobs:
           # # Whether to download Git-LFS files
           # # Default: false
           # lfs: ''
-
-      - name: 'Hack: convert submodule urls to https because github is stupid'
-      # this is supposed to be done by the checkout@v4 action by default, but it doesn't work
-        run: |
-          perl -i -p -e 's|https://(.*?)/|git@\1:|g' .gitmodules
-
-      - name: Checkout again
-        uses: actions/checkout@v4
-        with:
-          # Number of commits to fetch. 0 indicates all history for all branches and tags.
-          # Default: 1
-          submodules: true
 
       - name: Docker meta
         id: meta
@@ -100,8 +88,11 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
+          # TODO try cache: https://docs.docker.com/build/ci/github-actions/cache/
+          # TODO try reproducible builds: https://docs.docker.com/build/ci/github-actions/reproducible-builds/
           build-args: version=$GH_TAG
           platforms: linux/amd64,linux/arm/v6,linux/arm64
+          source: "{{defaultContext}}" # if you don't set this, it will clone and fail because it doesn't understand submodules
           context: "{{defaultContext}}:epitome"
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
