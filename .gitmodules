@@ -1,3 +1,5 @@
 [submodule "epitome/jungle"]
 	path = epitome/jungle
 	url = git@github.com:hyperboliclabs/jungle.proto.git
+	# this is necessary to get argo to pull down only the top-level module
+	fetchRecurseSubmodules = false
