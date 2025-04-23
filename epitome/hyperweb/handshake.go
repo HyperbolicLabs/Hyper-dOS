@@ -17,14 +17,18 @@ type handshakeResponse struct {
 	ClusterName  string `json:"cluster_name"`
 }
 
+type Handshaker interface {
+	Do(*http.Request) (*http.Response, error)
+}
+
 func handshake(
+	handshaker Handshaker,
 	gatewayUrl url.URL,
 	token string,
 ) (response *handshakeResponse, err error) {
 	logrus.Infof("handshaking with gateway: %v", gatewayUrl)
 
 	// post to gateway
-	client := &http.Client{}
 	req, err := http.NewRequest(
 		"POST",
 		gatewayUrl.String()+"/v1/hyperweb/login",
@@ -36,7 +40,7 @@ func handshake(
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Authorization", "bearer "+token)
 
-	resp, err := client.Do(req)
+	resp, err := handshaker.Do(req)
 	if err != nil {
 		logrus.Errorf("failed to send handshake request: %v", err)
 		return

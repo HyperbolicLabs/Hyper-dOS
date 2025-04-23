@@ -3,6 +3,7 @@ package hyperweb
 import (
 	"context"
 	"fmt"
+	"net/http"
 	"net/url"
 	"time"
 
@@ -25,7 +26,7 @@ func reconcile(
 		// if it does not, query the gateway for oauth credentials using our token
 		logrus.Infof("operator-oauth secret does not exist in namespace: %v", hyperwebNamespace)
 
-		response, err := handshake(gatewayUrl, token)
+		response, err := handshake(http.DefaultClient, gatewayUrl, token)
 		if err != nil {
 			logrus.Errorf("failed to handshake with gateway: %v", err)
 			return err
