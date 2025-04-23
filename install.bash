@@ -5,13 +5,12 @@ set -e
 # configuration
 HEADLESS=$HEADLESS
 #ALLOCATE_ROOT_DISK_GB=100 - set this to automatically provision a ceph block store of a certain size
-TOKEN=$TOKEN
+#TOKEN=$TOKEN - set this to provide your hyperbolic api token non-interactively
 API_URL="https://api.hyperbolic.xyz"
-HYPERDOS_VERSION=0.0.1-beta.5
+HYPERDOS_VERSION=0.0.1-beta.6
 MICROK8S_VERSION=1.32
 EXTRA_PARAMS=""
 PATH=$PATH:/var/lib/snapd/snap/bin
-
 
 # if HEADLESS is set, check to make sure ALLOCATE_ROOT_DISK_GB is set to an integer
 if [[ "$HEADLESS" == "true" ]]; then

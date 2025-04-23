@@ -1,0 +1,10 @@
+---
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: hyperstore
+  namespace: instance
+spec:
+  hard:
+    # persistentvolumeclaims: "100"  # maximum 100 PVCs
+    requests.storage: "100G"

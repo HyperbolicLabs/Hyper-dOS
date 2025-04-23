@@ -1,6 +1,7 @@
 module epitome.hyperbolic.xyz
 
-go 1.22.2
+go 1.23.0
+
 toolchain go1.24.1
 
 // go 1.23
@@ -8,7 +9,9 @@ toolchain go1.24.1
 replace jungle.proto => ./jungle/protos
 
 require (
+	github.com/caarlos0/env v3.5.0+incompatible
 	github.com/sirupsen/logrus v1.9.3
+	go.uber.org/zap v1.27.0
 	k8s.io/api v0.30.1
 	k8s.io/apimachinery v0.30.1
 	k8s.io/client-go v0.30.1
@@ -34,6 +37,7 @@ require (
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
+	go.uber.org/multierr v1.10.0 // indirect
 	golang.org/x/net v0.38.0 // indirect
 	golang.org/x/oauth2 v0.10.0 // indirect
 	golang.org/x/sys v0.31.0 // indirect

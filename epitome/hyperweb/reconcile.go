@@ -3,6 +3,7 @@ package hyperweb
 import (
 	"context"
 	"fmt"
+	"net/url"
 	"time"
 
 	"github.com/sirupsen/logrus"
@@ -17,7 +18,7 @@ import (
 func reconcile(
 	clientset kubernetes.Clientset,
 	dynamicClient dynamic.DynamicClient,
-	gatewayUrl string,
+	gatewayUrl url.URL,
 	token string,
 ) error {
 	if !secretExists(clientset, hyperwebNamespace, "operator-oauth") {

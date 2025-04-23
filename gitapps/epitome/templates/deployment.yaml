@@ -20,17 +20,14 @@ spec:
       - name: epitome
         image: {{ .Values.image }}:{{ .Values.hyperdos.ref }}
         imagePullPolicy: Always
-        args:
-          {{- if contains "dev" .Values.hyperdos.ref }}
-          - "--loglevel"
-          - "debug"
-          {{- end }}
+        # args:
+        # - -mode=TODO
         env:
-        - name: HYPERBOLIC_GATEWAY_URL
         {{- if contains "dev" .Values.hyperdos.ref }}
-          value: {{ .Values.devGatewayURL }}
-        {{- else }}
-          value: {{ .Values.prodGatewayURL }}
+        - name: HYPERBOLIC_GATEWAY_URL
+          value: "https://api.dev-hyperbolic.xyz"
+        - name: LOG_LEVEL
+          value: "debug"
         {{- end }}
         - name: HYPERBOLIC_TOKEN
           valueFrom:

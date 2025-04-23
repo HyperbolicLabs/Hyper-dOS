@@ -6,6 +6,7 @@ import (
 	"errors"
 	"io"
 	"net/http"
+	"net/url"
 
 	"github.com/sirupsen/logrus"
 )
@@ -17,7 +18,7 @@ type handshakeResponse struct {
 }
 
 func handshake(
-	gatewayUrl string,
+	gatewayUrl url.URL,
 	token string,
 ) (response *handshakeResponse, err error) {
 	logrus.Infof("handshaking with gateway: %v", gatewayUrl)
@@ -26,8 +27,7 @@ func handshake(
 	client := &http.Client{}
 	req, err := http.NewRequest(
 		"POST",
-		gatewayUrl+"/v1/hyperweb/login",
-		// gatewayUrl,
+		gatewayUrl.String()+"/v1/hyperweb/login",
 		bytes.NewBuffer([]byte(`{}`)))
 	if err != nil {
 		logrus.Errorf("failed to create request: %v", err)
