@@ -8,7 +8,7 @@ import (
 	"epitome.hyperbolic.xyz/config"
 	"epitome.hyperbolic.xyz/helper"
 	"epitome.hyperbolic.xyz/hyperweb"
-	"github.com/caarlos0/env"
+	env11 "github.com/caarlos0/env/v11"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
@@ -21,7 +21,7 @@ func main() {
 	flag.Parse()
 
 	var cfg config.Config
-	env.Parse(&cfg)
+	env11.Parse(&cfg)
 	helper.SetLogLevel(cfg.LOG_LEVEL)
 
 	logCfg := zap.NewProductionConfig()
