@@ -27,11 +27,11 @@ spec:
         # - name: proc
         #   mountPath: /proc
         #   readOnly: true
-        # env:
-        # - name: KUBERNETES_NODE_NAME
-        #   valueFrom:
-        #     fieldRef:
-        #       fieldPath: spec.nodeName
+        env:
+        - name: KUBERNETES_NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
       # volumes:
       # - name: proc
       #   hostPath:
