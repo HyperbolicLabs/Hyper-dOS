@@ -23,17 +23,9 @@ spec:
         imagePullPolicy: Always
         args:
           - -mode=monkey
-        # volumeMounts:
-        # - name: proc
-        #   mountPath: /proc
-        #   readOnly: true
         env:
         - name: KUBERNETES_NODE_NAME
           valueFrom:
             fieldRef:
               fieldPath: spec.nodeName
-      # volumes:
-      # - name: proc
-      #   hostPath:
-      #     path: /proc
       restartPolicy: Always
