@@ -44,8 +44,7 @@ Note: please reach out before doing this so we can support your cluster smoothly
 3. (on the new node) `microk8s join <output-from-original-node>`
 
 ### add microceph node
-
-<https://microk8s.io/docs/clustering>
+<https://canonical-microceph.readthedocs-hosted.com/en/quincy-stable/tutorial/multi-node/>
 
 1. (on the new node) `sudo snap install microceph`
 2. (on the new node) `sudo microceph init`
