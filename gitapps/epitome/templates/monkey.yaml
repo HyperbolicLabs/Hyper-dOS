@@ -16,7 +16,7 @@ spec:
       labels:
         app: epitome-monkey
     spec:
-      # serviceAccountName: epitome-monkey
+      serviceAccountName: epitome-monkey
       containers:
       - name: epitome-monkey
         image: "{{ .Values.image }}:{{ .Values.hyperdos.ref }}"
