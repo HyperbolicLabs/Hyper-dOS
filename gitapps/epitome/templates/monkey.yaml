@@ -21,6 +21,8 @@ spec:
       - name: epitome-monkey
         image: "{{ .Values.image }}:{{ .Values.tag }}"
         imagePullPolicy: Always
+        args:
+          - -mode=monkey
         # volumeMounts:
         # - name: proc
         #   mountPath: /proc
