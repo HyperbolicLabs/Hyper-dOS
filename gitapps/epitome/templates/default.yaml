@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: epitome
-        image: {{ .Values.image }}:{{ .Values.hyperdos.ref }}
+        image: "{{ .Values.image }}:{{ .Values.hyperdos.ref }}"
         imagePullPolicy: Always
         # args:
         # - -mode=TODO

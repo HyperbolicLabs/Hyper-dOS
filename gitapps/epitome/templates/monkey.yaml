@@ -1,0 +1,37 @@
+# daemonset that uses epitome in mode=monkey
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: epitome-monkey
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: epitome-monkey
+spec:
+  selector:
+    matchLabels:
+      app: epitome-monkey
+  template:
+    metadata:
+      labels:
+        app: epitome-monkey
+    spec:
+      # serviceAccountName: epitome-monkey
+      containers:
+      - name: epitome-monkey
+        image: "{{ .Values.image }}:{{ .Values.tag }}"
+        imagePullPolicy: Always
+        # volumeMounts:
+        # - name: proc
+        #   mountPath: /proc
+        #   readOnly: true
+        # env:
+        # - name: KUBERNETES_NODE_NAME
+        #   valueFrom:
+        #     fieldRef:
+        #       fieldPath: spec.nodeName
+      # volumes:
+      # - name: proc
+      #   hostPath:
+      #     path: /proc
+      restartPolicy: Always

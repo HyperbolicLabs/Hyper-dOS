@@ -16,3 +16,4 @@ epitome/.kube/*
 !.vscode/*.example
 
 
+.aider*

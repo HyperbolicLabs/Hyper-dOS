@@ -21,7 +21,7 @@ func (m *MockHttpClient) Do(req *http.Request) (*http.Response, error) {
 	require.Equal(m.t, http.MethodPost, req.Method)
 	require.Equal(m.t, "https://api.hyperbolic.xyz/v1/hyperweb/login", req.URL.String())
 	require.Equal(m.t, "application/json", req.Header.Get("Content-Type"))
-	require.Equal(m.t, "bearer "+m.cfg.HYPERBOLIC_TOKEN, req.Header.Get("Authorization"))
+	require.Equal(m.t, "bearer "+m.cfg.Default.HYPERBOLIC_TOKEN, req.Header.Get("Authorization"))
 
 	return &http.Response{
 		StatusCode: http.StatusOK,
@@ -59,8 +59,8 @@ func Test_handshake(t *testing.T) {
 
 		gotResponse, err := handshake(
 			mockHttpClient,
-			cfg.HYPERBOLIC_GATEWAY_URL,
-			cfg.HYPERBOLIC_TOKEN)
+			cfg.Default.HYPERBOLIC_GATEWAY_URL,
+			cfg.Default.HYPERBOLIC_TOKEN)
 
 		require.NoError(t, err)
 

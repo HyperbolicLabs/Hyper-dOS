@@ -40,7 +40,7 @@ func TestParseEnv(t *testing.T) {
 				})
 
 			require.NoError(t, err)
-			require.Equal(t, tc.expected, cfg.HYPERBOLIC_GATEWAY_URL)
+			require.Equal(t, tc.expected, cfg.Default.HYPERBOLIC_GATEWAY_URL)
 		})
 	}
 }

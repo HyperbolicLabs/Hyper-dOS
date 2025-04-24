@@ -1,0 +1,81 @@
+package monkey
+
+import (
+	"context"
+	"encoding/json"
+	"fmt"
+	"os"
+
+	"go.uber.org/zap"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/types"
+)
+
+func (a *agent) reconcile() error {
+	// Get current CPU model
+
+	// Get node name from environment (automatically set in pod by Kubernetes)
+	nodeName := os.Getenv("KUBERNETES_NODE_NAME")
+	if nodeName == "" {
+		return fmt.Errorf("KUBERNETES_NODE_NAME environment variable not set")
+	}
+
+	// Get current node object
+	node, err := a.clientset.CoreV1().Nodes().Get(context.TODO(), nodeName, metav1.GetOptions{})
+	if err != nil {
+		return fmt.Errorf("failed to get node: %w", err)
+	}
+
+	// if not, get the cpu name and clock
+	cpuLabels, err := a.getThisCPU()
+	if err != nil {
+		return fmt.Errorf("failed to get CPU name: %w", err)
+	}
+
+	newLabels := make(map[string]string)
+	newLabels["hyperbolic.xyz/cpu-name"] = cpuLabels.name
+	newLabels["hyperbolic.xyz/cpu-clock"] = cpuLabels.clock
+
+	// Check if label already exists and is correct
+	if labelsAreGood(node.Labels, newLabels) {
+		return nil
+	}
+
+	// Update node labels with a patch
+	patchBytes, err := json.Marshal(map[string]any{
+		"metadata": map[string]any{
+			"labels": newLabels,
+		},
+	})
+	if err != nil {
+		return fmt.Errorf("failed to create patch json: %w", err)
+	}
+	_, err = a.clientset.CoreV1().Nodes().Patch(
+		context.TODO(),
+		nodeName,
+		types.MergePatchType,
+		patchBytes,
+		metav1.PatchOptions{})
+
+	if err != nil {
+		return fmt.Errorf("failed to update node labels: %w", err)
+	}
+
+	a.logger.Info("successfully labeled node",
+		zap.String("node", nodeName),
+		zap.String("cpu-name", cpuLabels.name),
+		zap.String("cpu-clock", cpuLabels.clock),
+	)
+
+	return nil
+}
+
+func labelsAreGood(existingLabels map[string]string, newLabels map[string]string) bool {
+	for k, v := range newLabels {
+		if v2, ok := existingLabels[k]; !ok || v != v2 {
+			return false
+		}
+	}
+
+	return true
+}
