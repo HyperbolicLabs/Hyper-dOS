@@ -77,3 +77,8 @@ test-helm-install:
 		--debug \
 		--set ref="dev" \
 		.
+
+.PHONY: aider
+aider:
+	cd hack; \
+	bash run-aider.sh

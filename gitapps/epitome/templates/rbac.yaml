@@ -1,2 +1,30 @@
 ---
-# TODO
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: epitome-monkey
+  namespace: {{ .Release.Namespace }}
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: epitome-monkey-node-labeler
+rules:
+- apiGroups: [""]
+  resources: ["nodes"]
+  verbs: ["get", "update", "patch"]
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: epitome-monkey-node-labeler-binding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: epitome-monkey-node-labeler
+subjects:
+- kind: ServiceAccount
+  name: epitome-monkey
+  namespace: {{ .Release.Namespace }}

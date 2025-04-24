@@ -44,8 +44,7 @@ Note: please reach out before doing this so we can support your cluster smoothly
 3. (on the new node) `microk8s join <output-from-original-node>`
 
 ### add microceph node
-
-<https://microk8s.io/docs/clustering>
+<https://canonical-microceph.readthedocs-hosted.com/en/quincy-stable/tutorial/multi-node/>
 
 1. (on the new node) `sudo snap install microceph`
 2. (on the new node) `sudo microceph init`
@@ -69,14 +68,14 @@ Please get in touch if you are planning to install hyperdos on an existing multi
 ### configure helm repo and dry-run
 
 ```bash
-sudo microk8s helm install --dry-run hyperdos hyperdos/hyperdos --version 0.0.1-beta.6 --set token="DRY_RUN_NO_TOKEN"
+sudo microk8s helm install --dry-run hyperdos hyperdos/hyperdos --version 0.0.1-beta.7 --set token="DRY_RUN_NO_TOKEN"
 ```
 
 ### install (without rolling updates)
 
 ```bash
 # to disable automatic updates and pin to a specific git ref
-sudo microk8s helm install hyperdos hyperdos/hyperdos --version 0.0.1-beta.6 --set token="<YOUR_API_KEY>"
+sudo microk8s helm install hyperdos hyperdos/hyperdos --version 0.0.1-beta.7 --set token="<YOUR_API_KEY>"
 ```
 
 

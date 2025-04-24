@@ -18,6 +18,22 @@
                 "LOG_LEVEL": "debug",
                 "KUBECONFIG": "./.kube/dev-baron-kubeconfig.yaml",
             }
-        }
+        },
+        {
+            "name": "(DEV) Run Monkey",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "program": "epitome/main.go",
+            "args": [
+                "-mode=monkey"
+            ],
+            "env": {
+                "LOG_LEVEL": "debug",
+                "KUBECONFIG": "./.kube/dev-baron-kubeconfig.yaml",
+                // required for daemonset functionality
+                "KUBERNETES_NODE_NAME": "ip-172-31-30-50",
+            },
+        },
     ]
 }

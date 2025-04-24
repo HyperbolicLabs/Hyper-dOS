@@ -2,12 +2,12 @@ package main
 
 import (
 	"flag"
-	"time"
 
 	"epitome.hyperbolic.xyz/cluster"
 	"epitome.hyperbolic.xyz/config"
 	"epitome.hyperbolic.xyz/helper"
 	"epitome.hyperbolic.xyz/hyperweb"
+	"epitome.hyperbolic.xyz/mode/monkey"
 	env11 "github.com/caarlos0/env/v11"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
@@ -54,14 +54,16 @@ func main() {
 	clientset, dynamicClient := cluster.MustConnect(cfg.KUBECONFIG)
 	switch *mode {
 	case "default":
-		hyperweb.RunLoop(
+		err := hyperweb.RunLoop(
 			cfg,
 			logger,
 			clientset,
 			dynamicClient,
-			60*time.Second,
 		)
-		logger.Fatal("hyperweb runloop exited unexpectedly")
+		logger.Fatal("hyperweb runloop exited unexpectedly", zap.Error(err))
+	case "monkey":
+		err := monkey.Run(cfg, logger)
+		logger.Fatal("monkey runloop exited unexpectedly", zap.Error(err))
 	default:
 		logger.Fatal("unknown mode", zap.String("mode", *mode))
 	}

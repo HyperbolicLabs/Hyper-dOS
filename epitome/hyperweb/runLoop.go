@@ -1,10 +1,10 @@
 package hyperweb
 
 import (
+	"fmt"
 	"time"
 
 	"epitome.hyperbolic.xyz/config"
-	"github.com/sirupsen/logrus"
 	"go.uber.org/zap"
 	"k8s.io/client-go/dynamic"
 	"k8s.io/client-go/kubernetes"
@@ -15,13 +15,13 @@ func RunLoop(
 	logger *zap.Logger,
 	clientset kubernetes.Clientset,
 	dynamicClient dynamic.DynamicClient,
-	interval time.Duration,
-) {
+) error {
+	interval := cfg.Default.ReconcileInterval
 	ticker := time.NewTicker(interval)
 	for {
-		err := reconcile(clientset, dynamicClient, cfg.HYPERBOLIC_GATEWAY_URL, cfg.HYPERBOLIC_TOKEN)
+		err := reconcile(clientset, dynamicClient, cfg.Default.HYPERBOLIC_GATEWAY_URL, cfg.Default.HYPERBOLIC_TOKEN)
 		if err != nil {
-			logrus.Fatalf("failed to reconcile: %v", err)
+			return fmt.Errorf("default epitome failed to reconcile: %v", err)
 		}
 
 		<-ticker.C
