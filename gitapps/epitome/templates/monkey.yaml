@@ -19,7 +19,7 @@ spec:
       # serviceAccountName: epitome-monkey
       containers:
       - name: epitome-monkey
-        image: "{{ .Values.image }}:{{ .Values.tag }}"
+        image: "{{ .Values.image }}:{{ .Values.hyperdos.ref }}"
         imagePullPolicy: Always
         args:
           - -mode=monkey
