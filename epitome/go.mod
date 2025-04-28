@@ -9,7 +9,6 @@ toolchain go1.24.1
 replace jungle.proto => ./jungle/protos
 
 require (
-	github.com/caarlos0/env v3.5.0+incompatible
 	github.com/caarlos0/env/v11 v11.3.1
 	github.com/sirupsen/logrus v1.9.3
 	github.com/stretchr/testify v1.8.4

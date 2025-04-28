@@ -21,5 +21,6 @@ type DefaultMode struct {
 }
 
 type MonkeyMode struct {
-	ReconcileInterval time.Duration `env:"MONKEY_RECONCILE_INTERVAL" envDefault:"1m"`
+	ReconcileInterval    time.Duration `env:"MONKEY_RECONCILE_INTERVAL" envDefault:"1m"`
+	KUBERNETES_NODE_NAME string        `env:"KUBERNETES_NODE_NAME,required" envDefault:""`
 }

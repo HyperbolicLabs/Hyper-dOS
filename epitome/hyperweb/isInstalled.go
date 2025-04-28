@@ -9,7 +9,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-func IsInstalled(dynamicClient dynamic.DynamicClient) bool {
+func HyperwebIsInstalled(dynamicClient dynamic.DynamicClient) bool {
 	_, err := dynamicClient.
 		Resource(argoAppGVR).
 		Namespace(argocdNamespace).

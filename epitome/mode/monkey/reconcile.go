@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"os"
 
 	"go.uber.org/zap"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -12,13 +11,7 @@ import (
 )
 
 func (a *agent) reconcile() error {
-	// Get current CPU model
-
-	// Get node name from environment (automatically set in pod by Kubernetes)
-	nodeName := os.Getenv("KUBERNETES_NODE_NAME")
-	if nodeName == "" {
-		return fmt.Errorf("KUBERNETES_NODE_NAME environment variable not set")
-	}
+	nodeName := a.cfg.Monkey.KUBERNETES_NODE_NAME
 
 	// Get current node object
 	node, err := a.clientset.CoreV1().Nodes().Get(context.TODO(), nodeName, metav1.GetOptions{})

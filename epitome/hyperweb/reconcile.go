@@ -53,7 +53,7 @@ func reconcile(
 		return err
 	}
 
-	if IsInstalled(dynamicClient) {
+	if HyperwebIsInstalled(dynamicClient) {
 		if isRegistered(clientset) {
 			logrus.Infof("hyperweb application is installed and registered, nothing to do")
 		} else {
