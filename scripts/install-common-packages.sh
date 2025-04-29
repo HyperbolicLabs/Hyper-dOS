@@ -18,4 +18,5 @@ apt-get update &&
 
 curl -s https://ollama.com/install.sh | bash
 
-pip3 install jupyterlab
+# pip3 install jupyterlab
+su ubuntu -c "pip3 install jupyterlab"
