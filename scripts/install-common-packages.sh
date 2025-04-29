@@ -16,4 +16,6 @@ apt-get update &&
                 hashcat &&
         apt-get clean
 
+curl -s https://ollama.com/install.sh | bash
+
 pip3 install jupyterlab
