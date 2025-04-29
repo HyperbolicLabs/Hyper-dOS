@@ -20,3 +20,5 @@ curl -s https://ollama.com/install.sh | bash
 
 # pip3 install jupyterlab
 su ubuntu -c "pip3 install jupyterlab"
+echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.profile
+
