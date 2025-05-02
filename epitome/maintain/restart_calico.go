@@ -42,7 +42,7 @@ func (a *agent) restartCalicoIfExists(ctx context.Context) error {
 	if err != nil {
 		// if err is not found, return nil
 		if err.Error() == "daemonsets.apps \"calico-node\" not found" {
-			a.logger.Info("calico daemonset not found, this baron likely doesn't have calico installed. Will move on.")
+			a.logger.Debug("calico daemonset not found, this baron likely doesn't have calico installed. Will move on.")
 			return nil
 		}
 		return fmt.Errorf("failed to patch calico node daemonset: %v", err)
