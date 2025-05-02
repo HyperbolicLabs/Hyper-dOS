@@ -14,47 +14,39 @@ import (
 )
 
 func (a *agent) reconcile() error {
-	if !secretExists(a.clientset, hyperwebNamespace, "operator-oauth") {
+	if !secretExists(a.clientset, a.cfg.HyperwebNamespace, "operator-oauth") {
 		// if it does not, query the gateway for oauth credentials using our token
-		logrus.Infof("operator-oauth secret does not exist in namespace: %v", hyperwebNamespace)
+		logrus.Infof("operator-oauth secret does not exist in namespace: %v", a.cfg.HyperwebNamespace)
 
-		response, err := handshake(
-			http.DefaultClient,
-			a.cfg.Default.HYPERBOLIC_GATEWAY_URL,
-			a.cfg.Default.HYPERBOLIC_TOKEN)
+		response, err := a.handshake(http.DefaultClient)
 		if err != nil {
 			logrus.Errorf("failed to handshake with gateway: %v", err)
 			return err
 		}
 
-		mustCreateOperatorOAuthSecret(
-			a.clientset,
-			hyperwebNamespace,
-			"operator-oauth",
+		a.mustCreateTailscaleOperatorOAuthSecret(
 			response.ClientID,
 			response.ClientSecret,
 		)
 
-		err = installClusterNameConfigMap(a.clientset, response.ClusterName)
+		err = a.installClusterNameConfigMap(response.ClusterName)
 		if err != nil {
 			logrus.Errorf("failed to save cluster name in configmap: %v", err)
 			return err
 		}
 	}
 
-	name, err := GetClusterName(a.clientset)
+	name, err := a.getClusterName()
 	if err != nil {
 		logrus.Errorf("failed to get cluster name: %v", err)
 		return err
 	}
 
-	if HyperwebIsInstalled(a.dynamicClient) {
-		if isRegistered(a.clientset) {
+	if a.HyperwebIsInstalled() {
+		if a.isRegistered() {
 			logrus.Infof("hyperweb application is installed and registered, nothing to do")
 		} else {
-			response, err := register(
-				a.cfg.Default.HYPERBOLIC_GATEWAY_URL,
-				a.cfg.Default.HYPERBOLIC_TOKEN,
+			response, err := a.register(
 				*name,
 			)
 			if err != nil {
@@ -69,7 +61,7 @@ func (a *agent) reconcile() error {
 	} else {
 		logrus.Infof("hyperweb application is not installed - installing now")
 
-		err = InstallHyperWeb(a.dynamicClient, *name)
+		err = a.installHyperWeb(*name)
 		if err != nil {
 			logrus.Errorf("failed to install hyperweb application: %v", err)
 			return err

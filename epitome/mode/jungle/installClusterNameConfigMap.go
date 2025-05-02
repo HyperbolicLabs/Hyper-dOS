@@ -8,22 +8,20 @@ import (
 	v1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/client-go/kubernetes"
 )
 
-func installClusterNameConfigMap(
-	clientset kubernetes.Interface,
+func (a *agent) installClusterNameConfigMap(
 	clusterName string,
 ) error {
 
 	configmap := &v1.ConfigMap{}
 	configmap.Name = "cluster-name"
-	configmap.Namespace = hyperdosNamespace
+	configmap.Namespace = a.cfg.HyperdosNamespace
 	configmap.Data = map[string]string{
 		clusterNameDataField: clusterName,
 	}
 
-	cm, err := clientset.CoreV1().ConfigMaps(configmap.Namespace).Create(context.TODO(), configmap, metav1.CreateOptions{})
+	cm, err := a.clientset.CoreV1().ConfigMaps(configmap.Namespace).Create(context.TODO(), configmap, metav1.CreateOptions{})
 
 	if err != nil {
 		if !errors.IsAlreadyExists(err) {

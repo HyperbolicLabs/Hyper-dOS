@@ -4,14 +4,11 @@ import (
 	"epitome.hyperbolic.xyz/helper"
 	"github.com/sirupsen/logrus"
 	"k8s.io/apimachinery/pkg/api/errors"
-	"k8s.io/client-go/kubernetes"
 )
 
-func isRegistered(
-	clientset kubernetes.Interface,
-) bool {
+func (a *agent) isRegistered() bool {
 	// check if ping configmap exists in ping namespace
-	cm, err := helper.GetConfigMap(clientset, pingNamespace, "ping")
+	cm, err := helper.GetConfigMap(a.clientset, pingNamespace, "ping")
 
 	// if doesn't exist
 	if errors.IsNotFound(err) {

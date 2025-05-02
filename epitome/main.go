@@ -18,7 +18,7 @@ const VERSION = "v1-alpha"
 
 func main() {
 	help := flag.Bool("help", false, "Show help")
-	mode := flag.String("mode", "jungle", "Specify the mode to run.")
+	mode := flag.String("mode", "jungle", "Specify the mode to run epitome in (jungle | maintain | monkey)")
 	flag.Parse()
 
 	var cfg config.Config

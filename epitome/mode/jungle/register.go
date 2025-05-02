@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"net/url"
 
 	"github.com/sirupsen/logrus"
 )
@@ -24,14 +23,15 @@ type registerResponse struct {
 	Success bool `json:"success"`
 }
 
-func register(
-	gatewayUrl url.URL,
-	token string,
+func (a *agent) register(
 	clusterName string,
 ) (*registerResponse, error) {
 
 	// post to gateway that we have successfully bootstrapped the cluster
 	// and are ready to join the Hyperbolic Supply Network
+
+	gatewayUrl := a.cfg.Default.HYPERBOLIC_GATEWAY_URL
+	token := a.cfg.Default.HYPERBOLIC_TOKEN
 
 	logrus.Infof("registering cluster with gateway: %v", gatewayUrl)
 

@@ -6,13 +6,9 @@ import (
 	"github.com/sirupsen/logrus"
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/client-go/kubernetes"
 )
 
-func mustCreateOperatorOAuthSecret(
-	clientset kubernetes.Interface,
-	namespace string,
-	name string,
+func (a *agent) mustCreateTailscaleOperatorOAuthSecret(
 	clientId string,
 	clientSecret string,
 ) (err error) {
@@ -20,8 +16,8 @@ func mustCreateOperatorOAuthSecret(
 	// create secret
 	secret := &v1.Secret{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      name,
-			Namespace: hyperwebNamespace,
+			Name:      "operator-oauth", // https://tailscale.com/kb/1306/gitops-acls-github?q=operator-oauth%20secret
+			Namespace: a.cfg.HyperwebNamespace,
 		},
 		Data: map[string][]byte{
 			"client_id":     []byte(clientId),
@@ -29,7 +25,7 @@ func mustCreateOperatorOAuthSecret(
 		},
 	}
 
-	_, err = clientset.CoreV1().Secrets(namespace).Create(context.TODO(), secret, metav1.CreateOptions{})
+	_, err = a.clientset.CoreV1().Secrets(a.cfg.HyperwebNamespace).Create(context.TODO(), secret, metav1.CreateOptions{})
 	if err != nil {
 		logrus.Fatalf("failed to create secret: %v", err)
 	}

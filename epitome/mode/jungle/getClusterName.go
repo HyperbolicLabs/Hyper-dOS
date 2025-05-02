@@ -4,12 +4,11 @@ import (
 	"fmt"
 
 	"epitome.hyperbolic.xyz/helper"
-	"k8s.io/client-go/kubernetes"
 )
 
-func GetClusterName(clientSet kubernetes.Interface) (*string, error) {
+func (a *agent) getClusterName() (*string, error) {
 
-	cm, err := helper.GetConfigMap(clientSet, hyperdosNamespace, "cluster-name")
+	cm, err := helper.GetConfigMap(a.clientset, a.cfg.HyperdosNamespace, "cluster-name")
 	if err != nil {
 		return nil, err
 	}

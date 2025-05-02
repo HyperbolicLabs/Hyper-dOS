@@ -6,7 +6,6 @@ import (
 	"errors"
 	"io"
 	"net/http"
-	"net/url"
 
 	"github.com/sirupsen/logrus"
 )
@@ -21,11 +20,12 @@ type Handshaker interface {
 	Do(*http.Request) (*http.Response, error)
 }
 
-func handshake(
+func (a *agent) handshake(
 	handshaker Handshaker,
-	gatewayUrl url.URL,
-	token string,
 ) (response *handshakeResponse, err error) {
+	gatewayUrl := a.cfg.Default.HYPERBOLIC_GATEWAY_URL
+	token := a.cfg.Default.HYPERBOLIC_TOKEN
+
 	logrus.Infof("handshaking with gateway: %v", gatewayUrl)
 
 	// post to gateway
