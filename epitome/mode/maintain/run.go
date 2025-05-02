@@ -10,13 +10,13 @@ import (
 )
 
 func Run(
+	cfg config.Config,
 	logger *zap.Logger,
-	cfg *config.Config,
 	clientset kubernetes.Interface,
 ) error {
 
 	a := &agent{
-		cfg:       *cfg,
+		cfg:       cfg,
 		logger:    logger,
 		clientset: clientset,
 	}

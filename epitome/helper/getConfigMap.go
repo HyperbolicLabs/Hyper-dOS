@@ -10,7 +10,7 @@ import (
 )
 
 func GetConfigMap(
-	clientset kubernetes.Clientset,
+	clientset kubernetes.Interface,
 	namespace string,
 	name string,
 ) (*v1.ConfigMap, error) {

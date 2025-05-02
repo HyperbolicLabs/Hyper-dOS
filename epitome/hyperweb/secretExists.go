@@ -8,7 +8,7 @@ import (
 )
 
 func secretExists(
-	clientset kubernetes.Clientset,
+	clientset kubernetes.Interface,
 	namespace string,
 	name string,
 ) bool {

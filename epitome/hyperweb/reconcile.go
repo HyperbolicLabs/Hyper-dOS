@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"net/http"
-	"net/url"
 	"time"
 
 	"github.com/sirupsen/logrus"
@@ -12,54 +11,50 @@ import (
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/apimachinery/pkg/types"
-	"k8s.io/client-go/dynamic"
-	"k8s.io/client-go/kubernetes"
 )
 
-func reconcile(
-	clientset kubernetes.Clientset,
-	dynamicClient dynamic.DynamicClient,
-	gatewayUrl url.URL,
-	token string,
-) error {
-	if !secretExists(clientset, hyperwebNamespace, "operator-oauth") {
+func (a *agent) reconcile() error {
+	if !secretExists(a.clientset, hyperwebNamespace, "operator-oauth") {
 		// if it does not, query the gateway for oauth credentials using our token
 		logrus.Infof("operator-oauth secret does not exist in namespace: %v", hyperwebNamespace)
 
-		response, err := handshake(http.DefaultClient, gatewayUrl, token)
+		response, err := handshake(
+			http.DefaultClient,
+			a.cfg.Default.HYPERBOLIC_GATEWAY_URL,
+			a.cfg.Default.HYPERBOLIC_TOKEN)
 		if err != nil {
 			logrus.Errorf("failed to handshake with gateway: %v", err)
 			return err
 		}
 
 		mustCreateOperatorOAuthSecret(
-			clientset,
+			a.clientset,
 			hyperwebNamespace,
 			"operator-oauth",
 			response.ClientID,
 			response.ClientSecret,
 		)
 
-		err = installClusterNameConfigMap(clientset, response.ClusterName)
+		err = installClusterNameConfigMap(a.clientset, response.ClusterName)
 		if err != nil {
 			logrus.Errorf("failed to save cluster name in configmap: %v", err)
 			return err
 		}
 	}
 
-	name, err := GetClusterName(clientset)
+	name, err := GetClusterName(a.clientset)
 	if err != nil {
 		logrus.Errorf("failed to get cluster name: %v", err)
 		return err
 	}
 
-	if HyperwebIsInstalled(dynamicClient) {
-		if isRegistered(clientset) {
+	if HyperwebIsInstalled(a.dynamicClient) {
+		if isRegistered(a.clientset) {
 			logrus.Infof("hyperweb application is installed and registered, nothing to do")
 		} else {
 			response, err := register(
-				gatewayUrl,
-				token,
+				a.cfg.Default.HYPERBOLIC_GATEWAY_URL,
+				a.cfg.Default.HYPERBOLIC_TOKEN,
 				*name,
 			)
 			if err != nil {
@@ -74,7 +69,7 @@ func reconcile(
 	} else {
 		logrus.Infof("hyperweb application is not installed - installing now")
 
-		err = InstallHyperWeb(dynamicClient, *name)
+		err = InstallHyperWeb(a.dynamicClient, *name)
 		if err != nil {
 			logrus.Errorf("failed to install hyperweb application: %v", err)
 			return err
@@ -92,7 +87,7 @@ func reconcile(
 	getCtx, cancel := context.WithTimeout(parentCtx, 5*time.Second)
 	defer cancel()
 
-	clusterPolicy, err := dynamicClient.Resource(gvr).Get(getCtx, "cluster-policy", metav1.GetOptions{})
+	clusterPolicy, err := a.dynamicClient.Resource(gvr).Get(getCtx, "cluster-policy", metav1.GetOptions{})
 	if err != nil {
 		logrus.Errorf("failed to get ClusterPolicy: %v", err)
 		return err
@@ -109,7 +104,7 @@ func reconcile(
 		defer cancel()
 
 		patch := []byte(`{"spec":{"validator":{"driver":{"env":[{"name":"DISABLE_DEV_CHAR_SYMLINK_CREATION","value":"true"}]}}}}`)
-		_, err = dynamicClient.Resource(gvr).Patch(patchCtx, "cluster-policy", types.MergePatchType, patch, metav1.PatchOptions{})
+		_, err = a.dynamicClient.Resource(gvr).Patch(patchCtx, "cluster-policy", types.MergePatchType, patch, metav1.PatchOptions{})
 		if err != nil {
 			logrus.Errorf("failed to patch ClusterPolicy: %v", err)
 			return err

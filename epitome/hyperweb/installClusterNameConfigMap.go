@@ -12,7 +12,7 @@ import (
 )
 
 func installClusterNameConfigMap(
-	clientset kubernetes.Clientset,
+	clientset kubernetes.Interface,
 	clusterName string,
 ) error {
 

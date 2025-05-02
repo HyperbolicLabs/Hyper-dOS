@@ -7,7 +7,7 @@ import (
 	"k8s.io/client-go/kubernetes"
 )
 
-func GetClusterName(clientSet kubernetes.Clientset) (*string, error) {
+func GetClusterName(clientSet kubernetes.Interface) (*string, error) {
 
 	cm, err := helper.GetConfigMap(clientSet, hyperdosNamespace, "cluster-name")
 	if err != nil {

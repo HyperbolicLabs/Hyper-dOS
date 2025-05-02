@@ -8,7 +8,7 @@ import (
 )
 
 func isRegistered(
-	clientset kubernetes.Clientset,
+	clientset kubernetes.Interface,
 ) bool {
 	// check if ping configmap exists in ping namespace
 	cm, err := helper.GetConfigMap(clientset, pingNamespace, "ping")

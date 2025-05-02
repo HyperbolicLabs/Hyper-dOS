@@ -10,16 +10,21 @@ import (
 	"k8s.io/client-go/kubernetes"
 )
 
-func RunLoop(
+func Run(
 	cfg config.Config,
 	logger *zap.Logger,
-	clientset kubernetes.Clientset,
+	clientset kubernetes.Interface,
 	dynamicClient dynamic.DynamicClient,
 ) error {
+	a := &agent{
+		cfg:       cfg,
+		logger:    logger,
+		clientset: clientset,
+	}
 	interval := cfg.Default.ReconcileInterval
 	ticker := time.NewTicker(interval)
 	for {
-		err := reconcile(clientset, dynamicClient, cfg.Default.HYPERBOLIC_GATEWAY_URL, cfg.Default.HYPERBOLIC_TOKEN)
+		err := a.reconcile()
 		if err != nil {
 			return fmt.Errorf("default epitome failed to reconcile: %v", err)
 		}

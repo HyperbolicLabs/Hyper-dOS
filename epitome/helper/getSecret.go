@@ -10,7 +10,7 @@ import (
 )
 
 func GetSecret(
-	clientset kubernetes.Clientset,
+	clientset kubernetes.Interface,
 	namespace string,
 	name string,
 ) (*v1.Secret, error) {

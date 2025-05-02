@@ -55,19 +55,30 @@ func main() {
 	clientset, dynamicClient := cluster.MustConnect(cfg.KUBECONFIG)
 	switch *mode {
 	case "default":
-		err := hyperweb.RunLoop(
+		err := hyperweb.Run(
 			cfg,
 			logger,
 			clientset,
 			dynamicClient,
 		)
 		logger.Fatal("hyperweb runloop exited unexpectedly", zap.Error(err))
+
 	case "maintain":
-		err := maintain.Run(logger, &cfg, &clientset)
+		err := maintain.Run(
+			cfg,
+			logger,
+			clientset)
 		logger.Fatal("maintain runloop exited unexpectedly", zap.Error(err))
+
 	case "monkey":
-		err := monkey.Run(cfg, logger)
+		err := monkey.Run(
+			cfg,
+			logger,
+			clientset,
+			dynamicClient,
+		)
 		logger.Fatal("monkey runloop exited unexpectedly", zap.Error(err))
+
 	default:
 		logger.Fatal("unknown mode", zap.String("mode", *mode))
 	}

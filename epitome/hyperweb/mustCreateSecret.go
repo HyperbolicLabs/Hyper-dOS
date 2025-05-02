@@ -10,7 +10,7 @@ import (
 )
 
 func mustCreateOperatorOAuthSecret(
-	clientset kubernetes.Clientset,
+	clientset kubernetes.Interface,
 	namespace string,
 	name string,
 	clientId string,
