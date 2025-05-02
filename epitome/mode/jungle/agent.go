@@ -1,4 +1,4 @@
-package hyperweb
+package jungle
 
 import (
 	"epitome.hyperbolic.xyz/config"
