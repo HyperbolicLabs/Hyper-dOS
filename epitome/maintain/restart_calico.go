@@ -48,5 +48,6 @@ func (a *agent) restartCalicoIfExists(ctx context.Context) error {
 		return fmt.Errorf("failed to patch calico node daemonset: %v", err)
 	}
 
+	a.logger.Info("calico daemonset restarted")
 	return nil
 }
