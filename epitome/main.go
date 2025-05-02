@@ -66,7 +66,9 @@ func main() {
 		err := maintain.Run(
 			cfg,
 			logger,
-			clientset)
+			clientset,
+			dynamicClient,
+		)
 		logger.Fatal("maintain runloop exited unexpectedly", zap.Error(err))
 
 	case "monkey":
