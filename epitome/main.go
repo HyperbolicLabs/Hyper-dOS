@@ -7,7 +7,7 @@ import (
 	"epitome.hyperbolic.xyz/config"
 	"epitome.hyperbolic.xyz/helper"
 	"epitome.hyperbolic.xyz/hyperweb"
-	"epitome.hyperbolic.xyz/maintain"
+	"epitome.hyperbolic.xyz/mode/maintain"
 	"epitome.hyperbolic.xyz/mode/monkey"
 	env11 "github.com/caarlos0/env/v11"
 	"go.uber.org/zap"
