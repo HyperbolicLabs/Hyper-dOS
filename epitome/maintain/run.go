@@ -21,9 +21,10 @@ func Run(
 		clientset: clientset,
 	}
 
-	a.logger.Info("running maintainance agent")
+	interval := a.cfg.Maintain.ReconcileInterval
+	a.logger.Info("running maintainance agent", zap.String("interval", interval.String()))
 
-	ticker := time.NewTicker(a.cfg.Maintain.ReconcileInterval)
+	ticker := time.NewTicker(interval)
 	for {
 		<-ticker.C // in maintain mode, we wait before running the first reconcile
 		err := a.reconcile()
