@@ -1,5 +1,5 @@
 [submodule "epitome/jungle"]
-	path = epitome/jungle
+	path = epitome/jungleproto
 	# url = git@github.com:hyperboliclabs/jungle.proto.git
 
 	# use https for now to avoid argo issues cloning ssh submodules
