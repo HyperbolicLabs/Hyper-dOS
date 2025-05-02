@@ -68,6 +68,16 @@ func (a *agent) reconcile() error {
 		}
 	}
 
+	err = a.patchClusterPolicy()
+	if err != nil {
+		logrus.Errorf("failed to patch cluster policy: %v", err)
+		return err
+	}
+
+	return nil
+}
+
+func (a *agent) patchClusterPolicy() error {
 	gvr := schema.GroupVersionResource{
 		Group:    "nvidia.com",
 		Version:  "v1",

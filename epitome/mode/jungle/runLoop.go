@@ -17,9 +17,10 @@ func Run(
 	dynamicClient dynamic.DynamicClient,
 ) error {
 	a := &agent{
-		cfg:       cfg,
-		logger:    logger,
-		clientset: clientset,
+		cfg:           cfg,
+		logger:        logger,
+		clientset:     clientset,
+		dynamicClient: dynamicClient,
 	}
 	interval := cfg.Default.ReconcileInterval
 	ticker := time.NewTicker(interval)
