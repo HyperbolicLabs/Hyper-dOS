@@ -13,13 +13,13 @@ func (a *agent) restartCalicoIfExists(ctx context.Context) error {
 	// restart the calico daemonset
 	calicoDaemonSetName := "calico-node"
 	namespace := "calico-system"
+
 	// "kubectl rollout restart daemonset calico-node"
 	// since 'rollout restart' is an unofficial procedure in the api,
 	// this happens under the hood by patching the daemonset
 	// with the annotation:
 	// "kubectl.kubernetes.io/restartedAt":"<timestamp>"
 	// https://stackoverflow.com/questions/61335318/how-to-restart-a-deployment-in-kubernetes-using-go-client
-
 	patch := fmt.Appendf(nil,
 		`{
 				"metadata": {
