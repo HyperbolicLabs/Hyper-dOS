@@ -1,0 +1,23 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: calico-maintainer
+rules:
+- apiGroups: ["apps"]
+  resources: ["daemonsets"]
+  verbs: ["get", "patch", "update"]
+  resourceNames: ["calico-node"]
+  namespace: "calico-system"
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: calico-maintainer-binding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: calico-maintainer
+subjects:
+- kind: ServiceAccount
+  name: epitome  # Should match your service account name
+  namespace: hyperdos  # Namespace where epitome runs

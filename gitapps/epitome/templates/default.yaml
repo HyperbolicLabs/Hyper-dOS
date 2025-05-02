@@ -34,4 +34,14 @@ spec:
             secretKeyRef:
               name: hyperbolic-token
               key: token
+      - name: maintain
+        image: "{{ .Values.image }}:{{ .Values.hyperdos.ref }}"
+        imagePullPolicy: Always
+        args:
+        - -mode=maintain
+        {{- if contains "dev" .Values.hyperdos.ref }}
+        env:
+        - name: MAINTAIN_RECONCILE_INTERVAL
+          value: "10m"
+        {{- end }}
       restartPolicy: Always
