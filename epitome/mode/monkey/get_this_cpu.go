@@ -67,6 +67,14 @@ func convertCPUModelLineToCPULabels(line string) (*cpuLabels, error) {
 	// replace all spaces with underscores
 	name = strings.ReplaceAll(name, " ", "_")
 
+	// if longer than 63 characters, truncate
+	// and replace the last three chars with ---
+	if len(name) > 63 {
+		name = name[:63]
+		// replace the last three chars with "..."
+		name = name[:len(name)-3] + "..."
+	}
+
 	return &cpuLabels{
 		name: name,
 	}, nil

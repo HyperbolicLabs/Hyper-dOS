@@ -33,6 +33,14 @@ func Test_convertCPUModelToCPUName(t *testing.T) {
 			want:    &cpuLabels{name: "AMD_Ryzen_7_8845HS_w_Radeon_780M_Graphics"},
 			wantErr: false,
 		},
+		{
+			name: "longer than 63 characters",
+			args: args{
+				line: "model name\t: Intel(R) Core(TM) i7-10710U CPU thing thing thing thing thing thing @ 1.10GHz",
+			},
+			want:    &cpuLabels{name: "Intel_Core_i7-10710U_CPU_thing_thing_thing_thing_thing_thing..."},
+			wantErr: false,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
