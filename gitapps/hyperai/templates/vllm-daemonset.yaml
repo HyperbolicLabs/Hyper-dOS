@@ -24,9 +24,10 @@ spec:
           name: http
         - containerPort: 9999
           name: metrics
-        env:
-        - name: MODEL_NAME
-          value: {{ .Values.model.name | default "mistralai/Mistral-7B-Instruct-v0.2" }}
+        args:
+          # https://docs.vllm.ai/en/latest/getting_started/quickstart.html#quickstart-online
+          - "--model"
+          - {{ .Values.model.name | default "mistralai/Mistral-7B-Instruct-v0.2" }}
         {{- with .Values.resources }}
         resources:
           {{- toYaml . | nindent 10 }}
