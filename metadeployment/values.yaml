@@ -8,8 +8,9 @@ hyperai:
   enabled: false
   # https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/
   priority: -100
-  image: vllm/vllm-openai
-  tag: latest
+  image:
+    repository: vllm/vllm-openai
+    tag: latest
   model:
     name: "mistralai/Mistral-7B-Instruct-v0.2"
   service:
