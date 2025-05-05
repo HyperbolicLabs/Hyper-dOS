@@ -27,7 +27,7 @@ spec:
         args:
           # https://docs.vllm.ai/en/latest/getting_started/quickstart.html#quickstart-online
           - "--model"
-          - {{ .Values.model.name | default "Qwen/Qwen3-0.6B" }}
+          - {{ .Values.model.name | default "Qwen/Qwen3-0.6B-FP8" }}
         {{- with .Values.resources }}
         resources:
           {{- toYaml . | nindent 10 }}
