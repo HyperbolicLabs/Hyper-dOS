@@ -56,7 +56,7 @@ func TestRestartCalicoIfExists(t *testing.T) {
 	// check that the restartedat annotation was added in the proper format
 	daemonset, err := clientset.AppsV1().DaemonSets(config.CalicoNamespace).Get(ctx, "calico-node", metav1.GetOptions{})
 	require.NoError(t, err)
-	restartedAt := daemonset.Annotations["kubectl.kubernetes.io/restartedAt"]
+	restartedAt := daemonset.Spec.Template.Annotations["kubectl.kubernetes.io/restartedAt"]
 	require.NotEmpty(t, restartedAt)
 
 	// restartedAt should be after test start time
