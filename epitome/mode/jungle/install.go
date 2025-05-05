@@ -1,4 +1,4 @@
-package hyperweb
+package jungle
 
 import (
 	"bytes"
@@ -10,13 +10,11 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime/schema"
-	"k8s.io/client-go/dynamic"
 
 	yaml "k8s.io/apimachinery/pkg/util/yaml"
 )
 
-func InstallHyperWeb(
-	dynamicClient dynamic.DynamicClient,
+func (a *agent) installHyperWeb(
 	clusterName string,
 ) error {
 	yamlFile, err := os.ReadFile("application.yaml")
@@ -39,7 +37,7 @@ func InstallHyperWeb(
 	yaml.NewYAMLOrJSONDecoder(buff, buff.Len()).Decode(obj)
 	logrus.Debugf("unstructured: %+v", obj)
 
-	_, err = dynamicClient.
+	_, err = a.dynamicClient.
 		Resource(argoGVR).
 		Namespace("argocd").
 		Apply(

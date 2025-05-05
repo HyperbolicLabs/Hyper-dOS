@@ -72,3 +72,19 @@ roleRef:
   kind: ClusterRole
   name: app-manager
   apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: manage-calico
+  # bind onto kube-system namespace, where calico ds is deployed
+  namespace: kube-system
+subjects:
+# bind from hyperdos namespace (where epitome is deployed)
+- kind: ServiceAccount
+  name: default
+  namespace: hyperdos
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: calico-maintainer

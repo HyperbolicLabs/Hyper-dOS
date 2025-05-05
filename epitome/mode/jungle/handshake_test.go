@@ -1,4 +1,4 @@
-package hyperweb
+package jungle
 
 import (
 	"bytes"
@@ -44,6 +44,10 @@ func Test_handshake(t *testing.T) {
 
 	require.NoError(t, err)
 
+	a := &agent{
+		cfg: cfg,
+	}
+
 	t.Run("happy path", func(t *testing.T) {
 		wantResponse := &handshakeResponse{
 			ClientID:     "client-id",
@@ -57,10 +61,7 @@ func Test_handshake(t *testing.T) {
 			t:   t,
 		}
 
-		gotResponse, err := handshake(
-			mockHttpClient,
-			cfg.Default.HYPERBOLIC_GATEWAY_URL,
-			cfg.Default.HYPERBOLIC_TOKEN)
+		gotResponse, err := a.handshake(mockHttpClient)
 
 		require.NoError(t, err)
 

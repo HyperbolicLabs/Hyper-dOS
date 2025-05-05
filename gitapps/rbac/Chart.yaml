@@ -1,0 +1,7 @@
+---
+apiVersion: v3
+name: metadeployment
+description: deploys hyperdos rbac according to configuration
+type: application
+version: 0.0.0
+appVersion: "v0.0.0"

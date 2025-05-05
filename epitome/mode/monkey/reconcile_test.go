@@ -31,8 +31,7 @@ func Test_labelsAreGood(t *testing.T) {
 					"hyperbolic.xyz/cpu-name": "Intel_Core_i7-10710U_CPU",
 				},
 				newLabels: map[string]string{
-					"hyperbolic.xyz/cpu-name":  "Intel_Core i7-10710U_CPU",
-					"hyperbolic.xyz/cpu-clock": "3.6GHz",
+					"hyperbolic.xyz/cpu-name": "Intel_Core i7-10710U_CPU",
 				},
 			},
 			want: false,

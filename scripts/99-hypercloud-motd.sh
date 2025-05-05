@@ -14,5 +14,5 @@ ephemeral disk usage above 20 GB will trigger a pod reset.
 su ubuntu -c "neofetch --source /etc/update-motd.d/hypercloud.ascii"
 
 echo "
-...Welcome to the rAInforest!
+...Welcome to Hyperbolic!
 "

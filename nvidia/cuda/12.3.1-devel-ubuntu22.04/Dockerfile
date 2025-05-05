@@ -1,9 +1,5 @@
 FROM nvidia/cuda:12.3.1-devel-ubuntu22.04
 
-COPY scripts/install-common-packages.sh /install-common-packages.sh
-RUN chmod +x /install-common-packages.sh
-RUN /install-common-packages.sh
-
 # RUN adduser --disabled-password --gecos '' docker
 RUN useradd -m -s /bin/bash ubuntu
 
@@ -12,6 +8,10 @@ RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
 RUN mkdir /home/ubuntu/.ssh
 RUN echo "TODO" > /home/ubuntu/.ssh/authorized_keys
+
+COPY scripts/install-common-packages.sh /install-common-packages.sh
+RUN chmod +x /install-common-packages.sh
+RUN /install-common-packages.sh
 
 # Add CUDA binaries to PATH and CUDA libraries to LD_LIBRARY_PATH
 RUN echo 'export PATH="/usr/local/cuda/bin:${PATH}"' >> /etc/bash.bashrc

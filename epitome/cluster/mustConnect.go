@@ -7,7 +7,9 @@ import (
 	"k8s.io/client-go/tools/clientcmd"
 )
 
-func MustConnect(kubeconfig string) (kubernetes.Clientset, dynamic.DynamicClient) {
+func MustConnect(kubeconfig string) (
+	kubernetes.Interface,
+	dynamic.DynamicClient) {
 	if kubeconfig != "" {
 		// create the config object from kubeconfig
 		config, err := clientcmd.BuildConfigFromFlags("", kubeconfig)
@@ -25,7 +27,7 @@ func MustConnect(kubeconfig string) (kubernetes.Clientset, dynamic.DynamicClient
 			panic(err.Error())
 		}
 
-		return *clientset, *dynamicClient
+		return clientset, *dynamicClient
 	}
 
 	// creates the in-cluster config
@@ -44,5 +46,5 @@ func MustConnect(kubeconfig string) (kubernetes.Clientset, dynamic.DynamicClient
 		panic(err.Error())
 	}
 
-	return *clientset, *dynamicClient
+	return clientset, *dynamicClient
 }

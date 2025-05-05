@@ -6,7 +6,8 @@ import (
 	"epitome.hyperbolic.xyz/cluster"
 	"epitome.hyperbolic.xyz/config"
 	"epitome.hyperbolic.xyz/helper"
-	"epitome.hyperbolic.xyz/hyperweb"
+	"epitome.hyperbolic.xyz/mode/jungle"
+	"epitome.hyperbolic.xyz/mode/maintain"
 	"epitome.hyperbolic.xyz/mode/monkey"
 	env11 "github.com/caarlos0/env/v11"
 	"go.uber.org/zap"
@@ -17,7 +18,7 @@ const VERSION = "v1-alpha"
 
 func main() {
 	help := flag.Bool("help", false, "Show help")
-	mode := flag.String("mode", "default", "Specify the mode to run.")
+	mode := flag.String("mode", "jungle", "Specify the mode to run epitome in (jungle | maintain | monkey)")
 	flag.Parse()
 
 	var cfg config.Config
@@ -43,27 +44,42 @@ func main() {
 		return
 	}
 
+	// set up logger
 	logCfg.EncoderConfig.TimeKey = "timestamp"
 	logCfg.EncoderConfig.EncodeTime = zapcore.ISO8601TimeEncoder
-
 	logger, _ := logCfg.Build()
-
 	logger = logger.With(zap.String("mode", *mode))
 	logger.Info("launching epitome")
 
 	clientset, dynamicClient := cluster.MustConnect(cfg.KUBECONFIG)
 	switch *mode {
-	case "default":
-		err := hyperweb.RunLoop(
+	case "jungle":
+		err := jungle.Run(
 			cfg,
 			logger,
 			clientset,
 			dynamicClient,
 		)
 		logger.Fatal("hyperweb runloop exited unexpectedly", zap.Error(err))
+
+	case "maintain":
+		err := maintain.Run(
+			cfg,
+			logger,
+			clientset,
+			dynamicClient,
+		)
+		logger.Fatal("maintain runloop exited unexpectedly", zap.Error(err))
+
 	case "monkey":
-		err := monkey.Run(cfg, logger)
+		err := monkey.Run(
+			cfg,
+			logger,
+			clientset,
+			dynamicClient,
+		)
 		logger.Fatal("monkey runloop exited unexpectedly", zap.Error(err))
+
 	default:
 		logger.Fatal("unknown mode", zap.String("mode", *mode))
 	}

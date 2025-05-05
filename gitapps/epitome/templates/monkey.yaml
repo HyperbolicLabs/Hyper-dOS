@@ -4,7 +4,6 @@ apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: epitome-monkey
-  namespace: {{ .Release.Namespace }}
   labels:
     app: epitome-monkey
 spec:
@@ -16,7 +15,6 @@ spec:
       labels:
         app: epitome-monkey
     spec:
-      serviceAccountName: epitome-monkey
       containers:
       - name: epitome-monkey
         image: "{{ .Values.image }}:{{ .Values.hyperdos.ref }}"

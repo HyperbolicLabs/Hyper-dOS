@@ -20,6 +20,21 @@
             }
         },
         {
+            "name": "(DEV) Run Maintain",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "program": "epitome/main.go",
+            "args": [
+                "-mode=maintain"
+            ],
+            "env": {
+                "LOG_LEVEL": "debug",
+                "KUBECONFIG": "./.kube/dev-baron-kubeconfig.yaml",
+                "MAINTAIN_RECONCILE_INTERVAL": "1m",
+            },
+        },
+        {
             "name": "(DEV) Run Monkey",
             "type": "go",
             "request": "launch",

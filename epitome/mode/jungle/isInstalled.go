@@ -1,21 +1,20 @@
-package hyperweb
+package jungle
 
 import (
 	"context"
 
 	"k8s.io/apimachinery/pkg/runtime/schema"
-	"k8s.io/client-go/dynamic"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-func IsInstalled(dynamicClient dynamic.DynamicClient) bool {
-	_, err := dynamicClient.
+func (a *agent) HyperwebIsInstalled() bool {
+	_, err := a.dynamicClient.
 		Resource(argoAppGVR).
 		Namespace(argocdNamespace).
 		Get(
 			context.TODO(),
-			hyperwebNamespace,
+			a.cfg.HyperwebNamespace,
 			metav1.GetOptions{})
 
 	if err != nil {

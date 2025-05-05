@@ -3,7 +3,6 @@ package monkey
 import (
 	"time"
 
-	"epitome.hyperbolic.xyz/cluster"
 	"epitome.hyperbolic.xyz/config"
 	"go.uber.org/zap"
 	"k8s.io/client-go/dynamic"
@@ -13,16 +12,16 @@ import (
 type agent struct {
 	cfg           config.Config
 	logger        *zap.Logger
-	clientset     kubernetes.Clientset
+	clientset     kubernetes.Interface
 	dynamicClient dynamic.DynamicClient
 }
 
 func Run(
 	cfg config.Config,
 	logger *zap.Logger,
+	clientset kubernetes.Interface,
+	dynamicClient dynamic.DynamicClient,
 ) error {
-	clientset, dynamicClient := cluster.MustConnect(cfg.KUBECONFIG)
-
 	a := &agent{
 		cfg:           cfg,
 		logger:        logger,

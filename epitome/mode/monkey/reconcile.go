@@ -4,21 +4,15 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"os"
 
+	"epitome.hyperbolic.xyz/config"
 	"go.uber.org/zap"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
 )
 
 func (a *agent) reconcile() error {
-	// Get current CPU model
-
-	// Get node name from environment (automatically set in pod by Kubernetes)
-	nodeName := os.Getenv("KUBERNETES_NODE_NAME")
-	if nodeName == "" {
-		return fmt.Errorf("KUBERNETES_NODE_NAME environment variable not set")
-	}
+	nodeName := a.cfg.Monkey.KUBERNETES_NODE_NAME
 
 	// Get current node object
 	node, err := a.clientset.CoreV1().Nodes().Get(context.TODO(), nodeName, metav1.GetOptions{})
@@ -26,18 +20,20 @@ func (a *agent) reconcile() error {
 		return fmt.Errorf("failed to get node: %w", err)
 	}
 
-	// if not, get the cpu name and clock
+	// get the cpu name and clock
 	cpuLabels, err := a.getThisCPU()
 	if err != nil {
 		return fmt.Errorf("failed to get CPU name: %w", err)
 	}
 
 	newLabels := make(map[string]string)
-	newLabels["hyperbolic.xyz/cpu-name"] = cpuLabels.name
-	newLabels["hyperbolic.xyz/cpu-clock"] = cpuLabels.clock
+	newLabels[config.CPUNameLabelKey] = cpuLabels.name
 
-	// Check if label already exists and is correct
+	// check if label(s) already exist on the node and is correct
 	if labelsAreGood(node.Labels, newLabels) {
+		a.logger.Debug("node already labeled correctly",
+			zap.String("node", nodeName),
+			zap.String(config.CPUNameLabelKey, node.Labels[config.CPUNameLabelKey]))
 		return nil
 	}
 
@@ -63,8 +59,7 @@ func (a *agent) reconcile() error {
 
 	a.logger.Info("successfully labeled node",
 		zap.String("node", nodeName),
-		zap.String("cpu-name", cpuLabels.name),
-		zap.String("cpu-clock", cpuLabels.clock),
+		zap.String(config.CPUNameLabelKey, cpuLabels.name),
 	)
 
 	return nil
