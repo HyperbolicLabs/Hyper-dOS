@@ -5,6 +5,10 @@ import (
 	"time"
 )
 
+const (
+	CPUNameLabelKey = "hyperbolic.xyz/cpu-name"
+)
+
 type Config struct {
 	Default  DefaultMode
 	Monkey   MonkeyMode

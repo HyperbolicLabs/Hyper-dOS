@@ -16,7 +16,7 @@ func (agent *agent) getThisCPU() (*cpuLabels, error) {
 	// Find the first model name (all cores will be the same)
 	for _, line := range strings.Split(string(data), "\n") {
 		if strings.Contains(line, "model name") {
-			return convertCPUModelToCPUName(line)
+			return convertCPUModelLineToCPULabels(line)
 		}
 	}
 
@@ -24,44 +24,50 @@ func (agent *agent) getThisCPU() (*cpuLabels, error) {
 }
 
 type cpuLabels struct {
-	name  string
-	clock string
+	name string
 }
 
-func convertCPUModelToCPUName(line string) (*cpuLabels, error) {
-	combo := ""
+// convertCPUModelToCPUName takes a line from /proc/cpuinfo and converts it
+// into kubernetes label format. If the line format is invalid, an error is returned.
+// https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#syntax-and-character-set
+// for example:
+// model name	: Intel(R) Core(TM) i7-10710U CPU @ 1.10GHz
+// returns: &cpuLabels{name: "Intel_Core_i7-10710U_CPU_1.10GHz"}
+func convertCPUModelLineToCPULabels(line string) (*cpuLabels, error) {
+	// Valid label value:
+	//     must be 63 characters or less (can be empty),
+	//     unless empty, must begin and end with an alphanumeric character ([a-z0-9A-Z]),
+	//     could contain dashes (-), underscores (_), dots (.), and alphanumerics between.
+	name := ""
 
 	// start: "model name\t: Intel(R) Core(TM) i7-10710U CPU @ 1.10GHz"
 	parts := strings.SplitN(line, ":", 2)
-	if len(parts) == 2 {
-		combo = strings.TrimSpace(parts[1])
-	} else {
+	if len(parts) != 2 {
 		return nil, fmt.Errorf("invalid line format: %s", line)
 	}
+	name = strings.TrimSpace(parts[1])
 	// now we have: "Intel (R) Core(TM) i7-10710U CPU @ 1.10GHz"
 
-	// remove all instances of (R) and (TM) from output
-	combo = strings.ReplaceAll(combo, "(R)", "")
-	combo = strings.ReplaceAll(combo, "(TM)", "")
+	// remove all instances of (R), (TM), "w/"
+	// for example: "model name\t: AMD Ryzen 7 8845HS w/ Radeon 780M Graphics"
+	// should return "AMD_Ryzen_7_8845HS_w_Radeon_780M_Graphics"
+	name = strings.ReplaceAll(name, "(R)", "")
+	name = strings.ReplaceAll(name, "(TM)", "")
+	name = strings.ReplaceAll(name, "w/", "w")
+	name = strings.ReplaceAll(name, "@", "")
 
-	name := ""
-	clock := ""
+	// remove all special characters other than letters, numbers, dashes, and underscores
+	re := `[^a-zA-Z0-9\-_]`
+	name = strings.ReplaceAll(name, re, "")
 
-	// now we have: "Intel Core i7-10710U CPU @ 1.10GHz"
-	// @ is an invalid char in k8s labels, so we will have to break it up
-	parts = strings.SplitN(combo, "@", 2)
-	if len(parts) == 2 {
-		name = strings.TrimSpace(parts[0])
-		clock = strings.TrimSpace(parts[1])
-	} else {
-		return nil, fmt.Errorf("could not split invalid line format into name and clock: %s", line)
-	}
+	// replace multiple spaces with a single space
+	// https://stackoverflow.com/a/55437544
+	name = strings.Join(strings.Fields(strings.TrimSpace(name)), " ")
 
 	// replace all spaces with underscores
 	name = strings.ReplaceAll(name, " ", "_")
 
 	return &cpuLabels{
-		name:  name,
-		clock: clock,
+		name: name,
 	}, nil
 }
