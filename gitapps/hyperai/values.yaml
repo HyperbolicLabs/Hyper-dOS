@@ -4,7 +4,7 @@ image:
 # https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/
 priority: -100
 model:
-  name: {}
+  name: "nlpcloud/instruct-gpt-j-fp16"
   # name: "mistralai/Mistral-7B-Instruct-v0.2"
   # name: "meta-llama/Llama-3.2-3B-Instruct"
 service:
