@@ -23,12 +23,16 @@ func (a *agent) restartCalicoIfExists(ctx context.Context) error {
 	// https://stackoverflow.com/questions/61335318/how-to-restart-a-deployment-in-kubernetes-using-go-client
 	patch := fmt.Appendf(nil,
 		`{
-				"metadata": {
-					"annotations": {
-						"kubectl.kubernetes.io/restartedAt": "%s"
+			"spec": {
+				"template": {
+					"metadata": {
+						"annotations": {
+							"kubectl.kubernetes.io/restartedAt": "%s"
+						}
 					}
 				}
-			}`,
+			}
+		}`,
 		time.Now().Format(time.RFC3339),
 	)
 

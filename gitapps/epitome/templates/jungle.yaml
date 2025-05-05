@@ -16,12 +16,13 @@ spec:
       labels:
         app: epitome
     spec:
+      restartPolicy: Always
       containers:
       - name: epitome
         image: "{{ .Values.image }}:{{ .Values.hyperdos.ref }}"
         imagePullPolicy: Always
-        # args:
-        # - -mode=TODO
+        args:
+        - -mode=jungle
         env:
         {{- if contains "dev" .Values.hyperdos.ref }}
         - name: HYPERBOLIC_GATEWAY_URL
@@ -34,6 +35,7 @@ spec:
             secretKeyRef:
               name: hyperbolic-token
               key: token
+
       - name: maintain
         image: "{{ .Values.image }}:{{ .Values.hyperdos.ref }}"
         imagePullPolicy: Always
@@ -42,6 +44,6 @@ spec:
         {{- if contains "dev" .Values.hyperdos.ref }}
         env:
         - name: MAINTAIN_RECONCILE_INTERVAL
-          value: "10m"
+          value: "2m"
         {{- end }}
-      restartPolicy: Always
+
