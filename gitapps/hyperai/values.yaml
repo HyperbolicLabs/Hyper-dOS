@@ -1,3 +1,14 @@
 image:
   repository: vllm/vllm-openai
   tag: latest
+model:
+  name: "mistralai/Mistral-7B-Instruct-v0.2"
+service:
+  type: ClusterIP
+resources:
+  # just one gpu per node for now
+  # down the line we will try to figure out improvements
+  limits:
+    nvidia.com/gpu: 1
+  requests:
+    nvidia.com/gpu: 1
