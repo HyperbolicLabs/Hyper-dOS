@@ -9,7 +9,7 @@ spec:
   project: default
   source:
     repoURL: {{ .Values.hyperdos.url }}
-    path: gitapps/inference
+    path: gitapps/hyperai
     targetRevision: {{ .Values.hyperdos.ref }}
     helm:
       valuesObject:
