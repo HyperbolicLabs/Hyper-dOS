@@ -88,18 +88,3 @@ roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
   name: calico-maintainer
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
-metadata:
-  name: hyperdos-node-patcher
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
-  name: node-patcher
-subjects:
-  # anything deployed in the hyperdos namespace can patch nodes
-  # this is currently used by monkey to update cpu labels
-- kind: ServiceAccount
-  name: default
-  namespace: hyperdos

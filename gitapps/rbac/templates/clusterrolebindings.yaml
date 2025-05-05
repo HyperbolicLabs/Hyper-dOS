@@ -11,3 +11,18 @@ roleRef:
   kind: ClusterRole
   name: cluster-policy-updater
   apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: hyperdos-node-patcher
+subjects:
+  # anything deployed in the hyperdos namespace can patch nodes
+  # this is currently used by monkey to update cpu-related nodelabels
+- kind: ServiceAccount
+  name: default
+  namespace: hyperdos
+roleRef:
+  kind: ClusterRole
+  name: node-patcher
+  apiGroup: rbac.authorization.k8s.io
