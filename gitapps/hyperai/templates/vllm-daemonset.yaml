@@ -17,7 +17,7 @@ spec:
       priorityClassName: hyperai
       containers:
       - name: vllm-server
-        image: {{ .Values.image.repository | "vllm/vllm-openai" }}:{{ .Values.image.tag | default "latest" }}
+        image: {{ .Values.image.repository | default "vllm/vllm-openai" }}:{{ .Values.image.tag | default "latest" }}
         imagePullPolicy: {{ .Values.image.pullPolicy | default "IfNotPresent" }}
         ports:
         - containerPort: 8000
