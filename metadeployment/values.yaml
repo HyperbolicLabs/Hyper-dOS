@@ -6,9 +6,6 @@ hyperdos:
 
 hyperai:
   enabled: false
-  # https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/
-  priority: -100
-
 
 clusterdos:
   ref: 'v0.1'
