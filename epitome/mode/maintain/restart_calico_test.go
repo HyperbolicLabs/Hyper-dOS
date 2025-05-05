@@ -5,6 +5,7 @@ import (
 	"testing"
 	"time"
 
+	"epitome.hyperbolic.xyz/config"
 	"github.com/stretchr/testify/require"
 	"go.uber.org/zap"
 	appsv1 "k8s.io/api/apps/v1"
@@ -30,7 +31,7 @@ func TestRestartCalicoIfExists(t *testing.T) {
 	require.NoError(t, err)
 
 	// Create calico daemonset
-	_, err = clientset.AppsV1().DaemonSets("calico-system").Create(ctx, &appsv1.DaemonSet{
+	_, err = clientset.AppsV1().DaemonSets(config.CalicoNamespace).Create(ctx, &appsv1.DaemonSet{
 		ObjectMeta: metav1.ObjectMeta{
 			Name: "calico-node",
 		},
@@ -38,7 +39,7 @@ func TestRestartCalicoIfExists(t *testing.T) {
 	require.NoError(t, err)
 
 	// Create some dummy pods
-	_, err = clientset.CoreV1().Pods("calico-system").Create(ctx, &corev1.Pod{
+	_, err = clientset.CoreV1().Pods(config.CalicoNamespace).Create(ctx, &corev1.Pod{
 		ObjectMeta: metav1.ObjectMeta{
 			Name: "calico-node-abc",
 			Labels: map[string]string{
@@ -53,7 +54,7 @@ func TestRestartCalicoIfExists(t *testing.T) {
 	require.NoError(t, err)
 
 	// check that the restartedat annotation was added in the proper format
-	daemonset, err := clientset.AppsV1().DaemonSets("calico-system").Get(ctx, "calico-node", metav1.GetOptions{})
+	daemonset, err := clientset.AppsV1().DaemonSets(config.CalicoNamespace).Get(ctx, "calico-node", metav1.GetOptions{})
 	require.NoError(t, err)
 	restartedAt := daemonset.Annotations["kubectl.kubernetes.io/restartedAt"]
 	require.NotEmpty(t, restartedAt)

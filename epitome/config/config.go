@@ -7,6 +7,7 @@ import (
 
 const (
 	CPUNameLabelKey = "hyperbolic.xyz/cpu-name"
+	CalicoNamespace = "kube-system"
 )
 
 type Config struct {

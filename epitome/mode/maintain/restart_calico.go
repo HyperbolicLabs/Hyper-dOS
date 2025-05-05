@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"time"
 
+	"epitome.hyperbolic.xyz/config"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
 )
@@ -12,7 +13,7 @@ import (
 func (a *agent) restartCalicoIfExists(ctx context.Context) error {
 	// restart the calico daemonset
 	calicoDaemonSetName := "calico-node"
-	namespace := "calico-system"
+	namespace := config.CalicoNamespace
 
 	// "kubectl rollout restart daemonset calico-node"
 	// since 'rollout restart' is an unofficial procedure in the api,

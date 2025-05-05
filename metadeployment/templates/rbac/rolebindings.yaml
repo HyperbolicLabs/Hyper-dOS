@@ -77,8 +77,8 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: manage-calico
-  # bind onto calico-system namespace
-  namespace: calico-system
+  # bind onto kube-system namespace, where calico ds is deployed
+  namespace: kube-system
 subjects:
 - kind: ServiceAccount
   # bind from epitome account
