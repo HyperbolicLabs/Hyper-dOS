@@ -1,0 +1,46 @@
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: hyperai-vllm-daemon
+  labels:
+    app.kubernetes.io/name: hyperai-vllm
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: hyperai-vllm
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: hyperai-vllm
+    spec:
+      priorityClassName: hyperai
+      containers:
+      - name: vllm-server
+        image: {{ .Values.image.repository }}:{{ .Values.image.tag | default "latest" }}
+        imagePullPolicy: {{ .Values.image.pullPolicy | default "IfNotPresent" }}
+        ports:
+        - containerPort: 8000
+          name: http
+        - containerPort: 9999
+          name: metrics
+        env:
+        - name: MODEL_NAME
+          value: {{ .Values.model.name | default "mistralai/Mistral-7B-Instruct-v0.2" }}
+        {{- with .Values.resources }}
+        resources:
+          {{- toYaml . | nindent 10 }}
+        {{ end }}
+        volumeMounts:
+        - name: models
+          mountPath: /models
+      volumes:
+      - name: models
+        hostPath:
+          path: /var/lib/hyperai/models
+      tolerations:
+      - key: nvidia.com/gpu
+        operator: Exists
+        effect: NoSchedule
+      # nodeSelector:
+      #   {{- toYaml .Values.nodeSelector | nindent 8 }}

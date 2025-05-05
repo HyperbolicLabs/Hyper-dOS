@@ -1,0 +1,32 @@
+{{- if .Values.hyperai.enabled }}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: inference
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: {{ .Values.hyperdos.url }}
+    path: gitapps/inference
+    targetRevision: {{ .Values.hyperdos.ref }}
+    helm:
+      valuesObject:
+        {{- .Values.hyperai | toYaml | nindent 8 }}
+      parameters:
+        - name: hyperdos.ref
+          value: $ARGOCD_APP_SOURCE_TARGET_REVISION
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: hyperdos
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+      - Replace=true
+      - Force=true
+    automated:
+      prune: true
+      allowEmpty: true
+      selfHeal: true
+{{- end}}

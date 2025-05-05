@@ -1,0 +1,9 @@
+---
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: hyperai
+value: {{ .Values.priority }}
+preemptionPolicy: PreemptLowerPriority
+description: "Used for HyperAI vLLM DaemonSet pods"
+globalDefault: false
