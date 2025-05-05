@@ -80,10 +80,9 @@ metadata:
   # bind onto kube-system namespace, where calico ds is deployed
   namespace: kube-system
 subjects:
+# bind from hyperdos namespace (where epitome is deployed)
 - kind: ServiceAccount
-  # bind from epitome account
-  name: epitome
-  # bind from hyperdos namespace (where epitome is deployed)
+  name: default
   namespace: hyperdos
 roleRef:
   apiGroup: rbac.authorization.k8s.io
@@ -93,7 +92,7 @@ roleRef:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: hyperdos-node-labeler
+  name: hyperdos-node-patcher
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
