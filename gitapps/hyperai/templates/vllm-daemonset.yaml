@@ -42,5 +42,3 @@ spec:
       - key: nvidia.com/gpu
         operator: Exists
         effect: NoSchedule
-      # nodeSelector:
-      #   {{- toYaml .Values.nodeSelector | nindent 8 }}
