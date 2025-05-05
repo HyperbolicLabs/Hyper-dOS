@@ -9,3 +9,6 @@ clusterdos:
   url: 'https://gitlab.com/squire-exchange/public/cluster-dos.git'
 
 env: prod
+
+rbac:
+  enabled: true
