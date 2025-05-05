@@ -45,6 +45,6 @@ spec:
         {{- if contains "dev" .Values.hyperdos.ref }}
         env:
         - name: MAINTAIN_RECONCILE_INTERVAL
-          value: "2m"
+          value: "10m"
         {{- end }}
 
