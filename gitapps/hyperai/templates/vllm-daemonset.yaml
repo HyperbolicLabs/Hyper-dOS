@@ -28,6 +28,8 @@ spec:
           # https://docs.vllm.ai/en/latest/getting_started/quickstart.html#quickstart-online
           - "--model"
           - {{ .Values.model.name | default "Qwen/Qwen3-0.6B-FP8" }}
+          # required to get things to run on T4
+          - "--dtype=half"
         {{- with .Values.resources }}
         resources:
           {{- toYaml . | nindent 10 }}

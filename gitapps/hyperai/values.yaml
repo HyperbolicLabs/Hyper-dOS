@@ -15,10 +15,10 @@ resources:
   # just one gpu per node for now
   # down the line we will try to figure out improvements
   requests:
-    cpu: "400m"
-    memory: "2G"
+    cpu: "1"
+    memory: "4G"
     nvidia.com/gpu: 1
   limits:
-    cpu: "700m"
-    memory: "4G"
+    cpu: "2"
+    memory: "8G"
     nvidia.com/gpu: 1
