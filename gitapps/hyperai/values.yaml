@@ -14,9 +14,9 @@ resources:
   # down the line we will try to figure out improvements
   requests:
     cpu: "400m"
-    memory: "1G"
+    memory: "2G"
     nvidia.com/gpu: 1
   limits:
     cpu: "700m"
-    memory: "2G"
+    memory: "4G"
     nvidia.com/gpu: 1
