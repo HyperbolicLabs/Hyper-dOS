@@ -68,14 +68,14 @@ Please get in touch if you are planning to install hyperdos on an existing multi
 ### configure helm repo and dry-run
 
 ```bash
-sudo microk8s helm install --dry-run hyperdos hyperdos/hyperdos --version 0.0.2 --set token="DRY_RUN_NO_TOKEN"
+sudo microk8s helm install --dry-run hyperdos hyperdos/hyperdos --version 0.0.3 --set token="DRY_RUN_NO_TOKEN"
 ```
 
 ### install (without rolling updates)
 
 ```bash
 # to disable automatic updates and pin to a specific git ref
-sudo microk8s helm install hyperdos hyperdos/hyperdos --version 0.0.2 --set token="<YOUR_API_KEY>"
+sudo microk8s helm install hyperdos hyperdos/hyperdos --version 0.0.3 --set token="<YOUR_API_KEY>"
 ```
 
 
