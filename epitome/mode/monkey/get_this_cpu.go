@@ -3,6 +3,7 @@ package monkey
 import (
 	"fmt"
 	"os"
+	"regexp"
 	"strings"
 )
 
@@ -56,9 +57,9 @@ func convertCPUModelLineToCPULabels(line string) (*cpuLabels, error) {
 	name = strings.ReplaceAll(name, "w/", "w")
 	name = strings.ReplaceAll(name, "@", "")
 
-	// remove all special characters other than letters, numbers, dashes, and underscores
-	re := `[^a-zA-Z0-9\-_]`
-	name = strings.ReplaceAll(name, re, "")
+	// remove all special characters other than letters, numbers, dashes, dots, spaces and underscores
+	re := regexp.MustCompile(`[^a-zA-Z0-9\.\-_\-_\s]`)
+	name = re.ReplaceAllString(name, "")
 
 	// replace multiple spaces with a single space
 	// https://stackoverflow.com/a/55437544
