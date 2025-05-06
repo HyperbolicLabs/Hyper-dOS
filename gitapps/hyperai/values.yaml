@@ -1,0 +1,21 @@
+image:
+  repository: vllm/vllm-openai
+  tag: v0.8.5
+# https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/
+priority: -100
+model:
+  # https://huggingface.co/TinyLlama/TinyLlama-1.1B-Chat-v1.0
+  name: "TinyLlama/TinyLlama-1.1B-Chat-v1.0"
+service:
+  type: ClusterIP
+resources:
+  # just one gpu per node for now
+  # down the line we will try to figure out improvements
+  requests:
+    cpu: "1"
+    memory: "4G"
+    nvidia.com/gpu: 1
+  limits:
+    cpu: "2"
+    memory: "8G"
+    nvidia.com/gpu: 1

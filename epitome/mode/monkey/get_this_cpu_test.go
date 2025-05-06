@@ -41,13 +41,31 @@ func Test_convertCPUModelToCPUName(t *testing.T) {
 			want:    &cpuLabels{name: "Intel_Core_i7-10710U_CPU_thing_thing_thing_thing_thing_thing..."},
 			wantErr: false,
 		},
+		{
+			name: "strip special characters 1",
+			args: args{
+				line: "model name\t: Intel(R) Xeon(R) Platinum 8480+",
+			},
+			want:    &cpuLabels{name: "Intel_Xeon_Platinum_8480"},
+			wantErr: false,
+		},
+		{
+			name: "strip special characters 2",
+			args: args{
+				line: "model name\t: Intel(R) Xeon(R) Platinum 8480+!^&*(){}@#$",
+			},
+			want:    &cpuLabels{name: "Intel_Xeon_Platinum_8480"},
+			wantErr: false,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got, err := convertCPUModelLineToCPULabels(tt.args.line)
 			require.NoError(t, err)
 			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("convertCPUModelToCPUName() gotString = %v, want %v", got, tt.want)
+				t.Errorf(`convertCPUModelToCPUName() 
+				got		%s, 
+				want	%s`, *got, *tt.want)
 			}
 		})
 	}
