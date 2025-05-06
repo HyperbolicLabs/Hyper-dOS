@@ -8,5 +8,3 @@ images:
   #   url: ghcr.io/hyperboliclabs/hyper-dos/nvida_cuda_12.3.1-devel-ubuntu22.04
   # - name: cuda-12-4
   #   url: ghcr.io/hyperboliclabs/hyper-dos/nvida_cuda_12.4.1-cudnn-devel-ubuntu22.04
-
-ref: 'v0.0.1'
