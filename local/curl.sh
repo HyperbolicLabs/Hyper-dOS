@@ -1,5 +1,6 @@
 #!/usr/bin/env sh
 
+# curl -X POST "https://dev-baron.ts.net/api/v1/namespaces/hyperdos/services/hyperai-vllm:http/proxy/v1/chat/completions" \
 curl -X POST "http://localhost:8000" \
       -H "Content-Type: application/json" \
       --data-raw '{
