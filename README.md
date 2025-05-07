@@ -9,7 +9,7 @@
 curl -o install.bash https://raw.githubusercontent.com/HyperbolicLabs/Hyper-dOS/refs/heads/main/install.bash && bash install.bash
 ```
 
-### Installation Demo Video
+### Installation Walkthrough
 
 - <https://youtu.be/zot4F08qvfY>
 
