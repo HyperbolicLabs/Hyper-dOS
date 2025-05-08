@@ -9,6 +9,10 @@
 curl -o install.bash https://raw.githubusercontent.com/HyperbolicLabs/Hyper-dOS/refs/heads/main/install.bash && bash install.bash
 ```
 
+### Installation Walkthrough
+
+- <https://youtu.be/WOUPLMVn0sE>
+
 ### Headless Install
 
 If you would like to install in a scripted environment, set these variables prior to running the install script:
