@@ -11,7 +11,7 @@ curl -o install.bash https://raw.githubusercontent.com/HyperbolicLabs/Hyper-dOS/
 
 ### Installation Walkthrough
 
-- <https://youtu.be/zot4F08qvfY>
+- <https://youtu.be/WOUPLMVn0sE>
 
 ### Headless Install
 
