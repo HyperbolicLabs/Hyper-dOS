@@ -2,8 +2,21 @@
 
 set -e
 
+# Parse command-line options
+HEADLESS=${HEADLESS:-"false"}
+# if user has passed -y, set HEADLESS to true
+while getopts ":y" opt; do
+  case $opt in
+  y) HEADLESS="true" ;;
+  \?)
+    echo "Invalid option: -$OPTARG" >&2
+    exit 1
+    ;;
+  esac
+done
+shift $((OPTIND - 1))
+
 # configuration
-HEADLESS=$HEADLESS
 #ALLOCATE_ROOT_DISK_GB=100 - set this to automatically provision a ceph block store of a certain size
 #TOKEN=$TOKEN - set this to provide your hyperbolic api token non-interactively
 API_URL="https://api.hyperbolic.xyz"
@@ -76,7 +89,7 @@ validate_token() {
 }
 
 check_installed() {
-  if ! command -v $1 >/dev/null 2>&1; then
+  if ! command -v "$1" >/dev/null 2>&1; then
     return 1
   fi
   return 0
@@ -100,7 +113,8 @@ install_hyperdos_if_not_installed() {
       sudo env "PATH=$PATH" microk8s helm repo add hyperdos https://hyperboliclabs.github.io/Hyper-dOS
       sudo env "PATH=$PATH" microk8s helm install hyperdos hyperdos/hyperdos \
         --version $HYPERDOS_VERSION \
-        --set token=$TOKEN $EXTRA_PARAMS
+        --set token="$TOKEN" \
+        "$EXTRA_PARAMS"
     else
       echo "hyperdos installation canceled by user"
       cancel
@@ -200,6 +214,33 @@ confirm() {
     *) echo "Please answer yes or no." ;;
     esac
   done
+}
+
+# Disable NVIDIA driver auto-updates by pinning all nvidia packages to the
+# currently installed version and setting their priority to -1.
+disable_nvidia_autoupdates() {
+  # if dpkg is not installed, throw an error
+  if ! command -v dpkg &>/dev/null; then
+    echo "dpkg is not installed, cannot disable NVIDIA driver auto-updates"
+    echo "please disable NVIDIA auto-updates manually."
+  else
+    echo "Disabling NVIDIA driver auto-updates via dynamic package holds..."
+
+    # Find all installed NVIDIA/CUDA packages using dpkg
+    nvidia_pkgs=$(dpkg -l | awk '/^ii.*(nvidia|cuda)/ {print $2}')
+
+    if [ -n "$nvidia_pkgs" ]; then
+      echo "Holding installed NVIDIA/CUDA packages:"
+      printf "%s\n" $nvidia_pkgs
+
+      printf "%s hold\n" $nvidia_pkgs | sudo dpkg --set-selections
+
+      echo "Verifying holds:"
+      dpkg --get-selections | grep -E 'nvidia|cuda' | grep hold
+    else
+      echo "No NVIDIA packages found"
+    fi
+  fi
 }
 
 count_microk8s_nodes() {
@@ -326,6 +367,23 @@ sudo env "PATH=$PATH" microk8s connect-external-ceph
 echo "done!"
 
 echo "----------------------"
+echo "Checking for NVIDIA drivers..."
+if command -v nvidia-smi &>/dev/null; then
+  if [[ "$HEADLESS" == "true" ]]; then
+    disable_nvidia_autoupdates
+  else
+    read -r -p "WARNING: NVIDIA's automatic updates can cause downtime. Would you like to disable? [Y/n] " response
+    if [[ -z "$response" || "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
+      disable_nvidia_autoupdates
+    else
+      echo "Skipping NVIDIA auto-update configuration"
+    fi
+  fi
+else
+  echo "No NVIDIA drivers detected - skipping auto-update configuration"
+fi
+
+echo "----------------------"
 namespace="argocd"
 while true; do
   pods=$(sudo env "PATH=$PATH" microk8s kubectl get pods -n "$namespace" --no-headers 2>&1)
@@ -337,7 +395,7 @@ while true; do
   fi
 
   # Get the number of non-ready pods
-  not_ready_pods=$(echo $pods | awk '$3 != "Running" && $3 != "Completed" {print $1}' | wc -l)
+  not_ready_pods=$(echo "$pods" | awk '$3 != "Running" && $3 != "Completed" {print $1}' | wc -l)
 
   if [ "$not_ready_pods" -eq 0 ]; then
     echo "All $namespace components are ready!"
