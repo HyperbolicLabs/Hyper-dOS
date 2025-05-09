@@ -367,6 +367,23 @@ sudo env "PATH=$PATH" microk8s connect-external-ceph
 echo "done!"
 
 echo "----------------------"
+echo "Checking for NVIDIA drivers..."
+if command -v nvidia-smi &>/dev/null; then
+  if [[ "$HEADLESS" == "true" ]]; then
+    disable_nvidia_autoupdates
+  else
+    read -r -p "WARNING: NVIDIA's automatic updates can cause downtime. Would you like to disable? [Y/n] " response
+    if [[ -z "$response" || "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
+      disable_nvidia_autoupdates
+    else
+      echo "Skipping NVIDIA auto-update configuration"
+    fi
+  fi
+else
+  echo "No NVIDIA drivers detected - skipping auto-update configuration"
+fi
+
+echo "----------------------"
 namespace="argocd"
 while true; do
   pods=$(sudo env "PATH=$PATH" microk8s kubectl get pods -n "$namespace" --no-headers 2>&1)
@@ -378,7 +395,7 @@ while true; do
   fi
 
   # Get the number of non-ready pods
-  not_ready_pods=$(echo $pods | awk '$3 != "Running" && $3 != "Completed" {print $1}' | wc -l)
+  not_ready_pods=$(echo "$pods" | awk '$3 != "Running" && $3 != "Completed" {print $1}' | wc -l)
 
   if [ "$not_ready_pods" -eq 0 ]; then
     echo "All $namespace components are ready!"
@@ -400,23 +417,6 @@ check_for_token
 validate_token
 
 install_hyperdos_if_not_installed
-
-echo "----------------------"
-echo "Checking for NVIDIA drivers..."
-if command -v nvidia-smi &>/dev/null; then
-  if [[ "$HEADLESS" == "true" ]]; then
-    disable_nvidia_autoupdates
-  else
-    read -r -p "WARNING: NVIDIA's automatic updates can cause downtime. Would you like to disable? [Y/n] " response
-    if [[ -z "$response" || "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
-      disable_nvidia_autoupdates
-    else
-      echo "Skipping NVIDIA auto-update configuration"
-    fi
-  fi
-else
-  echo "No NVIDIA drivers detected - skipping auto-update configuration"
-fi
 
 echo "==========================="
 echo "Installation complete!"
