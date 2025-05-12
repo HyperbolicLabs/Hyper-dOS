@@ -14,6 +14,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/dynamic"
 	"k8s.io/client-go/kubernetes"
+	"k8s.io/utils/ptr"
 )
 
 func Run(
@@ -22,60 +23,88 @@ func Run(
 	clientset kubernetes.Interface,
 	dynamicClient *dynamic.DynamicClient,
 ) error {
+
 	// Setup input reader
 	reader := bufio.NewReader(os.Stdin)
+	writer := bufio.NewWriter(os.Stdout)
+
+	s := session{
+		cfg:           &cfg,
+		logger:        logger,
+		clientset:     clientset,
+		dynamicClient: dynamicClient,
+		namespace:     nil,
+		reader:        reader,
+		writer:        writer,
+	}
 
 	fmt.Println("Welcome to epitomesh! Type 'help' for available commands")
 
 	for {
-		fmt.Printf("%s%s%s",
-			config.ShellPromptColor,
-			"epitomesh ) ",
-			config.ShellResetColor)
+		s.prompt()
 		input, _ := reader.ReadString('\n')
 		cmd := strings.TrimSpace(input)
 
-		switch cmd {
-		case "ls":
-			listPods(cfg, clientset)
-		case "exit":
+		switch {
+		case strings.HasPrefix(cmd, "cd "):
+			parts := strings.SplitN(cmd, " ", 2)
+			if len(parts) != 2 {
+				fmt.Println("Usage: cd <namespace>")
+				continue
+			}
+
+			s.cd(&parts[1])
+		case cmd == "ls":
+			s.ls(nil)
+		case strings.HasPrefix(cmd, "ls "):
+			parts := strings.SplitN(cmd, " ", 2)
+			if len(parts) != 2 {
+				s.writeln("Usage: ls <target>")
+				continue
+			}
+			// user passed an argument to ls, we should use it
+			s.ls(ptr.To(parts[1]))
+		case cmd == "clear":
+			fmt.Print("\033[H\033[2J") // ANSI escape code to clear screen
+		case cmd == "exit":
 			return nil
-		case "help":
-			printHelp()
-		case "":
+		case cmd == "help":
+			s.printHelp()
+		case cmd == "":
 			// Do nothing for empty input
 			continue
 		default:
-			fmt.Printf("Unknown command: %s\n", cmd)
-			printHelp()
+			s.write(fmt.Sprintf("Unknown command: %s\n", cmd))
+			s.printHelp()
 		}
 	}
 }
 
-func listPods(cfg config.Config, clientset kubernetes.Interface) {
-	pods, err := clientset.CoreV1().Pods(cfg.HyperdosNamespace).List(context.TODO(), metav1.ListOptions{})
+func (s *session) listPods(clientset kubernetes.Interface, namespace string) {
+	pods, err := clientset.CoreV1().Pods(namespace).List(context.TODO(), metav1.ListOptions{})
 	if err != nil {
 		fmt.Printf("Error listing pods: %v\n", err)
 		return
 	}
 
 	if len(pods.Items) == 0 {
-		fmt.Println("No pods found in", cfg.HyperdosNamespace)
+		s.write(fmt.Sprintf("No pods found in %s\n", namespace))
 		return
 	}
 
-	fmt.Printf("\nPODS IN %s:\n", cfg.HyperdosNamespace)
-	fmt.Printf("%-40s %-12s %-10s\n", "NAME", "STATUS", "AGE")
+	s.write(fmt.Sprintf("\nPODS IN %s:\n", namespace))
+	s.write(fmt.Sprintf("%-40s %-12s %-10s\n", "NAME", "STATUS", "AGE"))
 
 	for _, pod := range pods.Items {
 		age := time.Since(pod.CreationTimestamp.Time).Round(time.Second)
-		fmt.Printf("%-40s %-12s %-10s\n",
+		s.write(fmt.Sprintf("%-40s %-12s %-10s\n",
 			pod.Name,
 			getPodStatus(pod),
 			age.String(),
-		)
+		))
 	}
-	fmt.Println()
+
+	s.write("\n")
 }
 
 func getPodStatus(pod corev1.Pod) string {
@@ -90,10 +119,14 @@ func getPodStatus(pod corev1.Pod) string {
 	return string(pod.Status.Phase)
 }
 
-func printHelp() {
-	fmt.Println(`
+func (s *session) printHelp() {
+	s.writer.WriteString(`
 Available commands:
-  ls      - List pods in current namespace
-  exit    - Exit the shell
-  help    - Show this help message`)
+  clear     - Clear the screen
+  ls        - List resources in current context
+  cd <ns>   - Enter a namespace context
+  cd ..     - Return to namespace list view
+  exit      - Exit the shell
+  help      - Show this help message
+`)
 }
