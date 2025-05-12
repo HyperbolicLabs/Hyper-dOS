@@ -6,8 +6,10 @@ import (
 )
 
 const (
-	CPUNameLabelKey = "hyperbolic.xyz/cpu-name"
-	CalicoNamespace = "kube-system"
+	CPUNameLabelKey   = "hyperbolic.xyz/cpu-name"
+	CalicoNamespace   = "kube-system"
+	ShellPromptColor  = "\033[32m" // Green text
+	ShellResetColor   = "\033[0m"  // Reset colors
 )
 
 type Config struct {

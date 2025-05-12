@@ -50,5 +50,33 @@
                 "KUBERNETES_NODE_NAME": "ip-172-31-30-50",
             },
         },
+        {
+            "name": "(DEV) Run SH",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "program": "epitome/main.go",
+            "args": [
+                "-mode=sh"
+            ],
+            "env": {
+                "LOG_LEVEL": "debug",
+                "KUBECONFIG": "./.kube/dev-baron-kubeconfig.yaml",
+            },
+        },
+        {
+            "name": "(DEV) Run SH",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "program": "epitome/main.go",
+            "args": [
+                "-mode=sh"
+            ],
+            "env": {
+                "LOG_LEVEL": "debug",
+                "KUBECONFIG": "./.kube/dev-baron-kubeconfig.yaml",
+            },
+        },
     ]
 }

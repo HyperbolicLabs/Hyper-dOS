@@ -15,7 +15,7 @@ func Run(
 	cfg config.Config,
 	logger *zap.Logger,
 	clientset kubernetes.Interface,
-	dynamicClient dynamic.DynamicClient,
+	dynamicClient *dynamic.DynamicClient,
 ) error {
 
 	a := &agent{
