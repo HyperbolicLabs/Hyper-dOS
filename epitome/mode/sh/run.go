@@ -1,14 +1,14 @@
 package sh
 
 import (
-	"bufio"
 	"context"
 	"fmt"
-	"os"
+	"io"
 	"strings"
 	"time"
 
 	"epitome.hyperbolic.xyz/config"
+	"github.com/chzyer/readline"
 	"go.uber.org/zap"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -17,6 +17,44 @@ import (
 	"k8s.io/utils/ptr"
 )
 
+func (s *session) initReadline() error {
+	completer := readline.NewPrefixCompleter(
+		readline.PcItem("ls"),
+		readline.PcItem("cd"),
+		readline.PcItem("exit"),
+		readline.PcItem("help"),
+		readline.PcItem("clear"),
+	)
+
+	l, err := readline.NewEx(&readline.Config{
+		Prompt:          s.getPrompt(),
+		AutoComplete:    completer,
+		HistoryFile:     "/tmp/epitome_readline.tmp",
+		InterruptPrompt: "^C",
+		EOFPrompt:       "exit",
+	})
+	if err != nil {
+		return err
+	}
+	s.rl = l
+	return nil
+}
+
+func (s *session) getPrompt() string {
+	path := ""
+	if s.namespace != nil {
+		path = "/" + *s.namespace
+	}
+	return fmt.Sprintf("%sepitomesh%s%s )%s ",
+		config.ShellPromptColor,
+		path,
+		config.ShellResetColor,
+		config.ShellResetColor)
+}
+
+// TODO migrate to readline?
+// https://github.com/chzyer/readline/blob/main/example/readline-demo/readline-demo.go
+
 func Run(
 	cfg config.Config,
 	logger *zap.Logger,
@@ -24,26 +62,29 @@ func Run(
 	dynamicClient *dynamic.DynamicClient,
 ) error {
 
-	// Setup input reader
-	reader := bufio.NewReader(os.Stdin)
-	writer := bufio.NewWriter(os.Stdout)
-
-	s := session{
+	s := &session{
 		cfg:           &cfg,
 		logger:        logger,
 		clientset:     clientset,
 		dynamicClient: dynamicClient,
-		namespace:     nil,
-		reader:        reader,
-		writer:        writer,
 	}
 
-	fmt.Println("Welcome to epitomesh! Type 'help' for available commands")
+	if err := s.initReadline(); err != nil {
+		return err
+	}
+	defer s.rl.Close()
+
+	s.rl.Write([]byte("Welcome to epitomesh! Type 'help' for available commands\n"))
 
 	for {
-		s.prompt()
-		input, _ := reader.ReadString('\n')
-		cmd := strings.TrimSpace(input)
+		line, err := s.rl.Readline()
+		if err == readline.ErrInterrupt {
+			continue
+		} else if err == io.EOF {
+			break
+		}
+
+		cmd := strings.TrimSpace(line)
 
 		switch {
 		case strings.HasPrefix(cmd, "cd "):
@@ -65,7 +106,7 @@ func Run(
 			// user passed an argument to ls, we should use it
 			s.ls(ptr.To(parts[1]))
 		case cmd == "clear":
-			fmt.Print("\033[H\033[2J") // ANSI escape code to clear screen
+			readline.ClearScreen(s.rl)
 		case cmd == "exit":
 			return nil
 		case cmd == "help":
@@ -74,10 +115,15 @@ func Run(
 			// Do nothing for empty input
 			continue
 		default:
-			s.write(fmt.Sprintf("Unknown command: %s\n", cmd))
+			s.writeln(fmt.Sprintf("Unknown command: %s", cmd))
 			s.printHelp()
 		}
+
+		// Update prompt after command execution
+		s.rl.SetPrompt(s.getPrompt())
 	}
+
+	return nil
 }
 
 func (s *session) listPods(clientset kubernetes.Interface, namespace string) {
@@ -118,9 +164,8 @@ func getPodStatus(pod corev1.Pod) string {
 	}
 	return string(pod.Status.Phase)
 }
-
 func (s *session) printHelp() {
-	s.writer.WriteString(`
+	s.writeln(`
 Available commands:
   clear     - Clear the screen
   ls        - List resources in current context

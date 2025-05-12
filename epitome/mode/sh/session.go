@@ -1,12 +1,12 @@
 package sh
 
 import (
-	"bufio"
 	"context"
 	"fmt"
 	"time"
 
 	"epitome.hyperbolic.xyz/config"
+	"github.com/chzyer/readline"
 	"go.uber.org/zap"
 	"k8s.io/client-go/dynamic"
 	"k8s.io/client-go/kubernetes"
@@ -20,8 +20,7 @@ type session struct {
 	clientset     kubernetes.Interface
 	dynamicClient *dynamic.DynamicClient
 	namespace     *string
-	reader        *bufio.Reader
-	writer        *bufio.Writer
+	rl            *readline.Instance
 }
 
 func (s *session) path() string {
@@ -32,7 +31,7 @@ func (s *session) path() string {
 }
 
 func (s *session) prompt() {
-	s.write(fmt.Sprintf("%s%s%s%s ) ",
+	s.write(fmt.Sprintf("%s%s%s ) %s",
 		config.ShellPromptColor,
 		"epitomesh",
 		s.path(),
@@ -40,12 +39,11 @@ func (s *session) prompt() {
 }
 
 func (s *session) write(msg string) {
-	s.writer.WriteString(msg)
-	s.writer.Flush()
+	s.rl.Write([]byte(msg))
 }
 
 func (s *session) writeln(msg string) {
-	s.write(msg + "\n")
+	s.rl.Write([]byte(msg + "\n"))
 }
 
 func (s *session) listNamespaces(clientset kubernetes.Interface) {
