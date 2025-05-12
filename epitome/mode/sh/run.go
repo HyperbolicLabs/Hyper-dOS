@@ -1,34 +1,34 @@
 package sh
 
 import (
-	"context"
 	"fmt"
 	"io"
 	"strings"
-	"time"
 
 	"epitome.hyperbolic.xyz/config"
 	"github.com/chzyer/readline"
 	"go.uber.org/zap"
 	corev1 "k8s.io/api/core/v1"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/dynamic"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/utils/ptr"
 )
 
 func (s *session) initReadline() error {
-	completer := readline.NewPrefixCompleter(
+	// Initialize with static commands first
+	s.completions = readline.NewPrefixCompleter(
+		readline.PcItem("cd",
+			readline.PcItemDynamic(s.getCdCompletions),
+		),
 		readline.PcItem("ls"),
-		readline.PcItem("cd"),
 		readline.PcItem("exit"),
 		readline.PcItem("help"),
 		readline.PcItem("clear"),
 	)
 
-	l, err := readline.NewEx(&readline.Config{
+	readlineInstance, err := readline.NewEx(&readline.Config{
 		Prompt:          s.getPrompt(),
-		AutoComplete:    completer,
+		AutoComplete:    s.completions, // Use our dynamic completer
 		HistoryFile:     "/tmp/epitome_readline.tmp",
 		InterruptPrompt: "^C",
 		EOFPrompt:       "exit",
@@ -36,7 +36,7 @@ func (s *session) initReadline() error {
 	if err != nil {
 		return err
 	}
-	s.rl = l
+	s.rl = readlineInstance
 	return nil
 }
 
@@ -124,33 +124,6 @@ func Run(
 	}
 
 	return nil
-}
-
-func (s *session) listPods(clientset kubernetes.Interface, namespace string) {
-	pods, err := clientset.CoreV1().Pods(namespace).List(context.TODO(), metav1.ListOptions{})
-	if err != nil {
-		fmt.Printf("Error listing pods: %v\n", err)
-		return
-	}
-
-	if len(pods.Items) == 0 {
-		s.write(fmt.Sprintf("No pods found in %s\n", namespace))
-		return
-	}
-
-	s.write(fmt.Sprintf("\nPODS IN %s:\n", namespace))
-	s.write(fmt.Sprintf("%-40s %-12s %-10s\n", "NAME", "STATUS", "AGE"))
-
-	for _, pod := range pods.Items {
-		age := time.Since(pod.CreationTimestamp.Time).Round(time.Second)
-		s.write(fmt.Sprintf("%-40s %-12s %-10s\n",
-			pod.Name,
-			getPodStatus(pod),
-			age.String(),
-		))
-	}
-
-	s.write("\n")
 }
 
 func getPodStatus(pod corev1.Pod) string {

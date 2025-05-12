@@ -11,8 +11,15 @@ func (s *session) cd(destination *string) {
 	} else {
 		s.namespace = destination
 	}
+
+	// reset completions
+	s.cdCompletions = []string{}
 }
 
 func (s *session) resetcwd() {
 	s.namespace = nil
+}
+
+func (s *session) getCdCompletions(input string) []string {
+	return s.cdCompletions
 }
