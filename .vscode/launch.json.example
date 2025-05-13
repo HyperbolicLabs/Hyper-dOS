@@ -73,6 +73,7 @@
             "args": [
                 "-mode=sh"
             ],
+            "console": "integratedTerminal",
             "env": {
                 "LOG_LEVEL": "debug",
                 "KUBECONFIG": "./.kube/dev-baron-kubeconfig.yaml",

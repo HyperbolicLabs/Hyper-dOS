@@ -10,6 +10,7 @@ import (
 	"epitome.hyperbolic.xyz/mode/maintain"
 	"epitome.hyperbolic.xyz/mode/monkey"
 	"epitome.hyperbolic.xyz/mode/sh"
+	"k8s.io/client-go/tools/clientcmd"
 
 	// Added new mode
 	env11 "github.com/caarlos0/env/v11"
@@ -54,14 +55,14 @@ func main() {
 	logger = logger.With(zap.String("mode", *mode))
 	logger.Info("launching epitome")
 
-	failoverToDefaultPath := false
+	var kubeconfigPath *string
+	if cfg.KUBECONFIG != "" {
+		kubeconfigPath = &cfg.KUBECONFIG
+	}
+
 	switch *mode {
 	case "jungle":
-		clientset, dynamicClient := cluster.MustConnect(
-			logger,
-			cfg.KUBECONFIG,
-			failoverToDefaultPath,
-		)
+		clientset, dynamicClient := cluster.MustConnect(kubeconfigPath)
 		err := jungle.Run(
 			cfg,
 			logger,
@@ -71,11 +72,7 @@ func main() {
 		logger.Fatal("hyperweb runloop exited unexpectedly", zap.Error(err))
 
 	case "maintain":
-		clientset, dynamicClient := cluster.MustConnect(
-			logger,
-			cfg.KUBECONFIG,
-			failoverToDefaultPath,
-		)
+		clientset, dynamicClient := cluster.MustConnect(kubeconfigPath)
 		err := maintain.Run(
 			cfg,
 			logger,
@@ -85,11 +82,7 @@ func main() {
 		logger.Fatal("maintain runloop exited unexpectedly", zap.Error(err))
 
 	case "monkey":
-		clientset, dynamicClient := cluster.MustConnect(
-			logger,
-			cfg.KUBECONFIG,
-			failoverToDefaultPath,
-		)
+		clientset, dynamicClient := cluster.MustConnect(kubeconfigPath)
 		err := monkey.Run(
 			cfg,
 			logger,
@@ -99,13 +92,15 @@ func main() {
 		logger.Fatal("monkey runloop exited unexpectedly", zap.Error(err))
 
 	case "sh":
-		failoverToDefaultPath = true
-		clientset, dynamicClient := cluster.MustConnect(
-			logger,
-			cfg.KUBECONFIG,
-			failoverToDefaultPath,
-		)
-		err := sh.Run(
+		if kubeconfigPath == nil {
+			// use default kubeconfig
+			kubeconfigPath = &clientcmd.RecommendedHomeFile
+		}
+		clientset, dynamicClient, err := cluster.GenerateClientsets(kubeconfigPath)
+		if err != nil {
+			logger.Info("no cluster detected")
+		}
+		err = sh.Run(
 			cfg,
 			logger,
 			clientset,

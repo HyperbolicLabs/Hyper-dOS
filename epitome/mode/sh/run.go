@@ -14,47 +14,6 @@ import (
 	"k8s.io/utils/ptr"
 )
 
-func (s *session) initReadline() error {
-	// Initialize with static commands first
-	s.completions = readline.NewPrefixCompleter(
-		readline.PcItem("cd",
-			readline.PcItemDynamic(s.getCdCompletions),
-		),
-		readline.PcItem("ls"),
-		readline.PcItem("exit"),
-		readline.PcItem("help"),
-		readline.PcItem("clear"),
-	)
-
-	readlineInstance, err := readline.NewEx(&readline.Config{
-		Prompt:          s.getPrompt(),
-		AutoComplete:    s.completions, // Use our dynamic completer
-		HistoryFile:     "/tmp/epitome_readline.tmp",
-		InterruptPrompt: "^C",
-		EOFPrompt:       "exit",
-	})
-	if err != nil {
-		return err
-	}
-	s.rl = readlineInstance
-	return nil
-}
-
-func (s *session) getPrompt() string {
-	path := ""
-	if s.namespace != nil {
-		path = "/" + *s.namespace
-	}
-	return fmt.Sprintf("%sepitomesh%s%s )%s ",
-		config.ShellPromptColor,
-		path,
-		config.ShellResetColor,
-		config.ShellResetColor)
-}
-
-// TODO migrate to readline?
-// https://github.com/chzyer/readline/blob/main/example/readline-demo/readline-demo.go
-
 func Run(
 	cfg config.Config,
 	logger *zap.Logger,
@@ -87,10 +46,13 @@ func Run(
 		cmd := strings.TrimSpace(line)
 
 		switch {
+		case cmd == "init":
+			s.initCluster()
+
 		case strings.HasPrefix(cmd, "cd "):
 			parts := strings.SplitN(cmd, " ", 2)
 			if len(parts) != 2 {
-				fmt.Println("Usage: cd <namespace>")
+				s.writeln("Usage: cd <namespace>")
 				continue
 			}
 
@@ -140,6 +102,7 @@ func getPodStatus(pod corev1.Pod) string {
 func (s *session) printHelp() {
 	s.writeln(`
 Available commands:
+  init      - Initialize a new hyperdos cluster 
   clear     - Clear the screen
   ls        - List resources in current context
   cd <ns>   - Enter a namespace context

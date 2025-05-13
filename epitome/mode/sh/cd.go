@@ -1,6 +1,11 @@
 package sh
 
 func (s *session) cd(destination *string) {
+	if s.clientset == nil {
+		s.nocluster()
+		return
+	}
+
 	// if destination is nil, then we are going back to the root
 	if destination == nil {
 		s.resetcwd()

@@ -10,6 +10,11 @@ import (
 )
 
 func (s *session) ls(target *string) {
+	if s.clientset == nil {
+		s.nocluster()
+		return
+	}
+
 	if target != nil {
 		s.writeln("TODO: ls <target> not implemented")
 		return
