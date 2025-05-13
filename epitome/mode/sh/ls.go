@@ -9,15 +9,15 @@ import (
 	"k8s.io/client-go/kubernetes"
 )
 
-func (s *session) ls(target *string) {
+func (s *session) ls(args ...string) error {
+	// parse args with cobra
+
 	if s.clientset == nil {
-		s.nocluster()
-		return
+		return fmt.Errorf("no cluster connected")
 	}
 
-	if target != nil {
-		s.writeln("TODO: ls <target> not implemented")
-		return
+	if len(args) > 0 {
+		return fmt.Errorf("TODO: ls <target> not yet implemented")
 	}
 
 	// if we are not in a namespace, list namespaces
@@ -27,6 +27,7 @@ func (s *session) ls(target *string) {
 		s.listPods(s.clientset, *s.namespace)
 	}
 
+	return nil
 }
 
 func (s *session) listNamespaces(clientset kubernetes.Interface) {

@@ -6,7 +6,6 @@ import (
 	"epitome.hyperbolic.xyz/config"
 	"github.com/chzyer/readline"
 	"go.uber.org/zap"
-	"k8s.io/client-go/dynamic"
 	"k8s.io/client-go/kubernetes"
 )
 
@@ -14,12 +13,34 @@ type session struct {
 	cfg           *config.Config
 	logger        *zap.Logger
 	clientset     kubernetes.Interface
-	dynamicClient *dynamic.DynamicClient
 	namespace     *string
 	rl            *readline.Instance
 	completions   readline.DynamicPrefixCompleterInterface
 	cdCompletions []string
 }
+
+func NewSession(
+	cfg *config.Config,
+	logger *zap.Logger,
+	clientset kubernetes.Interface,
+) (*session, CloseFunc, error) {
+	s := &session{
+		cfg:       cfg,
+		logger:    logger,
+		clientset: clientset,
+	}
+
+	if err := s.initReadline(); err != nil {
+		return nil, nil, fmt.Errorf("failed to create session: %v", err)
+	}
+
+	closeF := func() {
+		s.rl.Close()
+	}
+	return s, closeF, nil
+}
+
+type CloseFunc func()
 
 func (s *session) write(msg string) {
 	s.rl.Write([]byte(msg))
@@ -29,7 +50,8 @@ func (s *session) writeln(msg string) {
 	s.rl.Write([]byte(msg + "\n"))
 }
 
-func (s *session) writeErr(msg string) {
+func (s *session) writeErr(err error) {
+	msg := fmt.Sprintf("Error: %v\n", err)
 	// TODO some formatting
 	s.rl.Write([]byte(msg))
 }

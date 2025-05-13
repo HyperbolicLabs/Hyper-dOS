@@ -1,45 +1,72 @@
 package sh
 
 import (
+	"flag"
 	"fmt"
 	"os"
 	"os/exec"
 	"runtime"
 	"strings"
+
+	commonv1 "jungle.proto/common/v1"
 )
 
-func (s *session) initCluster() {
+func (s *session) initCluster(args ...string) error {
+	// use flag.parse to parse args for the -mode=cricket flag
+
+	flags := flag.NewFlagSet("init", flag.ContinueOnError)
+	modeArg := flags.String("mode", "ronin", "Specify the mode to initialize the cluster in (ronin | buffalo | cricket)")
+	flags.Parse(args)
+
 	if s.clientset != nil && !s.cfg.DEBUG {
 		s.write("cluster already initialized\n")
-		return
+		return nil
 	}
 
 	if runtime.GOOS != "linux" {
 		s.writeInitNotImplementedOnThisPlatform()
-		return
+		return fmt.Errorf("not implemented on this platform")
 	}
 
 	// check if snapd is installed
-	err := s.checkAndInstallTool("snap")
-	if err != nil {
-		s.writeErr(err.Error())
-		return
+	if err := s.checkAndInstallTool("snap"); err != nil {
+		return err
 	}
 
-	err = s.checkAndInstallSnap("microk8s", "--classic", "--channel=1.32/stable")
-	if err != nil {
-		s.writeErr(err.Error())
-		return
+	if err := s.checkAndInstallSnap("microk8s", "--classic", "--channel=1.32/stable"); err != nil {
+		return err
+	}
+
+	// switch modearg
+	switch *modeArg {
+	case "ronin":
+		return fmt.Errorf("ronin mode not yet implemented")
+	case "buffalo":
+		return fmt.Errorf("buffalo mode not yet implemented")
+	case "cricket":
+		return s.installHyperdos(
+			s.cfg.HyperdosNamespace,
+			commonv1.Baron_ROLE_CRICKET,
+		)
 	}
 
 	s.write("cluster initialized\n")
+
+	return nil
+}
+
+func (s *session) installHyperdos(
+	namespace string,
+	role commonv1.Baron_Role) error {
+
+	return fmt.Errorf("TODO: cricket install not implemented")
 }
 
 func (s *session) confirm() bool {
 	s.rl.SetPrompt("[Y/n]: ")
 	line, err := s.rl.Readline()
 	if err != nil {
-		s.writeErr(err.Error())
+		s.writeErr(err)
 		return false
 	}
 
@@ -69,10 +96,11 @@ func (s *session) checkAndInstallTool(toolName string) error {
 }
 
 func (s *session) checkAndInstallSnap(snapName string, options ...string) error {
+	hold := true // for now, hold all snaps
 	if _, err := exec.LookPath(snapName); err != nil {
 		s.writeln("microk8s is not installed, would you like to install it now?")
 		if s.confirm() {
-			return s.installSnap(snapName, options...)
+			return s.installSnap(snapName, hold, options...)
 		}
 	}
 
@@ -80,7 +108,10 @@ func (s *session) checkAndInstallSnap(snapName string, options ...string) error 
 	return nil
 }
 
-func (s *session) installSnap(snapName string, options ...string) error {
+func (s *session) installSnap(
+	snapName string,
+	hold bool,
+	options ...string) error {
 	s.writeln("installing " + snapName)
 
 	cmd := exec.Command("sudo", append(
@@ -91,13 +122,24 @@ func (s *session) installSnap(snapName string, options ...string) error {
 			snapName,
 		}, options...)...)
 
-	// cmd.Stdin = s.rl.Terminal.GetConfig().Stdin
+	// for some reason s.rl.Terminal.GetConfig().Stdin doesn't work smoothly
+	// nor do s.rl.Stdout() or s.rl.Stderr()
 	cmd.Stdin = os.Stdin
-	cmd.Stdout = s.rl.Stdout()
-	cmd.Stderr = s.rl.Stderr()
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
 
 	if err := cmd.Run(); err != nil {
 		return err
+	} else if hold {
+		// if requested, hold the snap on a successful install
+		cmd = exec.Command("sudo",
+			"snap", "refresh", "--hold", snapName)
+		cmd.Stdin = os.Stdin
+		cmd.Stdout = os.Stdout
+		cmd.Stderr = os.Stderr
+		if err := cmd.Run(); err != nil {
+			return err
+		}
 	}
 
 	return nil
@@ -128,9 +170,11 @@ func (s *session) installTool(toolName string) error {
 		return fmt.Errorf("could not install %s - no known package managers present", toolName)
 	}
 
-	cmd.Stdin = s.rl.Config.Stdin
-	cmd.Stdout = s.rl.Stdout()
-	cmd.Stderr = s.rl.Stderr()
+	// for some reason s.rl.Terminal.GetConfig().Stdin doesn't work smoothly
+	// nor do s.rl.Stdout() or s.rl.Stderr()
+	cmd.Stdin = os.Stdin
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
 
 	return cmd.Run()
 }

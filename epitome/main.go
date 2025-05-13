@@ -96,7 +96,8 @@ func main() {
 			// use default kubeconfig
 			kubeconfigPath = &clientcmd.RecommendedHomeFile
 		}
-		clientset, dynamicClient, err := cluster.GenerateClientsets(kubeconfigPath)
+
+		clientset, _, err := cluster.GenerateClientsets(kubeconfigPath)
 		if err != nil {
 			logger.Info("no cluster detected")
 		}
@@ -104,7 +105,6 @@ func main() {
 			cfg,
 			logger,
 			clientset,
-			dynamicClient,
 		)
 		if err != nil {
 			logger.Fatal("epitomesh exited with error", zap.Error(err))

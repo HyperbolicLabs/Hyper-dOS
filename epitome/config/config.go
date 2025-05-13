@@ -42,5 +42,5 @@ type MonkeyMode struct {
 }
 
 type ShellMode struct {
-	VIM_MODE bool `env:"VIM_MODE" envDefault:"true"`
+	VIM_MODE bool `env:"VIM_MODE" envDefault:"false"`
 }
