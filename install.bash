@@ -111,6 +111,7 @@ install_hyperdos_if_not_installed() {
     echo "hyperdos appears not to be installed in the cluster yet, would you like to install it now?"
     if [ "$HEADLESS" = "true" ] || confirm; then
       sudo env "PATH=$PATH" microk8s helm repo add hyperdos https://hyperboliclabs.github.io/Hyper-dOS
+      sudo env "PATH=$PATH" microk8s helm repo update
       sudo env "PATH=$PATH" microk8s helm install hyperdos hyperdos/hyperdos \
         --version $HYPERDOS_VERSION \
         --set token="$TOKEN" $EXTRA_PARAMS
