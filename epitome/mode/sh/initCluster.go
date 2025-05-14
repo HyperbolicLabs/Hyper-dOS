@@ -7,8 +7,6 @@ import (
 	"os/exec"
 	"runtime"
 	"strings"
-
-	commonv1 "jungle.proto/common/v1"
 )
 
 func (s *session) initCluster(args ...string) error {
@@ -46,7 +44,7 @@ func (s *session) initCluster(args ...string) error {
 	case "cricket":
 		return s.installHyperdos(
 			s.cfg.HyperdosNamespace,
-			commonv1.Baron_ROLE_CRICKET,
+			"TODO cricket proto",
 		)
 	}
 
@@ -57,7 +55,7 @@ func (s *session) initCluster(args ...string) error {
 
 func (s *session) installHyperdos(
 	namespace string,
-	role commonv1.Baron_Role) error {
+	role string) error {
 
 	return fmt.Errorf("TODO: cricket install not implemented")
 }
