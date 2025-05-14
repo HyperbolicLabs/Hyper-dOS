@@ -36,6 +36,10 @@ epitome-help:
 	cd epitome; \
 	go run . -help
 
+epitomesh:
+	@echo "Starting epitome in sh mode..."
+	@cd epitome; go run . -mode sh
+
 mod-tidy:
 	cd epitome; \
 	go mod tidy

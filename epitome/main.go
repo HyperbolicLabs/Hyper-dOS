@@ -9,6 +9,10 @@ import (
 	"epitome.hyperbolic.xyz/mode/jungle"
 	"epitome.hyperbolic.xyz/mode/maintain"
 	"epitome.hyperbolic.xyz/mode/monkey"
+	"epitome.hyperbolic.xyz/mode/sh"
+	"k8s.io/client-go/tools/clientcmd"
+
+	// Added new mode
 	env11 "github.com/caarlos0/env/v11"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
@@ -18,7 +22,7 @@ const VERSION = "v1-alpha"
 
 func main() {
 	help := flag.Bool("help", false, "Show help")
-	mode := flag.String("mode", "jungle", "Specify the mode to run epitome in (jungle | maintain | monkey)")
+	mode := flag.String("mode", "jungle", "Specify the mode to run epitome in (jungle | maintain | monkey | sh)")
 	flag.Parse()
 
 	var cfg config.Config
@@ -51,9 +55,14 @@ func main() {
 	logger = logger.With(zap.String("mode", *mode))
 	logger.Info("launching epitome")
 
-	clientset, dynamicClient := cluster.MustConnect(cfg.KUBECONFIG)
+	var kubeconfigPath *string
+	if cfg.KUBECONFIG != "" {
+		kubeconfigPath = &cfg.KUBECONFIG
+	}
+
 	switch *mode {
 	case "jungle":
+		clientset, dynamicClient := cluster.MustConnect(kubeconfigPath)
 		err := jungle.Run(
 			cfg,
 			logger,
@@ -63,6 +72,7 @@ func main() {
 		logger.Fatal("hyperweb runloop exited unexpectedly", zap.Error(err))
 
 	case "maintain":
+		clientset, dynamicClient := cluster.MustConnect(kubeconfigPath)
 		err := maintain.Run(
 			cfg,
 			logger,
@@ -72,6 +82,7 @@ func main() {
 		logger.Fatal("maintain runloop exited unexpectedly", zap.Error(err))
 
 	case "monkey":
+		clientset, dynamicClient := cluster.MustConnect(kubeconfigPath)
 		err := monkey.Run(
 			cfg,
 			logger,
@@ -80,6 +91,26 @@ func main() {
 		)
 		logger.Fatal("monkey runloop exited unexpectedly", zap.Error(err))
 
+	case "sh":
+		if kubeconfigPath == nil {
+			// use default kubeconfig
+			kubeconfigPath = &clientcmd.RecommendedHomeFile
+		}
+
+		clientset, _, err := cluster.GenerateClientsets(kubeconfigPath)
+		if err != nil {
+			logger.Info("no cluster detected")
+		}
+		err = sh.Run(
+			cfg,
+			logger,
+			clientset,
+		)
+		if err != nil {
+			logger.Fatal("epitomesh exited with error", zap.Error(err))
+		}
+
+		// otherwise, exit 0
 	default:
 		logger.Fatal("unknown mode", zap.String("mode", *mode))
 	}

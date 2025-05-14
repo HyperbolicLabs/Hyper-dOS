@@ -113,8 +113,8 @@ install_hyperdos_if_not_installed() {
       sudo env "PATH=$PATH" microk8s helm repo add hyperdos https://hyperboliclabs.github.io/Hyper-dOS
       sudo env "PATH=$PATH" microk8s helm install hyperdos hyperdos/hyperdos \
         --version $HYPERDOS_VERSION \
-        --set token="$TOKEN" \
-        "$EXTRA_PARAMS"
+        --set token="$TOKEN" $EXTRA_PARAMS
+      # note - do not quote EXTRA_PARAMS or you might get unexpected globbing, which changes the function
     else
       echo "hyperdos installation canceled by user"
       cancel
