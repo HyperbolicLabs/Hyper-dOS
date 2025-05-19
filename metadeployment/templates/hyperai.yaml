@@ -12,7 +12,7 @@ spec:
     path: gitapps/hyperai
     targetRevision: {{ .Values.hyperdos.ref }}
     helm:
-      valuesObject:
+      values: |
         {{- .Values.hyperai | toYaml | nindent 8 }}
       parameters:
         - name: hyperdos.ref
