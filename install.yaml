@@ -18,11 +18,16 @@ spec:
     helm:
       parameters:
         - name: hyperdos.ref
+          # including this here for rollback compatibility,
+          # but once v0.0.3 is fully deprecated it can be removed
+          value: $ARGOCD_APP_SOURCE_TARGET_REVISION
+        - name: cascade.hyperdos.ref
           value: $ARGOCD_APP_SOURCE_TARGET_REVISION
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: argocd
-  syncPolicy: # argo-cd.readthedocs.io/en/stable/user-guide/auto_sync/
+  syncPolicy:
+    # argo-cd.readthedocs.io/en/stable/user-guide/auto_sync
     automated:
       prune: true
       allowEmpty: true

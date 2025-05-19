@@ -52,7 +52,7 @@ test:
 helm-test:
 	@cd metadeployment; \
 	helm template metadeployment \
-		--set hyperdos.ref="dev" \
+		--set cascade.hyperdos.ref="dev" \
 		.
 
 	@cd gitapps/nvidia-smi; \
@@ -61,20 +61,20 @@ helm-test:
 
 	@cd gitapps/epitome; \
 	helm template epitome \
-		--set hyperdos.ref="dev" \
-		--set jungleRole.buffalo="true" \
+		--set cascade.hyperdos.ref="dev" \
+		--set cascade.jungleRole.buffalo="true" \
 		.
 
 	@cd gitapps/pre-pull; \
 	helm template pre-pull \
-		--set hyperdos.ref="dev" \
+		--set cascade.hyperdos.ref="dev" \
 		.
 
 test-helm-install:
 	@cd charts/hyperdos; \
 	helm template hyperdos \
 		--debug \
-		--set ref="dev" \
+		--set cascade.hyperdos.ref="dev" \
 		.
 
 .PHONY: aider
