@@ -7,9 +7,9 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: { { .Values.hyperdos.url } }
+    repoURL: {{ .Values.hyperdos.url }}
     path: gitapps/epitome
-    targetRevision: { { .Values.hyperdos.ref } }
+    targetRevision: {{ .Values.hyperdos.ref }}
     helm:
       parameters:
         - name: hyperdos.ref
