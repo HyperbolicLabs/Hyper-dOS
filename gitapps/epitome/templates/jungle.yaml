@@ -20,29 +20,29 @@ spec:
       restartPolicy: Always
       containers:
       - name: epitome
-        image: "{{ .Values.image }}:{{ .Values.hyperdos.ref }}"
+        image: "{{ .Values.image }}:{{ .Values.cascade.hyperdos.ref }}"
         imagePullPolicy: Always
         args:
         - -mode=jungle
         env:
         # can fulfill many roles at once
-        {{- if (.Values.jungleRole).buffalo }}
+        {{- if (.Values.cascade.jungleRole).buffalo }}
         - name: JUNGLE_ROLE_BUFFALO
           value: "true"
         {{- end }}
-        {{- if (.Values.jungleRole).cow }}
+        {{- if (.Values.cascade.jungleRole).cow }}
         - name: JUNGLE_ROLE_COW
           value: "true"
         {{- end }}
-        {{- if (.Values.jungleRole).cricket }}
+        {{- if (.Values.cascade.jungleRole).cricket }}
         - name: JUNGLE_ROLE_CRICKET
           value: "true"
         {{- end }}
-        {{- if (.Values.jungleRole).squirrel }}
+        {{- if (.Values.cascade.jungleRole).squirrel }}
         - name: JUNGLE_ROLE_SQUIRREL
           value: "true"
         {{- end }}
-        {{- if contains "dev" .Values.hyperdos.ref }}
+        {{- if contains "dev" .Values.cascade.hyperdos.ref }}
         - name: HYPERBOLIC_GATEWAY_URL
           value: "https://api.dev-hyperbolic.xyz"
         - name: LOG_LEVEL
@@ -55,13 +55,12 @@ spec:
               key: token
 
       - name: maintain
-        image: "{{ .Values.image }}:{{ .Values.hyperdos.ref }}"
+        image: "{{ .Values.image }}:{{ .Values.cascade.hyperdos.ref }}"
         imagePullPolicy: Always
         args:
         - -mode=maintain
-        {{- if contains "dev" .Values.hyperdos.ref }}
+        {{- if contains "dev" .Values.cascade.hyperdos.ref }}
         env:
         - name: MAINTAIN_RECONCILE_INTERVAL
           value: "60m"
         {{- end }}
-

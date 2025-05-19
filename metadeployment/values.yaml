@@ -1,28 +1,30 @@
 ---
-# note: this is usually over-ridden by the helm chart install in charts/hyperdos
-hyperdos:
-  url: 'https://github.com/hyperboliclabs/hyper-dos.git'
-  ref: "v0.0.3"
+cascade:
+  hyperdos:
+    # note: the hyperdos ref
+    # is usually over-ridden by the helm .Chart.AppVersion
+    ref: {}
+    url: 'https://github.com/hyperboliclabs/hyper-dos.git'
 
-# the jungle role determines the obligations this baron
-# will be expected to fulfill - and computational challenges
-# it will be expected to pass at any time.
-# note that a single baron cluster can fulfil multiple roles at once
-jungleRole:
-  # buffalo clusters are usually expected to provide GPU compute
-  buffalo: true
+  # the jungle role determines the obligations this baron
+  # will be expected to fulfill - and computational challenges
+  # it will be expected to pass at any time.
+  # note that a single baron cluster can fulfil multiple roles at once
+  jungleRole:
+    # buffalo clusters are usually expected to provide GPU compute
+    buffalo: true
 
-  # cow clusters are expected to provide CPU compute
-  cow: false
+    # cow clusters are expected to provide CPU compute
+    cow: false
 
-  # cricket clusters are expected to provide public IP and network routing
-  cricket: false
+    # cricket clusters are expected to provide public IP and network routing
+    cricket: false
 
-  # squirrel clusters are expected to provide storage and data transfer
-  squirrel: false
+    # squirrel clusters are expected to provide storage and data transfer
+    squirrel: false
 
-hyperai:
-  enabled: false
+  hyperai:
+    enabled: false
 
 clusterdos:
   ref: 'v0.1'

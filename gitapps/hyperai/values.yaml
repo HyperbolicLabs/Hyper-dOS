@@ -1,3 +1,4 @@
+---
 image:
   repository: vllm/vllm-openai
   tag: v0.8.5

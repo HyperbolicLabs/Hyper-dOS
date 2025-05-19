@@ -8,15 +8,16 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: {{ .Values.hyperdos.url }}
+    repoURL: {{ .Values.cascade.hyperdos.url }}
     path: gitapps/hyperai
-    targetRevision: {{ .Values.hyperdos.ref }}
+    targetRevision: {{ .Values.cascade.hyperdos.ref }}
     helm:
       values: |
-        {{- .Values.hyperai | toYaml | nindent 8 }}
-      parameters:
-        - name: hyperdos.ref
-          value: $ARGOCD_APP_SOURCE_TARGET_REVISION
+        cascade:
+          {{- .Values.cascade | toYaml | nindent 10 }}
+      # parameters:
+      #   - name: hyperdos.ref
+      #     value: $ARGOCD_APP_SOURCE_TARGET_REVISION
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: hyperdos

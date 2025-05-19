@@ -12,17 +12,33 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: {{ .Values.hyperdos.url }}
+    repoURL: {{ .Values.cascade.hyperdos.url }}
     path: metadeployment/
-    targetRevision: {{ .Values.hyperdos.ref }}
+    targetRevision: {{ .Chart.AppVersion }}
     helm:
+      valueFiles:
+        - values.yaml
+
+      # values override valuesFile
+      # note: upgrade to valuesObject once latest ArgoCD is
+      # rolled out in microk8s
+      values: |
+        cascade:
+          {{- .Values.cascade | toYaml | nindent 10 }}
+
+      # parameters overrides values
+      # DO NOT COMMENT THIS OUT, it is actually necessary at the top-level
       parameters:
+        - name: cascade.hyperdos.ref
+          value: $ARGOCD_APP_SOURCE_TARGET_REVISION
         - name: hyperdos.ref
+          # including this for backwards compatibility
           value: $ARGOCD_APP_SOURCE_TARGET_REVISION
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: argocd
-  syncPolicy: # argo-cd.readthedocs.io/en/stable/user-guide/auto_sync/
+  syncPolicy:
+    # argo-cd.readthedocs.io/en/stable/user-guide/auto_sync
     automated:
       prune: true
       allowEmpty: true
