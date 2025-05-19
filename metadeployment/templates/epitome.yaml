@@ -14,6 +14,8 @@ spec:
       parameters:
         - name: hyperdos.ref
           value: $ARGOCD_APP_SOURCE_TARGET_REVISION
+      values: |
+        {{ .Values.jungleRole | toYaml | nindent 8 }}
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: hyperdos

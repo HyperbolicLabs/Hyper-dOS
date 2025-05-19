@@ -22,6 +22,23 @@ spec:
         args:
           - -mode=monkey
         env:
+        # can fulfill many roles at once
+        {{- if .Values.jungleRole.buffalo }}
+        - name: JUNGLE_ROLE_BUFFALO
+          value: "true"
+        {{- end }}
+        {{- if .Values.jungleRole.cow }}
+        - name: JUNGLE_ROLE_COW
+          value: "true"
+        {{- end }}
+        {{- if .Values.jungleRole.cricket }}
+        - name: JUNGLE_ROLE_CRICKET
+          value: "true"
+        {{- end }}
+        {{- if .Values.jungleRole.squirrel }}
+        - name: JUNGLE_ROLE_SQUIRREL
+          value: "true"
+        {{- end }}
         - name: KUBERNETES_NODE_NAME
           valueFrom:
             fieldRef:

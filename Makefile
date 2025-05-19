@@ -52,27 +52,22 @@ test:
 helm-test:
 	@cd metadeployment; \
 	helm template metadeployment \
-		--set ref="dev" \
+		--set hyperdos.ref="dev" \
 		.
 
 	@cd gitapps/nvidia-smi; \
 	helm template nvidia-smi \
-		--set ref="dev" \
 		.
 
 	@cd gitapps/epitome; \
 	helm template epitome \
-		--set ref="dev" \
-		.
-
-	@cd gitapps/epitome; \
-	helm template epitome \
-		--set ref="main" \
+		--set hyperdos.ref="dev" \
+		--set jungleRole.buffalo="true" \
 		.
 
 	@cd gitapps/pre-pull; \
 	helm template pre-pull \
-		--set ref="main" \
+		--set hyperdos.ref="dev" \
 		.
 
 test-helm-install:

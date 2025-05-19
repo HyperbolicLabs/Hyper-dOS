@@ -17,6 +17,7 @@ type Config struct {
 	Monkey   MonkeyMode
 	Maintain MaintainMode
 	Shell    ShellMode
+	Role     JungleRole
 	// I like to use UPPER_SNAKE_CASE for config that parses from the environment,
 	// as it gives a bit of intuition downstream about where these values may come from
 	LOG_LEVEL         string `env:"LOG_LEVEL" envDefault:"info"`
@@ -24,6 +25,13 @@ type Config struct {
 	KUBECONFIG        string `env:"KUBECONFIG" envDefault:""`
 	HyperwebNamespace string `env:"HYPERWEB_NAMESPACE" envDefault:"hyperweb"`
 	HyperdosNamespace string `env:"HYPERDOS_NAMESPACE" envDefault:"hyperdos"`
+}
+
+type JungleRole struct {
+	Buffalo  bool `env:"JUNGLE_ROLE_BUFFALO" envDefault:"true"`
+	Cow      bool `env:"JUNGLE_ROLE_COW" envDefault:"false"`
+	Cricket  bool `env:"JUNGLE_ROLE_CRICKET" envDefault:"false"`
+	Squirrel bool `env:"JUNGLE_ROLE_SQUIRREL" envDefault:"false"`
 }
 
 type DefaultMode struct {
