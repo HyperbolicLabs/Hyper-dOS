@@ -14,9 +14,11 @@ spec:
   source:
     repoURL: 'https://github.com/hyperboliclabs/hyper-dos.git'
     path: metadeployment/
-    targetRevision: v0.0.3
+    targetRevision: v0.1.0
     helm:
       parameters:
+        - valueFiles:
+            - values.yaml
         - name: hyperdos.ref
           # including this here for rollback compatibility,
           # but once v0.0.3 is fully deprecated it can be removed
