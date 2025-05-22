@@ -14,19 +14,20 @@ cascade:
   # will be expected to fulfill - and computational challenges
   # it will be expected to pass at any time.
   # note that a single baron cluster can fulfil multiple roles at once
-  jungleRole:
-    # buffalo clusters are usually expected to provide GPU compute
-    buffalo: true
+  buffalo:
+    enabled: false
+  cricket:
+    enabled: false
+  cow:
+    enabled: false
+  squirrel:
+    enabled: false
 
-    # cow clusters are expected to provide CPU compute
-    cow: false
-
-    # cricket clusters are expected to provide public IP and network routing
-    cricket: false
-
-    # squirrel clusters are expected to provide storage and data transfer
-    squirrel: false
-
+  # enable hyperai to provide inference to the network as a pre-emptible
+  # (low priority) baseload. this is a good way to increase cluster utilization
+  # and earnings without interfering with existing rentals. hyperai
+  # automatically gets out of the way when your baron is about to be rented,
+  # and spins back up when there are resources available.
   hyperai:
     enabled: false
 

@@ -114,6 +114,7 @@ install_hyperdos_if_not_installed() {
       sudo env "PATH=$PATH" microk8s helm repo update
       sudo env "PATH=$PATH" microk8s helm install hyperdos hyperdos/hyperdos \
         --version $HYPERDOS_VERSION \
+        --set cascade.buffalo.enabled="true" \
         --set token="$TOKEN" $EXTRA_PARAMS
       # note - do not quote EXTRA_PARAMS or you might get unexpected globbing, which changes the function
     else

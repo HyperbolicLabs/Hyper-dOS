@@ -26,19 +26,19 @@ spec:
         - -mode=jungle
         env:
         # can fulfill many roles at once
-        {{- if (.Values.cascade.jungleRole).buffalo }}
+        {{- if (.Values.cascade.buffalo).enabled }}
         - name: JUNGLE_ROLE_BUFFALO
           value: "true"
         {{- end }}
-        {{- if (.Values.cascade.jungleRole).cow }}
+        {{- if (.Values.cascade.cow).enabled }}
         - name: JUNGLE_ROLE_COW
           value: "true"
         {{- end }}
-        {{- if (.Values.cascade.jungleRole).cricket }}
+        {{- if (.Values.cascade.cricket).enabled }}
         - name: JUNGLE_ROLE_CRICKET
           value: "true"
         {{- end }}
-        {{- if (.Values.cascade.jungleRole).squirrel }}
+        {{- if (.Values.cascade.squirrel).enabled }}
         - name: JUNGLE_ROLE_SQUIRREL
           value: "true"
         {{- end }}
