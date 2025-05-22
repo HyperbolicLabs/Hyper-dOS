@@ -1,20 +1,21 @@
 package sh
 
 import (
-	"flag"
 	"fmt"
 	"os"
 	"os/exec"
 	"runtime"
 	"strings"
+
+	"epitome.hyperbolic.xyz/mode/sh/microk8s"
 )
 
 func (s *session) initCluster(args ...string) error {
 	// use flag.parse to parse args for the -mode=cricket flag
 
-	flags := flag.NewFlagSet("init", flag.ContinueOnError)
-	modeArg := flags.String("mode", "ronin", "Specify the mode to initialize the cluster in (ronin | buffalo | cricket)")
-	flags.Parse(args)
+	// flags := flag.NewFlagSet("init", flag.ContinueOnError)
+	// modeArg := flags.String("mode", "ronin", "Specify the mode to initialize the cluster in (ronin | buffalo | cricket)")
+	// flags.Parse(args)
 
 	if s.clientset != nil && !s.cfg.DEBUG {
 		s.write("cluster already initialized\n")
@@ -31,31 +32,73 @@ func (s *session) initCluster(args ...string) error {
 		return err
 	}
 
+	// note that they underlying function should do a snap refresh --hold
 	if err := s.checkAndInstallSnap("microk8s", "--classic", "--channel=1.32/stable"); err != nil {
 		return err
 	}
 
-	// switch modearg
-	switch *modeArg {
-	case "ronin":
-		return fmt.Errorf("ronin mode not yet implemented")
-	case "buffalo":
-		return fmt.Errorf("buffalo mode not yet implemented")
-	case "cricket":
-		return s.installHyperdos(
-			s.cfg.HyperdosNamespace,
-			"TODO cricket proto",
-		)
-	}
-
 	s.write("cluster initialized\n")
+
+	err := s.checkAndInstallHyperdos()
+	if err != nil {
+		return fmt.Errorf("failed to install hyperdos: %v", err)
+	}
 
 	return nil
 }
 
-func (s *session) installHyperdos(
-	namespace string,
-	role string) error {
+func (s *session) checkAndInstallHyperdos() error {
+	s.writeln("would you like to install hyperdos now?")
+	if !s.confirm() {
+		return fmt.Errorf("operation canceled by user")
+	}
+
+	// note: something isn't quite smooth about s.rl.Stdout()
+	microk8s.ConfigureNodeBasics(s.rl)
+
+	// since a single baron can hold multiple jungle roles at once,
+	// we check each role separately
+	if s.cfg.Role.Buffalo {
+		// TODO install microceph
+		return fmt.Errorf("buffalo install not yet implemented")
+	}
+
+	if s.cfg.Role.Cow {
+		return fmt.Errorf("cow install not yet implemented")
+	}
+
+	if s.cfg.Role.Squirrel {
+		// TODO install microceph
+		return fmt.Errorf("squirrel install not yet implemented")
+	}
+
+	if s.cfg.Role.Cricket {
+		s.writeln(`
+		the cricket role has been selected. 
+		install hyperdos with jungleRole cricket?
+		Note: this will modify /var/snap/microk8s/current/args/kube-apiserver
+		to expand the microk8s service IP range and nodeport range.
+		`)
+		if !s.confirm() {
+			return fmt.Errorf("cricket setup canceled by user")
+		}
+
+		// no microceph necessary
+		err := microk8s.ConfigureCricketNode(s.rl)
+		if err != nil {
+			return fmt.Errorf("failed to configure cricket node: %v", err)
+		}
+
+		s.writeln("microk8s has been configured for cricket mode. Would you like to helm-install hyperdos now?")
+		if !s.confirm() {
+			return fmt.Errorf("helm install hyperdos canceled by user")
+		}
+
+		err = microk8s.InstallHyperdos(s.cfg)
+		if err != nil {
+			return fmt.Errorf("failed to install hyperdos in cricket mode")
+		}
+	}
 
 	return fmt.Errorf("TODO: cricket install not implemented")
 }

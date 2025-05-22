@@ -28,6 +28,7 @@ spec:
 
       # parameters overrides values
       # DO NOT COMMENT THIS OUT, it is actually necessary at the top-level
+      # to override cascade.hyperdos.ref
       parameters:
         - name: cascade.hyperdos.ref
           value: $ARGOCD_APP_SOURCE_TARGET_REVISION
