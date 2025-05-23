@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"strings"
 
 	"epitome.hyperbolic.xyz/config"
 	"epitome.hyperbolic.xyz/mode/sh/nodeshell"
@@ -33,34 +34,44 @@ func ConfigureNodeBasics(w io.Writer) {
 func InstallHyperdos(cfg *config.Config) error {
 	sudo := true
 	args := "microk8s helm repo add hyperdos https://hyperboliclabs.github.io/Hyper-dOS"
-	if err := nodeshell.RunCommand(sudo, args, os.Stdin, os.Stdout, os.Stderr); err != nil {
+	splitArgs := strings.Split(args, " ")
+	if err := nodeshell.RunCommand(sudo, splitArgs, os.Stdin, os.Stdout, os.Stderr); err != nil {
 		return fmt.Errorf("could not add hyperdos helm repo: %v", err)
 
 	}
 
 	args = "microk8s helm repo update"
-	if err := nodeshell.RunCommand(sudo, args, os.Stdin, os.Stdout, os.Stderr); err != nil {
+	splitArgs = strings.Split(args, " ")
+	if err := nodeshell.RunCommand(sudo, splitArgs, os.Stdin, os.Stdout, os.Stderr); err != nil {
 		return fmt.Errorf("failed to update helm repos: %v", err)
+	}
+
+	shouldEnableHyperai := false
+	if cfg.Role.Buffalo {
+		shouldEnableHyperai = true
 	}
 
 	args = fmt.Sprintf(`microk8s helm install hyperdos \
 	hyperdos/hyperdos \
 	--version %s\
 	--set token="%s"\
-	--set cascade.jungleRole.buffalo="%b" \
-	--set cascade.jungelRole.cricket="%b"\
-	--set cascade.jungelRole.cow="%b"\
-	--set cascade.jungelRole.squirrel="%b"\
-	--set cascade.hyperai.enabled="%b" \
+	--set cascade.jungleRole.buffalo="%v" \
+	--set cascade.jungelRole.cricket="%v"\
+	--set cascade.jungelRole.cow="%v"\
+	--set cascade.jungelRole.squirrel="%v"\
+	--set cascade.hyperai.enabled="%v" \
 	`,
-		cfg.Default.HyperdosVersion,
+		"TODO", // cfg.Default.HyperdosVersion,
 		cfg.Default.HYPERBOLIC_TOKEN,
 		cfg.Role.Buffalo,
 		cfg.Role.Cricket,
 		cfg.Role.Cow,
 		cfg.Role.Squirrel,
+		shouldEnableHyperai,
 	)
-	if err := nodeshell.RunCommand(sudo, args, os.Stdin, os.Stdout, os.Stderr); err != nil {
+
+	splitArgs = strings.Split(args, " ")
+	if err := nodeshell.RunCommand(sudo, splitArgs, os.Stdin, os.Stdout, os.Stderr); err != nil {
 		return fmt.Errorf("failed to install hyperdos: %v", err)
 	}
 
