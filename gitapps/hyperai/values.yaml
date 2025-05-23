@@ -1,12 +1,16 @@
 ---
+cascade:
+  # TODO valuefrom configmap
+  hyperai:
+    model:
+      # https://huggingface.co/TinyLlama/TinyLlama-1.1B-Chat-v1.0
+      name: "TinyLlama/TinyLlama-1.1B-Chat-v1.0"
+
 image:
   repository: vllm/vllm-openai
   tag: v0.8.5
 # https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/
 priority: -100
-model:
-  # https://huggingface.co/TinyLlama/TinyLlama-1.1B-Chat-v1.0
-  name: "TinyLlama/TinyLlama-1.1B-Chat-v1.0"
 service:
   type: ClusterIP
 resources:

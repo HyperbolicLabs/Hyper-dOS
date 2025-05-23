@@ -30,6 +30,8 @@ cascade:
   # and spins back up when there are resources available.
   hyperai:
     enabled: false
+    # model:
+      # name: "TinyLlama/TinyLlama-1.1B-Chat-v1.0"
 
 clusterdos:
   ref: 'v0.1'
