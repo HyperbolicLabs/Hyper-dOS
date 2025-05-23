@@ -83,7 +83,7 @@ func (s *session) checkAndInstallHyperdos(roles config.JungleRole, version strin
 
 	var installToken string
 	if s.cfg.Default.HYPERBOLIC_TOKEN == nil {
-		s.writeln("Please enter your Hyperbolic API token: ")
+		s.rl.SetPrompt("Please enter your Hyperbolic API token: ")
 		token, err := s.rl.Readline()
 		if err != nil {
 			return err
