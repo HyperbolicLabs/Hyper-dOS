@@ -36,7 +36,7 @@ func RunCommandFromStr(
 	stderr *os.File,
 ) error {
 	if sudo {
-		command = "sudo" + "-S" + command
+		command = "sudo" + " -S " + command
 	}
 
 	cmd := exec.Command("bash", "-c", command)

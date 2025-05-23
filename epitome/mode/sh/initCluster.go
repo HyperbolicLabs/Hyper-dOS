@@ -89,6 +89,10 @@ func (s *session) checkAndInstallHyperdos(roles config.JungleRole, version strin
 			return err
 		}
 
+		if token == "" {
+			return fmt.Errorf("no token provided")
+		}
+
 		installToken = token
 	}
 
