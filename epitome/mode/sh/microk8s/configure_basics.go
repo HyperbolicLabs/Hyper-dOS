@@ -3,6 +3,7 @@ package microk8s
 import (
 	"fmt"
 	"io"
+	"net/url"
 	"os"
 	"strings"
 
@@ -31,7 +32,7 @@ func ConfigureNodeBasics(w io.Writer) {
 
 // InstallHyperdos assumes microk8s is present, properly configured,
 // and running
-func InstallHyperdos(cfg *config.Config, version string) error {
+func InstallHyperdos(jungleRoles config.JungleRole, version string, gatewayURL url.URL, token string) error {
 	sudo := true
 	args := "microk8s helm repo add hyperdos https://hyperboliclabs.github.io/Hyper-dOS"
 	splitArgs := strings.Split(args, " ")
@@ -47,10 +48,11 @@ func InstallHyperdos(cfg *config.Config, version string) error {
 	}
 
 	shouldEnableHyperai := false
-	if cfg.Role.Buffalo {
+	if jungleRoles.Buffalo {
 		shouldEnableHyperai = true
 	}
 
+	// TODO use gatewayURL
 	args = fmt.Sprintf(`microk8s helm install hyperdos \
 	hyperdos/hyperdos \
 	--version %s \
@@ -62,11 +64,11 @@ func InstallHyperdos(cfg *config.Config, version string) error {
 	--set cascade.hyperai.enabled="%v" \
 	`,
 		version,
-		cfg.Default.HYPERBOLIC_TOKEN,
-		cfg.Role.Buffalo,
-		cfg.Role.Cricket,
-		cfg.Role.Cow,
-		cfg.Role.Squirrel,
+		token,
+		jungleRoles.Buffalo,
+		jungleRoles.Cricket,
+		jungleRoles.Cow,
+		jungleRoles.Squirrel,
 		shouldEnableHyperai,
 	)
 

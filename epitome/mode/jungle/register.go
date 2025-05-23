@@ -32,6 +32,9 @@ func (a *agent) register(
 
 	gatewayUrl := a.cfg.Default.HYPERBOLIC_GATEWAY_URL
 	token := a.cfg.Default.HYPERBOLIC_TOKEN
+	if token == nil {
+		return nil, fmt.Errorf("HYPERBOLIC_TOKEN is not set")
+	}
 
 	logrus.Infof("registering cluster with gateway: %v", gatewayUrl)
 
@@ -55,7 +58,7 @@ func (a *agent) register(
 		return nil, fmt.Errorf("failed to create register_cluster request: %v", err)
 	}
 	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Authorization", "bearer "+token)
+	req.Header.Set("Authorization", "bearer "+*token)
 
 	resp, err := client.Do(req)
 	if err != nil {

@@ -38,7 +38,7 @@ type JungleRole struct {
 type DefaultMode struct {
 	ReconcileInterval      time.Duration `env:"DEFAULT_RECONCILE_INTERVAL" envDefault:"1m"`
 	HYPERBOLIC_GATEWAY_URL url.URL       `env:"HYPERBOLIC_GATEWAY_URL" envDefault:"https://api.hyperbolic.xyz"`
-	HYPERBOLIC_TOKEN       string        `env:"HYPERBOLIC_TOKEN"`
+	HYPERBOLIC_TOKEN       *string       `env:"HYPERBOLIC_TOKEN"`
 }
 
 type MaintainMode struct {

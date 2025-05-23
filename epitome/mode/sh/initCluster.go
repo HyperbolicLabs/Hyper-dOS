@@ -3,6 +3,7 @@ package sh
 import (
 	"flag"
 	"fmt"
+	"net/url"
 	"os"
 	"os/exec"
 	"runtime"
@@ -46,7 +47,7 @@ func (s *session) initCluster(args ...string) error {
 
 	if runtime.GOOS != "linux" {
 		s.writeInitNotImplementedOnThisPlatform()
-		return fmt.Errorf("not implemented on this platform")
+		return fmt.Errorf("epitomesh init currently only supports linux")
 	}
 
 	// check if snapd is installed
@@ -80,23 +81,45 @@ func (s *session) checkAndInstallHyperdos(roles config.JungleRole, version strin
 	// note: something isn't quite smooth about s.rl.Stdout()
 	microk8s.ConfigureNodeBasics(s.rl)
 
+	var installToken string
+	if s.cfg.Default.HYPERBOLIC_TOKEN == nil {
+		s.writeln("Please enter your Hyperbolic API token: ")
+		token, err := s.rl.Readline()
+		if err != nil {
+			return err
+		}
+
+		installToken = token
+	}
+
+	gatewayURL := s.cfg.Default.HYPERBOLIC_GATEWAY_URL
+	if version == "dev" {
+		// TODO this should be a flag
+		devURL, err := url.Parse("https://api.dev-hyperbolic.xyz")
+		if err != nil {
+			return err
+		}
+
+		gatewayURL = *devURL
+	}
+
 	// since a single baron can hold multiple jungle roles at once,
 	// we check each role separately
-	if s.cfg.Role.Buffalo || roles.Buffalo {
+	if roles.Buffalo {
 		// TODO install microceph
 		return fmt.Errorf("buffalo install not yet implemented")
 	}
 
-	if s.cfg.Role.Cow || roles.Cow {
+	if roles.Cow {
 		return fmt.Errorf("cow install not yet implemented")
 	}
 
-	if s.cfg.Role.Squirrel || roles.Squirrel {
+	if roles.Squirrel {
 		// TODO install microceph
 		return fmt.Errorf("squirrel install not yet implemented")
 	}
 
-	if s.cfg.Role.Cricket || roles.Cricket {
+	if roles.Cricket {
 		s.writeln(`
 		the cricket role has been selected. 
 		install hyperdos with jungleRole cricket?
@@ -118,7 +141,7 @@ func (s *session) checkAndInstallHyperdos(roles config.JungleRole, version strin
 			return fmt.Errorf("helm install hyperdos canceled by user")
 		}
 
-		err = microk8s.InstallHyperdos(s.cfg, version)
+		err = microk8s.InstallHyperdos(roles, version, gatewayURL, installToken)
 		if err != nil {
 			return fmt.Errorf("failed to install hyperdos in cricket mode")
 		}
