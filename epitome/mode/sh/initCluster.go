@@ -1,21 +1,43 @@
 package sh
 
 import (
+	"flag"
 	"fmt"
 	"os"
 	"os/exec"
 	"runtime"
 	"strings"
 
+	"epitome.hyperbolic.xyz/config"
 	"epitome.hyperbolic.xyz/mode/sh/microk8s"
 )
 
 func (s *session) initCluster(args ...string) error {
 	// use flag.parse to parse args for the -mode=cricket flag
 
-	// flags := flag.NewFlagSet("init", flag.ContinueOnError)
-	// modeArg := flags.String("mode", "ronin", "Specify the mode to initialize the cluster in (ronin | buffalo | cricket)")
-	// flags.Parse(args)
+	flags := flag.NewFlagSet("init", flag.ContinueOnError)
+	versionArg := flags.String("version", "", "Specify the version of hyperdos to install")
+	roleArg := flags.String("role", "", "Specify the role to initialize the cluster in (buffalo | cricket)")
+	flags.Parse(args)
+
+	if *versionArg == "" {
+		if s.cfg.HYPERDOS_VERSION == nil {
+			return fmt.Errorf("must specify -version=VERSION or set $HYPERDOS_VERSION")
+		} else {
+			versionArg = s.cfg.HYPERDOS_VERSION
+		}
+	}
+
+	if *roleArg == "" {
+		return fmt.Errorf("must specify -role=(buffalo | cricket)")
+	}
+
+	roles := config.JungleRole{
+		// TODO use 'contains' or split on commas so we
+		// can init with multiple roles at once
+		Buffalo: *roleArg == "buffalo",
+		Cricket: *roleArg == "cricket",
+	}
 
 	if s.clientset != nil && !s.cfg.DEBUG {
 		s.write("cluster already initialized\n")
@@ -39,7 +61,7 @@ func (s *session) initCluster(args ...string) error {
 
 	s.write("cluster initialized\n")
 
-	err := s.checkAndInstallHyperdos()
+	err := s.checkAndInstallHyperdos(roles, *versionArg)
 	if err != nil {
 		return fmt.Errorf("failed to install hyperdos: %v", err)
 	}
@@ -47,7 +69,9 @@ func (s *session) initCluster(args ...string) error {
 	return nil
 }
 
-func (s *session) checkAndInstallHyperdos() error {
+func (s *session) checkAndInstallHyperdos(roles config.JungleRole, version string) error {
+	// TODO semver parse version
+
 	s.writeln("would you like to install hyperdos now?")
 	if !s.confirm() {
 		return fmt.Errorf("operation canceled by user")
@@ -58,21 +82,21 @@ func (s *session) checkAndInstallHyperdos() error {
 
 	// since a single baron can hold multiple jungle roles at once,
 	// we check each role separately
-	if s.cfg.Role.Buffalo {
+	if s.cfg.Role.Buffalo || roles.Buffalo {
 		// TODO install microceph
 		return fmt.Errorf("buffalo install not yet implemented")
 	}
 
-	if s.cfg.Role.Cow {
+	if s.cfg.Role.Cow || roles.Cow {
 		return fmt.Errorf("cow install not yet implemented")
 	}
 
-	if s.cfg.Role.Squirrel {
+	if s.cfg.Role.Squirrel || roles.Squirrel {
 		// TODO install microceph
 		return fmt.Errorf("squirrel install not yet implemented")
 	}
 
-	if s.cfg.Role.Cricket {
+	if s.cfg.Role.Cricket || roles.Cricket {
 		s.writeln(`
 		the cricket role has been selected. 
 		install hyperdos with jungleRole cricket?
@@ -94,7 +118,7 @@ func (s *session) checkAndInstallHyperdos() error {
 			return fmt.Errorf("helm install hyperdos canceled by user")
 		}
 
-		err = microk8s.InstallHyperdos(s.cfg)
+		err = microk8s.InstallHyperdos(s.cfg, version)
 		if err != nil {
 			return fmt.Errorf("failed to install hyperdos in cricket mode")
 		}

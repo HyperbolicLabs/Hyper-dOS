@@ -31,7 +31,7 @@ func ConfigureNodeBasics(w io.Writer) {
 
 // InstallHyperdos assumes microk8s is present, properly configured,
 // and running
-func InstallHyperdos(cfg *config.Config) error {
+func InstallHyperdos(cfg *config.Config, version string) error {
 	sudo := true
 	args := "microk8s helm repo add hyperdos https://hyperboliclabs.github.io/Hyper-dOS"
 	splitArgs := strings.Split(args, " ")
@@ -53,15 +53,15 @@ func InstallHyperdos(cfg *config.Config) error {
 
 	args = fmt.Sprintf(`microk8s helm install hyperdos \
 	hyperdos/hyperdos \
-	--version %s\
-	--set token="%s"\
+	--version %s \
+	--set token="%s" \
 	--set cascade.jungleRole.buffalo="%v" \
 	--set cascade.jungelRole.cricket="%v"\
 	--set cascade.jungelRole.cow="%v"\
 	--set cascade.jungelRole.squirrel="%v"\
 	--set cascade.hyperai.enabled="%v" \
 	`,
-		"TODO", // cfg.Default.HyperdosVersion,
+		version,
 		cfg.Default.HYPERBOLIC_TOKEN,
 		cfg.Role.Buffalo,
 		cfg.Role.Cricket,
@@ -70,8 +70,7 @@ func InstallHyperdos(cfg *config.Config) error {
 		shouldEnableHyperai,
 	)
 
-	splitArgs = strings.Split(args, " ")
-	if err := nodeshell.RunCommand(sudo, splitArgs, os.Stdin, os.Stdout, os.Stderr); err != nil {
+	if err := nodeshell.RunCommandFromStr(sudo, args, os.Stdin, os.Stdout, os.Stderr); err != nil {
 		return fmt.Errorf("failed to install hyperdos: %v", err)
 	}
 

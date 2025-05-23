@@ -22,6 +22,8 @@ spec:
         args:
           - -mode=monkey
         env:
+        - name: HYPERDOS_VERSION
+          value: "{{ .Values.cascade.hyperdos.ref }}"
         # can fulfill many roles at once
         {{- if (.Values.cascade.buffalo).enabled }}
         - name: JUNGLE_ROLE_BUFFALO

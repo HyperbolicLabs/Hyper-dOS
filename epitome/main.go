@@ -18,8 +18,6 @@ import (
 	"go.uber.org/zap/zapcore"
 )
 
-const VERSION = "v1-alpha"
-
 func main() {
 	help := flag.Bool("help", false, "Show help")
 	mode := flag.String("mode", "jungle", "Specify the mode to run epitome in (jungle | maintain | monkey | sh)")
@@ -55,9 +53,20 @@ func main() {
 	logger = logger.With(zap.String("mode", *mode))
 	logger.Info("launching epitome")
 
+	if cfg.HYPERDOS_VERSION != nil {
+		logger.Info("hyperdos version", zap.String("version", *cfg.HYPERDOS_VERSION))
+	}
+
 	var kubeconfigPath *string
 	if cfg.KUBECONFIG != "" {
 		kubeconfigPath = &cfg.KUBECONFIG
+	}
+
+	// check if no role is set
+	noroles := config.JungleRole{}
+	if cfg.Role == noroles && *mode != "sh" {
+		// TODO ronin functionality
+		logger.Fatal("no jungle role set")
 	}
 
 	switch *mode {
