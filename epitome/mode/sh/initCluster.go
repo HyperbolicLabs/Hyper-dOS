@@ -145,7 +145,7 @@ func (s *session) checkAndInstallArgocd() error {
 
 	err = nodeshell.RunCommandFromStr(
 		true,
-		"microk8s helm install argo argo/argo-cd",
+		"microk8s helm install argocd argo/argo-cd -n argocd",
 		os.Stdin,
 		os.Stdout,
 		os.Stderr,
