@@ -52,6 +52,17 @@ func InstallHyperdos(jungleRoles config.JungleRole, version string, gatewayURL u
 		shouldEnableHyperai = true
 	}
 
+	// create hyperdos and hyperweb namespaces if necessary
+	args = "microk8s kubectl create namespace hyperdos"
+	if err := nodeshell.RunCommandFromStr(sudo, args, os.Stdin, os.Stdout, os.Stderr); err != nil {
+		return fmt.Errorf("failed to create hyperdos namespace: %v", err)
+	}
+
+	args = "microk8s kubectl create namespace hyperweb"
+	if err := nodeshell.RunCommandFromStr(sudo, args, os.Stdin, os.Stdout, os.Stderr); err != nil {
+		return fmt.Errorf("failed to create hyperweb namespace: %v", err)
+	}
+
 	// TODO use gatewayURL
 	args = fmt.Sprintf(`microk8s helm install hyperdos \
 	hyperdos/hyperdos \
