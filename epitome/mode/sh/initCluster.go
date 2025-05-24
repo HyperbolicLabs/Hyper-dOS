@@ -12,6 +12,7 @@ import (
 	"epitome.hyperbolic.xyz/config"
 	"epitome.hyperbolic.xyz/mode/sh/microk8s"
 	"epitome.hyperbolic.xyz/mode/sh/nodeshell"
+	"k8s.io/utils/ptr"
 
 	"golang.org/x/mod/semver"
 )
@@ -32,7 +33,10 @@ func (s *session) initCluster(args ...string) error {
 		}
 	}
 
-	if !semver.IsValid(*versionArg) {
+	if *versionArg == "dev" {
+		// TODO this is a hack
+		versionArg = ptr.To("0.0.3")
+	} else if !semver.IsValid(*versionArg) {
 		return fmt.Errorf("version %s is not a valid semantic version", *versionArg)
 	}
 
