@@ -11,6 +11,7 @@ import (
 
 	"epitome.hyperbolic.xyz/config"
 	"epitome.hyperbolic.xyz/mode/sh/microk8s"
+	"epitome.hyperbolic.xyz/mode/sh/nodeshell"
 )
 
 func (s *session) initCluster(args ...string) error {
@@ -60,9 +61,39 @@ func (s *session) initCluster(args ...string) error {
 		return err
 	}
 
+	// check if this user is a part of the microk8s group
+	// and if not, add them
+	groups, err := exec.Command("groups").Output()
+	if err != nil {
+		return fmt.Errorf("failed to check if user is in microk8s group: %v", err)
+	}
+	if !strings.Contains(string(groups), "microk8s") {
+		// confirm if they want to add themselves to microk8s group
+		s.writeln("you are not in the microk8s group")
+		s.writeln("would you like to add you to the microk8s group?")
+		if !s.confirm() {
+			return fmt.Errorf("operation canceled by user")
+		}
+
+		s.write("adding you to microk8s group\n")
+		user := os.Getenv("USER")
+		err := nodeshell.RunCommandFromStr(
+			true,
+			fmt.Sprintf("sudo usermod -a -G microk8s %s", user),
+			os.Stdin,
+			os.Stdout,
+			os.Stderr,
+		)
+		if err != nil {
+			return fmt.Errorf("failed to add user %s to microk8s group: %v", user, err)
+		}
+	} else {
+		s.write("user already in microk8s group\n")
+	}
+
 	s.write("cluster initialized\n")
 
-	err := s.checkAndInstallHyperdos(roles, *versionArg)
+	err = s.checkAndInstallHyperdos(roles, *versionArg)
 	if err != nil {
 		return fmt.Errorf("failed to install hyperdos: %v", err)
 	}
