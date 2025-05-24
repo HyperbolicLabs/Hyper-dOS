@@ -61,8 +61,26 @@ spec:
         imagePullPolicy: Always
         args:
         - -mode=maintain
-        {{- if contains "dev" .Values.cascade.hyperdos.ref }}
         env:
+        - name: dummy
+          value: "dummy"
+        {{- if contains "dev" (.Values.cascade.hyperdos).ref }}
         - name: MAINTAIN_RECONCILE_INTERVAL
           value: "60m"
+        {{- end }}
+        {{- if (.Values.cascade.buffalo).enabled }}
+        - name: JUNGLE_ROLE_BUFFALO
+          value: "true"
+        {{- end }}
+        {{- if (.Values.cascade.cow).enabled }}
+        - name: JUNGLE_ROLE_COW
+          value: "true"
+        {{- end }}
+        {{- if (.Values.cascade.cricket).enabled }}
+        - name: JUNGLE_ROLE_CRICKET
+          value: "true"
+        {{- end }}
+        {{- if (.Values.cascade.squirrel).enabled }}
+        - name: JUNGLE_ROLE_SQUIRREL
+          value: "true"
         {{- end }}
