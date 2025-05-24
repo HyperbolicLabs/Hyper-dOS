@@ -101,11 +101,58 @@ func (s *session) initCluster(args ...string) error {
 		s.write("user already in microk8s group\n")
 	}
 
+	// install argocd
+	s.write("installing argocd\n")
+	err = s.checkAndInstallArgocd()
+	if err != nil {
+		return fmt.Errorf("failed to install argocd: %v", err)
+	}
+
 	s.write("cluster initialized\n")
 
 	err = s.checkAndInstallHyperdos(roles, *versionArg)
 	if err != nil {
 		return fmt.Errorf("failed to install hyperdos: %v", err)
+	}
+
+	return nil
+}
+
+func (s *session) checkAndInstallArgocd() error {
+	err := nodeshell.RunCommandFromStr(
+		true,
+		"microk8s helm repo add argo https://argoproj.github.io/argo-helm",
+		os.Stdin,
+		os.Stdout,
+		os.Stderr,
+	)
+
+	if err != nil {
+		return fmt.Errorf("failed to add argo helm repo: %v", err)
+	}
+
+	err = nodeshell.RunCommandFromStr(
+		true,
+		"microk8s helm repo update",
+		os.Stdin,
+		os.Stdout,
+		os.Stderr,
+	)
+
+	if err != nil {
+		return fmt.Errorf("failed to update helm repos: %v", err)
+	}
+
+	err = nodeshell.RunCommandFromStr(
+		true,
+		"microk8s helm install argo argo/argo-cd",
+		os.Stdin,
+		os.Stdout,
+		os.Stderr,
+	)
+
+	if err != nil {
+		return fmt.Errorf("failed to install argocd: %v", err)
 	}
 
 	return nil
