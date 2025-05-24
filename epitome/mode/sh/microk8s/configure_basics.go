@@ -63,10 +63,8 @@ func InstallHyperdos(jungleRoles config.JungleRole, version string, gatewayURL u
 		return fmt.Errorf("failed to create hyperweb namespace: %v", err)
 	}
 
-	// TODO use gatewayURL
 	args = fmt.Sprintf(`microk8s helm install hyperdos \
 	hyperdos/hyperdos \
-	--create-namespace \
 	--version %s \
 	--set cascade.king.url=%s \
 	--set token="%s" \

@@ -119,6 +119,12 @@ func (s *session) initCluster(args ...string) error {
 }
 
 func (s *session) checkAndInstallArgocd() error {
+	// check if the user would like to install argocd
+	s.writeln("would you like to install argocd?")
+	if !s.confirm() {
+		return fmt.Errorf("operation canceled by user")
+	}
+
 	err := nodeshell.RunCommandFromStr(
 		true,
 		"microk8s helm repo add argo https://argoproj.github.io/argo-helm",
