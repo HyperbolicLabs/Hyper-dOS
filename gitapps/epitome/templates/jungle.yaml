@@ -44,9 +44,10 @@ spec:
         - name: JUNGLE_ROLE_SQUIRREL
           value: "true"
         {{- end }}
-        {{- if contains "dev" .Values.cascade.hyperdos.ref }}
+        {{- if (.Values.cascade.king).url }}
         - name: HYPERBOLIC_GATEWAY_URL
-          value: "https://api.dev-hyperbolic.xyz"
+          value: {{ .Values.cascade.king.url }}
+        {{- end }}
         - name: LOG_LEVEL
           value: "debug"
         {{- end }}

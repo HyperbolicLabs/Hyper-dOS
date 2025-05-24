@@ -35,7 +35,7 @@ fi
 
 if [[ "$DEV" == "true" ]]; then
   set -x
-  EXTRA_PARAMS="--set hyperdos.ref=dev --set cascade.hyperdos.ref=dev"
+  EXTRA_PARAMS="--set hyperdos.ref=dev --set cascade.hyperdos.ref=dev --set cascade.king.url=https://api.dev-hyperbolic.xyz"
   API_URL="https://api.dev-hyperbolic.xyz"
 fi
 

@@ -6,7 +6,7 @@ toolchain go1.24.1
 
 // go 1.23
 
-replace jungle.proto => ./jungleproto/gen/go
+replace jungle.proto => ./jungleproto
 
 require (
 	github.com/caarlos0/env/v11 v11.3.1
@@ -14,7 +14,7 @@ require (
 	github.com/sirupsen/logrus v1.9.3
 	github.com/stretchr/testify v1.8.4
 	go.uber.org/zap v1.27.0
-	jungle.proto v0.0.0-00010101000000-000000000000
+	golang.org/x/mod v0.17.0
 	k8s.io/api v0.30.1
 	k8s.io/apimachinery v0.30.1
 	k8s.io/client-go v0.30.1

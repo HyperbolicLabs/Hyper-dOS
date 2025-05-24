@@ -12,6 +12,8 @@ import (
 	"epitome.hyperbolic.xyz/config"
 	"epitome.hyperbolic.xyz/mode/sh/microk8s"
 	"epitome.hyperbolic.xyz/mode/sh/nodeshell"
+
+	"golang.org/x/mod/semver"
 )
 
 func (s *session) initCluster(args ...string) error {
@@ -28,6 +30,10 @@ func (s *session) initCluster(args ...string) error {
 		} else {
 			versionArg = s.cfg.HYPERDOS_VERSION
 		}
+	}
+
+	if !semver.IsValid(*versionArg) {
+		return fmt.Errorf("version %s is not a valid semantic version", *versionArg)
 	}
 
 	if *roleArg == "" {
@@ -102,8 +108,6 @@ func (s *session) initCluster(args ...string) error {
 }
 
 func (s *session) checkAndInstallHyperdos(roles config.JungleRole, version string) error {
-	// TODO semver parse version
-
 	s.writeln("would you like to install hyperdos now?")
 	if !s.confirm() {
 		return fmt.Errorf("operation canceled by user")

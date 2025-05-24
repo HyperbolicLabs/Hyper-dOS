@@ -9,6 +9,8 @@ cascade:
     # is usually over-ridden by the helm .Chart.AppVersion
     ref: {}
     url: 'https://github.com/hyperboliclabs/hyper-dos.git'
+  king:
+    url: 'https://api.hyperbolic.xyz'
 
   # the jungle role determines the obligations this baron
   # will be expected to fulfill - and computational challenges

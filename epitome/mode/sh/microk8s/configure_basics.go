@@ -33,7 +33,7 @@ func ConfigureNodeBasics(w io.Writer) {
 // InstallHyperdos assumes microk8s is present, properly configured,
 // and running
 func InstallHyperdos(jungleRoles config.JungleRole, version string, gatewayURL url.URL, token string) error {
-	sudo := true
+	sudo := false
 	args := "microk8s helm repo add hyperdos https://hyperboliclabs.github.io/Hyper-dOS"
 	splitArgs := strings.Split(args, " ")
 	if err := nodeshell.RunCommand(sudo, splitArgs, os.Stdin, os.Stdout, os.Stderr); err != nil {
@@ -56,6 +56,7 @@ func InstallHyperdos(jungleRoles config.JungleRole, version string, gatewayURL u
 	args = fmt.Sprintf(`microk8s helm install hyperdos \
 	hyperdos/hyperdos \
 	--version %s \
+	--set cascade.king.url=%s \
 	--set token="%s" \
 	--set cascade.jungleRole.buffalo="%v" \
 	--set cascade.jungelRole.cricket="%v"\
@@ -64,6 +65,7 @@ func InstallHyperdos(jungleRoles config.JungleRole, version string, gatewayURL u
 	--set cascade.hyperai.enabled="%v" \
 	`,
 		version,
+		gatewayURL.String(), // TODO replace with jungleKing monarch url
 		token,
 		jungleRoles.Buffalo,
 		jungleRoles.Cricket,
