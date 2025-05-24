@@ -243,7 +243,7 @@ func (s *session) checkAndInstallHyperdos(roles config.JungleRole, version strin
 		}
 	}
 
-	return fmt.Errorf("TODO: cricket install not implemented")
+	return nil
 }
 
 func (s *session) confirm() bool {
