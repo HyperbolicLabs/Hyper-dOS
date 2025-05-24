@@ -55,6 +55,7 @@ func InstallHyperdos(jungleRoles config.JungleRole, version string, gatewayURL u
 	// TODO use gatewayURL
 	args = fmt.Sprintf(`microk8s helm install hyperdos \
 	hyperdos/hyperdos \
+	--create-namespace \
 	--version %s \
 	--set cascade.king.url=%s \
 	--set token="%s" \
