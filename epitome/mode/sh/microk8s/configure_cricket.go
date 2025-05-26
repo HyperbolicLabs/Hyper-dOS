@@ -20,10 +20,13 @@ func ConfigureCricketNode(w io.Writer) error {
 		return fmt.Errorf("failed to upgrade service IP range: %v", err)
 	}
 
+	// Note: ideally, we would be able to specify multiple ranges,
+	// but kube-apiserver doesn't support that. could be low-hanging fruit for a good PR
+	// e.g. 80,443,30000-40000
 	if err := upgradeNodePortRange(
 		sudo,
 		"/var/snap/microk8s/current/args/kube-apiserver",
-		"80,443,30000-40000",
+		"80-50000",
 	); err != nil {
 		return fmt.Errorf("failed to upgrade node port range: %v", err)
 	}
@@ -31,6 +34,16 @@ func ConfigureCricketNode(w io.Writer) error {
 	// 4) microk8s refresh-certs --cert server.crt
 
 	// 5) microk8s stop && microk8s start
+	if err := nodeshell.RunCommandFromStr(
+		sudo,
+		"microk8s stop && microk8s start",
+		os.Stdin,
+		os.Stdout,
+		os.Stderr,
+	); err != nil {
+		return fmt.Errorf("failed to restart microk8s: %v", err)
+	}
+
 	return nil
 }
 
