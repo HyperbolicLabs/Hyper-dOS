@@ -20,6 +20,7 @@ cascade:
     enabled: false
   cricket:
     enabled: false
+    domain: {}
   cow:
     enabled: false
   squirrel:

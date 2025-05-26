@@ -1,0 +1,32 @@
+---
+{{- if .Values.cascade.cricket.enabled }}
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: piko
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: {{ .Values.cascade.hyperdos.url }}
+    path: gitapps/cricket/piko
+    targetRevision: {{ .Values.cascade.hyperdos.ref }}
+    helm:
+      values: |
+        cascade:
+          {{- .Values.cascade | toYaml | nindent 10 }}
+  destination:
+    name: in-cluster
+    namespace: forward
+  syncPolicy:
+    automated:
+      prune: true
+      allowEmpty: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - Replace=true
+      - Force=true
+
+{{- end }}

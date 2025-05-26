@@ -1,0 +1,10 @@
+---
+server:
+  imagetag: v0.6.6
+
+flag:
+  scalinghack: true
+
+funnel:
+  enabled: false
+  hostname: {}

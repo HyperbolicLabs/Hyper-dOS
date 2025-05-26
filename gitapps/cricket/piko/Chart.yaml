@@ -1,0 +1,7 @@
+---
+apiVersion: v2
+name: forward
+description: A helm chart to install piko as configured
+type: application
+version: 0.0.0
+appVersion: "0.0.0"
