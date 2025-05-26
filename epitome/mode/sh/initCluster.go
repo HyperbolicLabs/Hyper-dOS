@@ -67,7 +67,7 @@ func (s *session) initCluster(args ...string) error {
 	}
 
 	// note that they underlying function should do a snap refresh --hold
-	if err := s.checkAndInstallSnap("microk8s", "--classic", "--channel=1.32/stable"); err != nil {
+	if err := s.checkAndInstallSnap("microk8s", "--classic", "--channel=1.33/stable"); err != nil {
 		return err
 	}
 
