@@ -7,7 +7,7 @@ metadata:
 data:
   auth_keys: |
     {{- if .Values.sshPubKeys }}
-    {{- $keys := splitList "," .Values.sshPubKeys }}
+    {{- $keys := splitList "|||" .Values.sshPubKeys }}
     {{- range $keys }}
     {{ . }}
     {{- end }}
