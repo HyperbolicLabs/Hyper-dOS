@@ -63,15 +63,17 @@ func InstallHyperdos(jungleRoles config.JungleRole, version string, gatewayURL u
 		return fmt.Errorf("failed to create hyperweb namespace: %v", err)
 	}
 
+	// TODO if cricket, add cascade.cricket.domain=cricketdomain
+
 	args = fmt.Sprintf(`microk8s helm install hyperdos \
 	hyperdos/hyperdos \
 	--version %s \
-	--set cascade.king.url=%s \
 	--set token="%s" \
-	--set cascade.jungleRole.buffalo="%v" \
-	--set cascade.jungelRole.cricket="%v"\
-	--set cascade.jungelRole.cow="%v"\
-	--set cascade.jungelRole.squirrel="%v"\
+	--set cascade.king.url=%s \
+	--set cascade.buffalo.enabled="%v" \
+	--set cascade.cricket.enabled="%v"\
+	--set cascade.cow.enabled="%v"\
+	--set cascade.squirrel.enabled="%v"\
 	--set cascade.hyperai.enabled="%v" \
 	`,
 		version,
