@@ -16,27 +16,27 @@ spec:
     spec:
       priorityClassName: hyperai
       containers:
-      - name: vllm-server
-        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
-        imagePullPolicy: {{ .Values.image.pullPolicy | default "IfNotPresent" }}
-        ports:
-        - containerPort: 8000
-          name: http
-        - containerPort: 9999
-          name: metrics
-        args:
-          # https://docs.vllm.ai/en/latest/getting_started/quickstart.html#quickstart-online
-          - "--model"
-          - {{ .Values.cascade.hyperai.model.name }}
-          # required to get things to run on T4
-          - "--dtype=half"
-        {{- with .Values.resources }}
-        resources:
-          {{- toYaml . | nindent 10 }}
-        {{ end }}
-        volumeMounts:
-        - name: models
-          mountPath: /models
+        - name: vllm-server
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          imagePullPolicy: {{ .Values.image.pullPolicy | default "IfNotPresent" }}
+          ports:
+            - containerPort: 8000
+              name: http
+            - containerPort: 9999
+              name: metrics
+          args:
+            # https://docs.vllm.ai/en/latest/getting_started/quickstart.html#quickstart-online
+            - "--model"
+            - {{ .Values.cascade.hyperai.model.name }}
+            # required to get things to run on T4
+            - "--dtype=half"
+          {{- with .Values.resources }}
+          resources:
+            {{- toYaml . | nindent 10 }}
+          {{ end }}
+          volumeMounts:
+          - name: models
+            mountPath: /models
       volumes:
       - name: models
         hostPath:
