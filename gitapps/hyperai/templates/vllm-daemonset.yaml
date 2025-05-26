@@ -35,13 +35,13 @@ spec:
             {{- toYaml . | nindent 10 }}
           {{ end }}
           volumeMounts:
-          - name: models
-            mountPath: /models
+            - name: models
+              mountPath: /models
       volumes:
-      - name: models
-        hostPath:
-          path: /var/lib/hyperai/models
+        - name: models
+          hostPath:
+            path: /var/lib/hyperai/models
       tolerations:
-      - key: nvidia.com/gpu
-        operator: Exists
-        effect: NoSchedule
+        - key: nvidia.com/gpu
+          operator: Exists
+          effect: NoSchedule
