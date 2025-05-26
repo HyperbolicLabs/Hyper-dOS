@@ -5,5 +5,5 @@ metadata:
   name: {{ .Values.pubkeyConfig }}
   namespace: instance
 data:
-  auth_key: |
-    {{ .Values.sshPubKey }}
+  auth_keys: |
+    {{ .Values.sshPubKeys }}

@@ -63,8 +63,8 @@ spec:
             - -c
             - |
               cp -a /home/ubuntu/. /mnt/data
-              cat /mnt/config/auth_key
-              cat /mnt/config/auth_key > /mnt/data/.ssh/authorized_keys
+              cat /mnt/config/auth_keys
+              cat /mnt/config/auth_keys > /mnt/data/.ssh/authorized_keys
               chown -R ubuntu:ubuntu /mnt/data
               chmod 600 /mnt/data/.ssh/authorized_keys
           volumeMounts:
