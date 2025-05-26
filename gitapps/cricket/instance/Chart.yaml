@@ -1,0 +1,10 @@
+---
+apiVersion: v2
+name: forward
+description: A Helm chart to create the cricket side of an instance
+type: application
+
+# these versions are irrelevant,
+# git and argo do the versioning
+version: 0.0.0
+appVersion: "0.1.0"

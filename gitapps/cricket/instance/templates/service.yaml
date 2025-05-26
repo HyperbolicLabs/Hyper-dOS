@@ -1,0 +1,43 @@
+---
+{{- if .Values.feature.multiPort }}
+{{- $fullname := include "instance.fullname" . }}
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: '{{ $fullname }}'
+  labels:
+    {{- include "instance.labels" . | nindent 4 }}
+spec:
+  type: NodePort
+  ports:
+  {{- range .Values.instancePortForwards }}
+    - port: {{ .containerPort }}
+      targetPort: {{ .containerPort }}
+      # protocol: {{ .protocol }}  # confusing - only TCP or UDP no HTTP
+      protocol: TCP
+      name: forward-{{ .containerPort }}
+      nodePort: {{ .nodePort }}
+  {{- end}}
+  selector:
+    {{- include "instance.selectorLabels" . | nindent 4 }}
+
+{{- else}}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: '{{ include "instance.fullname" . }}-np'
+  labels:
+    {{- include "instance.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.ports.port }}
+      targetPort: {{ .Values.service.ports.targetPort }}
+      protocol: {{ .Values.service.ports.protocol }}
+      name: {{ .Values.service.ports.name }}
+      nodePort: {{.Values.service.ports.nodePort}}
+  selector:
+    {{- include "instance.selectorLabels" . | nindent 4 }}
+{{- end }}
