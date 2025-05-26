@@ -1,0 +1,10 @@
+---
+apiVersion: v2
+name: instance
+description: A Helm chart to create hypercloud ssh instances
+type: application
+
+# these versions are irrelevant,
+# git and argo do the versioning
+version: 0.0.0
+appVersion: "0.0.0"

@@ -1,0 +1,56 @@
+---
+{{- if .Values.feature.multiPort }}
+# save the fullname in a variable
+{{- $fullname := include "instance.fullname" . }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: piko-{{ include "instance.fullname" . }}
+  labels:
+    {{- include "instance.labels" . | nindent 4 }}
+data:
+  # https://github.com/andydunstall/piko/wiki/Agent
+  config.yaml: |
+    listeners:
+    {{- range .Values.instancePortForwards }}
+      - endpoint_id: {{ $fullname }}-{{ .containerPort }}
+        addr: 0.0.0.0:{{ .containerPort }}
+        protocol: {{ lower .protocol }}
+        access_log: false
+        timeout: 15s
+    {{- end }}
+
+    connect:
+      # The Piko server URL to connect to. Note this must be configured to use
+      # the Piko server 'upstream' port.
+      url: {{ .Values.reverseProxy.downstreamAddr }}
+      #token: "TODO"
+      timeout: 30s
+
+    server:
+      # Whether to enable the agent metrics server.
+      # Disabled by default.
+      # enabled: false # this errors when uncommented
+
+      # The host/port to bind the server to.
+      #
+      # If the host is unspecified it defaults to all listeners, such as
+      # '--server.bind-addr :5000' will listen on '0.0.0.0:5000'.
+      bind_addr: ":5000"
+
+    log:
+        level: info
+        # Each log has a 'subsystem' field where the log occured.
+        #
+        # '--log.subsystems' enables all log levels for those given subsystems. This
+        # can be useful to debug a particular subsystem without having to enable all
+        # debug logs.
+        #
+        # Such as you can enable 'gossip' logs with '--log.subsystems gossip'.
+        subsystems: []
+
+    # Maximum duration after a shutdown signal is received (SIGTERM or
+    # SIGINT) to gracefully shutdown each listener.
+    grace_period: 1m0s
+{{- end }}

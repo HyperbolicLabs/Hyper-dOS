@@ -1,0 +1,9 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.pubkeyConfig }}
+  namespace: instance
+data:
+  auth_key: |
+    {{ .Values.sshPubKey }}

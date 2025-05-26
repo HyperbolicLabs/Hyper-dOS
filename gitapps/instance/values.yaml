@@ -1,0 +1,89 @@
+---
+feature:
+  multiPort: true
+
+instancePortForwards:
+  # these values should be overridden
+  - nodePort: 0
+    containerPort: 0
+    protocol: tcp
+
+replicaCount: 1
+gracePeriod: 5
+
+# pubkeyConfig: ""
+
+sshbox:
+  image:
+    # TODO this can be removed now (carefully), as it is in monarch settings
+    repository: ghcr.io/hyperboliclabs/hyper-dos/sshbox
+    # setting this to "Always" can mess with ssh host key
+    pullPolicy: IfNotPresent
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: "latest"
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+runtimeClassName: nvidia
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Automatically mount a ServiceAccount's API credentials?
+  automount: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+podAnnotations: {}
+podLabels: {}
+
+podSecurityContext:
+  {}
+  # fsGroup: 2000
+
+securityContext:
+  {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  type: LoadBalancer
+  ports:
+    name: ssh
+    port: 22
+    protocol: TCP
+    targetPort: 2222 # this is the port ON THE POD we want to connect to
+
+reverseProxy:
+  name: piko-agent
+  image:
+    repository: ghcr.io/andydunstall/piko
+    tag: v0.7.0
+  port: 5000
+  # downstreamAddr: http://jump.dev-hyperbolic.xyz:31000
+  # downstreamAddr: http://1.grasshopper.dev-hyperbolic.xyz:31000
+  downstreamAddr: http://1.cricket.hyperbolic.xyz:31000
+  exposedInstancePort: 2222
+
+resources:
+  {}
+
+persistentVolume:
+  storageClassName: ceph-rbd
+  requests: {}
+  limits: {}
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

@@ -1,0 +1,15 @@
+{{- if .Values.persistentVolume.requests.storage }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "instance.fullname" . }}
+spec:
+  storageClassName: {{ .Values.persistentVolume.storageClassName }}
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.persistentVolume.requests.storage }}
+    limits:
+      storage: {{ .Values.persistentVolume.limits.storage }}
+{{- end }}
