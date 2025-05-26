@@ -101,6 +101,13 @@ func (s *session) initCluster(args ...string) error {
 		s.write("user already in microk8s group\n")
 	}
 
+	// set up rbac
+	s.write("enabling rbac\n")
+	err = microk8s.EnableRBAC(false) // don't need sudo anymore since we are in the microk8s group
+	if err != nil {
+		return fmt.Errorf("failed to set up rbac: %v", err)
+	}
+
 	// install argocd
 	s.write("installing argocd\n")
 	err = s.checkAndInstallArgocd()
@@ -126,7 +133,7 @@ func (s *session) checkAndInstallArgocd() error {
 	}
 
 	err := nodeshell.RunCommandFromStr(
-		true,
+		false, // shouldn't need sudo at this point, since we are in the microk8s group
 		"microk8s helm repo add argo https://argoproj.github.io/argo-helm",
 		os.Stdin,
 		os.Stdout,
@@ -138,7 +145,7 @@ func (s *session) checkAndInstallArgocd() error {
 	}
 
 	err = nodeshell.RunCommandFromStr(
-		true,
+		false,
 		"microk8s helm repo update",
 		os.Stdin,
 		os.Stdout,
@@ -150,7 +157,7 @@ func (s *session) checkAndInstallArgocd() error {
 	}
 
 	err = nodeshell.RunCommandFromStr(
-		true,
+		false,
 		"microk8s helm install argocd argo/argo-cd -n argocd --create-namespace",
 		os.Stdin,
 		os.Stdout,
