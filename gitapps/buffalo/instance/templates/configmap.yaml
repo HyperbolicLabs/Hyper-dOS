@@ -5,7 +5,7 @@ metadata:
   name: {{ .Values.pubkeyConfig }}
   namespace: instance
 data:
-  auth_key: |
+  auth_keys: |
     {{- if .Values.sshPubKeys }}
     {{- $keys := splitList "," .Values.sshPubKeys }}
     {{- range $keys }}
