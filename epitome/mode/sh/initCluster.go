@@ -103,7 +103,7 @@ func (s *session) initCluster(args ...string) error {
 
 	// set up rbac
 	s.write("enabling rbac\n")
-	err = microk8s.EnableRBAC(true)
+	err = microk8s.EnableRBAC(false)
 	if err != nil {
 		return fmt.Errorf("failed to set up rbac: %v", err)
 	}

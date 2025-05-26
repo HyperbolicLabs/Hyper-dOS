@@ -94,6 +94,6 @@ func InstallHyperdos(jungleRoles config.JungleRole, version string, gatewayURL u
 func EnableRBAC(sudo bool) error {
 	return nodeshell.RunCommand(
 		sudo,
-		[]string{"microk8s enable rbac"},
+		[]string{"microk8s", "enable", "rbac"},
 		os.Stdin, os.Stdout, os.Stderr)
 }
