@@ -1,14 +1,16 @@
 ---
+{{- if .Values.cascade.buffalo.enabled }}
+{{- if .Values.cascade.hyperai.enabled }}
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: pre-pull
+  name: hyperai
   namespace: argocd
 spec:
   project: default
   source:
     repoURL: {{ .Values.cascade.hyperdos.url }}
-    path: gitapps/pre-pull
+    path: gitapps/buffalo/hyperai
     targetRevision: {{ .Values.cascade.hyperdos.ref }}
     helm:
       values: |
@@ -16,7 +18,7 @@ spec:
           {{- .Values.cascade | toYaml | nindent 10 }}
   destination:
     server: 'https://kubernetes.default.svc'
-    namespace: instance
+    namespace: hyperdos
   syncPolicy:
     syncOptions:
       - CreateNamespace=true
@@ -26,3 +28,5 @@ spec:
       prune: true
       allowEmpty: true
       selfHeal: true
+{{- end}}
+{{- end}}

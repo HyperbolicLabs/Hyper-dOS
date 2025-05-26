@@ -1,14 +1,15 @@
 ---
+{{- if .Values.cascade.buffalo.enabled }}
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: nvidia-smi
+  name: pre-pull
   namespace: argocd
 spec:
   project: default
   source:
     repoURL: {{ .Values.cascade.hyperdos.url }}
-    path: gitapps/nvidia-smi
+    path: gitapps/buffalo/pre-pull
     targetRevision: {{ .Values.cascade.hyperdos.ref }}
     helm:
       values: |
@@ -16,11 +17,14 @@ spec:
           {{- .Values.cascade | toYaml | nindent 10 }}
   destination:
     server: 'https://kubernetes.default.svc'
-    namespace: hyperdos
+    namespace: instance
   syncPolicy:
     syncOptions:
       - CreateNamespace=true
+      - Replace=true
+      - Force=true
     automated:
       prune: true
       allowEmpty: true
       selfHeal: true
+{{- end }}

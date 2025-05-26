@@ -1,15 +1,15 @@
-{{- if .Values.cascade.hyperai.enabled }}
 ---
+{{- if .Values.cascade.buffalo.enabled }}
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: hyperai
+  name: nvidia-smi
   namespace: argocd
 spec:
   project: default
   source:
     repoURL: {{ .Values.cascade.hyperdos.url }}
-    path: gitapps/hyperai
+    path: gitapps/buffalo/nvidia-smi
     targetRevision: {{ .Values.cascade.hyperdos.ref }}
     helm:
       values: |
@@ -21,10 +21,8 @@ spec:
   syncPolicy:
     syncOptions:
       - CreateNamespace=true
-      - Replace=true
-      - Force=true
     automated:
       prune: true
       allowEmpty: true
       selfHeal: true
-{{- end}}
+{{- end }}
