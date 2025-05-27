@@ -1,0 +1,4 @@
+# https://aider.chat/docs/config/aider_conf.html
+
+openai-api-base: https://api.hyperbolic.xyz/v1
+openai-api-key: <HYPERBOLIC_API_KEY>

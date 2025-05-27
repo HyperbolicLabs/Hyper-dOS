@@ -1,0 +1,11 @@
+{
+    "openai/deepseek-ai/DeepSeek-R1": {
+        "max_tokens": 64000,
+        "max_input_tokens": 32000,
+        "max_output_tokens": 32000,
+        "input_cost_per_token": 0.000002,
+        "output_cost_per_token": 0.000002,
+        "litellm_provider": "deepseek",
+        "mode": "chat"
+    }
+}

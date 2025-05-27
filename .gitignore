@@ -18,3 +18,7 @@ epitome/.kube/*
 
 
 .aider*
+
+# keep the helpful aider config stuff
+!hack/*.example
+!hack/*.json
