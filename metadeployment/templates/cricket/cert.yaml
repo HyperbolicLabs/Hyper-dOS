@@ -1,5 +1,5 @@
 ---
-{{- if .Values.cascade.cricket.enabled }}
+{{- if (.Values.cascade.cricket).enabled }}
 
 apiVersion: argoproj.io/v1alpha1
 kind: Application

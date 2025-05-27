@@ -37,7 +37,7 @@ cascade:
       # name: "TinyLlama/TinyLlama-1.1B-Chat-v1.0"
 
 clusterdos:
-  ref: 'v0.1'
+  ref: 'v0.2.5'
   url: 'https://gitlab.com/squire-exchange/public/cluster-dos.git'
 
 env: prod

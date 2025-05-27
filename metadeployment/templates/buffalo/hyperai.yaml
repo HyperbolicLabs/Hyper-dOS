@@ -1,6 +1,6 @@
 ---
-{{- if .Values.cascade.buffalo.enabled }}
-{{- if .Values.cascade.hyperai.enabled }}
+{{- if (.Values.cascade.buffalo).enabled }}
+{{- if (.Values.cascade.hyperai).enabled }}
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
