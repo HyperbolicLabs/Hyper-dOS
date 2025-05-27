@@ -77,8 +77,8 @@ func InstallHyperdos(jungleRoles config.JungleRole, version string, gatewayURL u
 	--set cascade.hyperai.enabled="%v" \
 	`,
 		version,
-		gatewayURL.String(), // TODO replace with jungleKing monarch url
 		token,
+		gatewayURL.String(), // TODO replace with jungleKing monarch url
 		jungleRoles.Buffalo,
 		jungleRoles.Cricket,
 		jungleRoles.Cow,

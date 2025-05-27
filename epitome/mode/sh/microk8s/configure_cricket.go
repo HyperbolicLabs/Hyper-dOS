@@ -44,6 +44,28 @@ func ConfigureCricketNode(w io.Writer) error {
 		return fmt.Errorf("failed to restart microk8s: %v", err)
 	}
 
+	// 6) rollout restart coredns
+	if err := nodeshell.RunCommandFromStr(
+		sudo,
+		"microk8s kubectl rollout restart deployment coredns -n kube-system",
+		os.Stdin,
+		os.Stdout,
+		os.Stderr,
+	); err != nil {
+		return fmt.Errorf("failed to restart coredns: %v", err)
+	}
+
+	// 7) enable cert-manager
+	if err := nodeshell.RunCommandFromStr(
+		sudo,
+		"microk8s enable cert-manager",
+		os.Stdin,
+		os.Stdout,
+		os.Stderr,
+	); err != nil {
+		return fmt.Errorf("failed to enable cert-manager: %v", err)
+	}
+
 	return nil
 }
 
