@@ -8,9 +8,8 @@ metadata:
 
 spec:
   acme:
-    # Production server is on https://acme-v02.api.letsencrypt.org/directory
-    # Use staging by default.
-    server: https://acme-staging-v02.api.letsencrypt.org/directory
+    # server: https://acme-staging-v02.api.letsencrypt.org/directory
+    server: https://acme-v02.api.letsencrypt.org/directory
     privateKeySecretRef:
       name: cricket-domain
     solvers:
