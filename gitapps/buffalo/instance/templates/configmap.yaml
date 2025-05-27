@@ -6,4 +6,4 @@ metadata:
   namespace: instance
 data:
   auth_keys: |-
-{{ .Values.sshPubKeys | indent 4 }}
+    {{ .Values.sshPubKeys | nindent 4 }}
