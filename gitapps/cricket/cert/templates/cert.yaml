@@ -1,0 +1,13 @@
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: cricket-domain
+
+spec:
+  secretName: cricket-domain
+  dnsNames:
+    - {{ .Values.cascade.cricket.domain }}
+  issuerRef:
+    name: cricket-domain
+    kind: Issuer
