@@ -2,12 +2,11 @@
 hyperdos:
   # including this for backwards compatibility, but once v0.0.3 is fully deprecated
   # this can be removed everywhere
-  ref: {}
+  ref: null
 cascade:
   hyperdos:
-    # note: the hyperdos ref
-    # is usually over-ridden by the helm .Chart.AppVersion
-    ref: {}
+    # cascade.hyperdos.ref must be overwritten
+    ref: null
     url: 'https://github.com/hyperboliclabs/hyper-dos.git'
   king:
     url: 'https://api.hyperbolic.xyz'
@@ -35,8 +34,8 @@ cascade:
   # and spins back up when there are resources available.
   hyperai:
     enabled: false
-    # model:
-      # name: "TinyLlama/TinyLlama-1.1B-Chat-v1.0"
+    # https://huggingface.co/TinyLlama/TinyLlama-1.1B-Chat-v1.0
+    model: "TinyLlama/TinyLlama-1.1B-Chat-v1.0"
 
 clusterdos:
   ref: 'v0.2.5'

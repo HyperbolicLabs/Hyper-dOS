@@ -27,7 +27,7 @@ spec:
           args:
             # https://docs.vllm.ai/en/latest/getting_started/quickstart.html#quickstart-online
             - "--model"
-            - {{ .Values.cascade.hyperai.model.name }}
+            - {{ .Values.cascade.hyperai.model }}
             # required to get things to run on T4
             - "--dtype=half"
           {{- with .Values.resources }}
