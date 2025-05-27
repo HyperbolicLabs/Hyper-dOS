@@ -2,3 +2,8 @@
 
 openai-api-base: https://api.hyperbolic.xyz/v1
 openai-api-key: <HYPERBOLIC_API_KEY>
+
+architect: true
+model: openai/deepseek-ai/DeepSeek-R1
+editor-model: openai/deepseek-ai/DeepSeek-R1
+auto-commits: false
