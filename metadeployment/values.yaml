@@ -20,7 +20,9 @@ cascade:
     enabled: false
   cricket:
     enabled: false
-    domain: {}
+    # domain should be overwritten by the supplier
+    # it will be used by traefik and certmanager to provision acme tls certs
+    domain: null
   cow:
     enabled: false
   squirrel:
