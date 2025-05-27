@@ -12,6 +12,7 @@ replicaCount: 1
 gracePeriod: 5
 
 # pubkeyConfig: ""
+# sshPubKeys: {}
 
 sshbox:
   image:

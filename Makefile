@@ -55,7 +55,7 @@ helm-test:
 		--set cascade.hyperdos.ref="dev" \
 		.
 
-	@cd gitapps/nvidia-smi; \
+	@cd gitapps/buffalo/nvidia-smi; \
 	helm template nvidia-smi \
 		.
 
@@ -65,9 +65,16 @@ helm-test:
 		--set cascade.jungleRole.buffalo="true" \
 		.
 
-	@cd gitapps/pre-pull; \
+	@cd gitapps/buffalo/pre-pull; \
 	helm template pre-pull \
 		--set cascade.hyperdos.ref="dev" \
+		.
+
+	@cd gitapps/buffalo/instance; \
+	helm template instance \
+		--set sshPubKeys[0]="pubkey1" \
+		--set sshPubKeys[1]="pubkey2" \
+		--set pubkeyConfig="instance-name" \
 		.
 
 test-helm-install:
