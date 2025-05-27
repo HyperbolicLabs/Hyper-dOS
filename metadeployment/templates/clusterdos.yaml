@@ -14,13 +14,12 @@ spec:
     targetRevision: {{ .Values.clusterdos.ref }}
     helm:
       values: |
-        clusterdos:
         {{- if (.Values.cascade.cricket).enabled }}
-          # note that upstream clusterdos requires latest version
-          # of argo for the 'valuesObject' yaml element to compile
-          traefik:
-            enabled: true
-            serviceType: NodePort
+        # note that upstream clusterdos requires latest version
+        # of argo for the 'valuesObject' yaml element to compile
+        traefik:
+          enabled: true
+          serviceType: NodePort
         {{- end }}
 
       parameters:
