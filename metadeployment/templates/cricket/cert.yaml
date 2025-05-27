@@ -18,7 +18,7 @@ spec:
           {{- .Values.cascade | toYaml | nindent 10 }}
   destination:
     name: in-cluster
-    namespace: piko
+    namespace: forward
   syncPolicy:
     automated:
       prune: true
