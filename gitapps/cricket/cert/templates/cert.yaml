@@ -9,5 +9,5 @@ spec:
   dnsNames:
     - {{ .Values.cascade.cricket.domain }}
   issuerRef:
-    name: cricket-domain
+    name: acme
     kind: Issuer
