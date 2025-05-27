@@ -7,9 +7,9 @@ metadata:
 
 spec:
   acme:
-    server: https://acme-staging-v02.api.letsencrypt.org/directory
+    # server: https://acme-staging-v02.api.letsencrypt.org/directory
     # email: test@hyperbolic.xyz
-    # server: https://acme-v02.api.letsencrypt.org/directory
+    server: https://acme-v02.api.letsencrypt.org/directory
     privateKeySecretRef:
       name: cricket-domain
     solvers:
