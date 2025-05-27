@@ -3,7 +3,7 @@
 apiVersion: cert-manager.io/v1
 kind: Issuer
 metadata:
-  name: cricket-domain
+  name: cricket-domain-2
 
 spec:
   acme:
@@ -11,7 +11,7 @@ spec:
     email: test@hyperbolic.xyz
     # server: https://acme-v02.api.letsencrypt.org/directory
     privateKeySecretRef:
-      name: cricket-domain
+      name: cricket-domain-2
     solvers:
       - http01:
           ingress:

@@ -2,7 +2,7 @@
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
-  name: cricket-domain
+  name: cricket-domain-2
 
 spec:
   entryPoints:
@@ -15,4 +15,4 @@ spec:
         - name: piko-upstream
           port: 7000
   tls:
-    secretName: cricket-domain
+    secretName: cricket-domain-2
