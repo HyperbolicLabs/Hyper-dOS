@@ -18,7 +18,7 @@ spec:
           {{- .Values.cascade | toYaml | nindent 10 }}
   destination:
     name: in-cluster
-    namespace: traefik
+    namespace: piko
   syncPolicy:
     automated:
       prune: true
