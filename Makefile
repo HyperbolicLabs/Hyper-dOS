@@ -72,8 +72,7 @@ helm-test:
 
 	@cd gitapps/buffalo/instance; \
 	helm template instance \
-		--set sshPubKeys[0]="pubkey1" \
-		--set sshPubKeys[1]="pubkey2" \
+		--set sshPubKeys="pubkey1\npubkey2" \
 		--set pubkeyConfig="instance-name" \
 		.
 
