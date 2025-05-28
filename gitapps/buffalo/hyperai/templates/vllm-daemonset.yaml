@@ -32,7 +32,7 @@ spec:
             - "--dtype=half"
           {{- with .Values.resources }}
           resources:
-            {{- toYaml . | nindent 10 }}
+            {{- toYaml . | nindent 12 }}
           {{ end }}
           volumeMounts:
             - name: models
