@@ -13,7 +13,8 @@ apt-get update &&
                 vim \
                 psmisc \
                 python3-pip \
-                hashcat &&
+                hashcat \
+                rsync &&
         apt-get clean
 
 curl -s https://ollama.com/install.sh | bash
