@@ -3,9 +3,8 @@
 aider \
     --no-auto-commits \
     --architect \
-    --model openai/deepseek-ai/DeepSeek-R1 \
+    --model openai/deepseek-ai/DeepSeek-R1-0528 \
     --editor-model openai/deepseek-ai/DeepSeek-R1
-
 
 # https://aider.chat/docs/config/aider_conf.html
 # default aider config lives at ~/.aider.conf.yml
