@@ -1,16 +1,16 @@
 ---
 {{- if (.Values.cascade.buffalo).enabled }}
-{{- if (.Values.cascade.hyperai).enabled }}
+{{- if (.Values.cascade.hyperpool).enabled }}
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: hyperai
+  name: hyperpool
   namespace: argocd
 spec:
   project: default
   source:
     repoURL: {{ .Values.cascade.hyperdos.url }}
-    path: gitapps/buffalo/hyperai
+    path: gitapps/buffalo/hyperpool
     targetRevision: {{ .Values.cascade.hyperdos.ref }}
     helm:
       values: |

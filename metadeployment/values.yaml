@@ -27,12 +27,12 @@ cascade:
   squirrel:
     enabled: false
 
-  # enable hyperai to provide inference to the network as a pre-emptible
+  # enable hyperpool to provide inference to the network as a pre-emptible
   # (low priority) baseload. this is a good way to increase cluster utilization
-  # and earnings without interfering with existing rentals. hyperai
+  # and earnings without interfering with existing rentals. hyperpool
   # automatically gets out of the way when your baron is about to be rented,
   # and spins back up when there are resources available.
-  hyperai:
+  hyperpool:
     enabled: false
     # https://huggingface.co/TinyLlama/TinyLlama-1.1B-Chat-v1.0
     model: "TinyLlama/TinyLlama-1.1B-Chat-v1.0"

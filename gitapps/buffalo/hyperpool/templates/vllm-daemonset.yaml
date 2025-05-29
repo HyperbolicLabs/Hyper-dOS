@@ -2,19 +2,19 @@
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
-  name: hyperai-vllm-daemon
+  name: hyperpool-vllm-daemon
   labels:
-    app.kubernetes.io/name: hyperai-vllm
+    app.kubernetes.io/name: hyperpool-vllm
 spec:
   selector:
     matchLabels:
-      app.kubernetes.io/name: hyperai-vllm
+      app.kubernetes.io/name: hyperpool-vllm
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: hyperai-vllm
+        app.kubernetes.io/name: hyperpool-vllm
     spec:
-      priorityClassName: hyperai
+      priorityClassName: hyperpool
       containers:
         - name: vllm-server
           image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
@@ -27,7 +27,7 @@ spec:
           args:
             # https://docs.vllm.ai/en/latest/getting_started/quickstart.html#quickstart-online
             - "--model"
-            - {{ .Values.cascade.hyperai.model }}
+            - {{ .Values.cascade.hyperpool.model }}
             # required to get things to run on T4
             - "--dtype=half"
           {{- with .Values.resources }}
@@ -40,7 +40,7 @@ spec:
       volumes:
         - name: models
           hostPath:
-            path: /var/lib/hyperai/models
+            path: /var/lib/hyperpool/models
       tolerations:
         - key: nvidia.com/gpu
           operator: Exists

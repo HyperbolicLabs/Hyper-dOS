@@ -47,9 +47,9 @@ func InstallHyperdos(jungleRoles config.JungleRole, version string, gatewayURL u
 		return fmt.Errorf("failed to update helm repos: %v", err)
 	}
 
-	shouldEnableHyperai := false
+	shouldEnableHyperpool := false
 	if jungleRoles.Buffalo {
-		shouldEnableHyperai = true
+		shouldEnableHyperpool = true
 	}
 
 	// create hyperdos and hyperweb namespaces if necessary
@@ -74,7 +74,7 @@ func InstallHyperdos(jungleRoles config.JungleRole, version string, gatewayURL u
 	--set cascade.cricket.enabled="%v"\
 	--set cascade.cow.enabled="%v"\
 	--set cascade.squirrel.enabled="%v"\
-	--set cascade.hyperai.enabled="%v" \
+	--set cascade.hyperpool.enabled="%v" \
 	`,
 		version,
 		token,
@@ -83,7 +83,7 @@ func InstallHyperdos(jungleRoles config.JungleRole, version string, gatewayURL u
 		jungleRoles.Cricket,
 		jungleRoles.Cow,
 		jungleRoles.Squirrel,
-		shouldEnableHyperai,
+		shouldEnableHyperpool,
 	)
 
 	if err := nodeshell.RunCommandFromStr(sudo, args, os.Stdin, os.Stdout, os.Stderr); err != nil {
