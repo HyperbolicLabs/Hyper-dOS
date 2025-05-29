@@ -4,10 +4,20 @@ kind: ConfigMap
 metadata:
   name: server-config
 data:
+  # https://github.com/andydunstall/piko/wiki/Server-Configuration
   server.yaml: |
     cluster:
       node_id_prefix: ${POD_NAME}-
       join:
         - piko.forward.svc
+    proxy:
+      http:
+        # The maximum duration before timing out writes of the response.
+        write_timeout: 1m
+
+        # The maximum amount of time to wait for the next request when keep-alives are
+        # enabled.
+        idle_timeout: 5m0s
+
     upstream:
       bind_addr: :7000
