@@ -7,16 +7,16 @@ metadata:
   labels:
     app.kubernetes.io/name: {{ .name }}
 spec:
-  type: {{ .Values.service.type | default "ClusterIP" }}
+  type: ClusterIP
   selector:
     app.kubernetes.io/name: {{ .name }}
   ports:
     - name: http
-      port: {{ .Values.service.port | default 8000 }}
+      port: 8000
       targetPort: 8000
       protocol: TCP
     - name: metrics
-      port: {{ .Values.service.metricsPort | default 9999 }}
+      port: 9999
       targetPort: 9999
       protocol: TCP
 {{- end }}

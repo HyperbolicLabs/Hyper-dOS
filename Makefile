@@ -76,6 +76,19 @@ helm-test:
 		--set pubkeyConfig="instance-name" \
 		.
 
+	@cd gitapps/buffalo/hyperpool; \
+	helm template hyperpool \
+		--set enabled="true", \
+		--set cascade.hyperpool.models[0].name="test-model" \
+		--set cascade.hyperpool.models[0].model="test-model-str" \
+		--set cascade.hyperpool.models[0].priority=-1000 \
+		--set cascade.hyperpool.models[0].extraArgs[0]="--dtype=half" \
+		--set cascade.hyperpool.models[0].resources.requests.cpu=1 \
+		--set cascade.hyperpool.models[0].resources.requests.nvidia.com\/gpu=1 \
+		--set cascade.hyperpool.models[0].resources.limits.cpu=1 \
+		--set cascade.hyperpool.models[0].resources.limits.nvidia.com\/gpu=1 \
+		.
+
 test-helm-install:
 	@cd charts/hyperdos; \
 	helm template hyperdos \

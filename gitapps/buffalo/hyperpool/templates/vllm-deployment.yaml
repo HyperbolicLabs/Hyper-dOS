@@ -29,11 +29,8 @@ spec:
             # https://docs.vllm.ai/en/latest/getting_started/quickstart.html#quickstart-online
             - "--model"
             - {{ .model }}
-            {{- with .extraArgs }}
-            # e.g. "--dtype=half"
             {{- range .extraArgs}}
-            - {{- . }}
-            {{- end }}
+            - {{ . }}
             {{- end}}
           {{- with .resources }}
           resources:
