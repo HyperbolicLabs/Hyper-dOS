@@ -2,4 +2,4 @@
 cascade:
   hyperdos:
     # this is overridden by the helm .Chart.AppVersion
-    ref: {}
+    ref: null
