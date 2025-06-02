@@ -1,20 +1,22 @@
+{{- range .Values.cascade.hyperpool.models }}
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: hyperpool-vllm
+  name: {{ .name }}
   labels:
-    app.kubernetes.io/name: hyperpool-vllm
+    app.kubernetes.io/name: {{ .name }}
 spec:
   type: {{ .Values.service.type | default "ClusterIP" }}
   selector:
-    app.kubernetes.io/name: hyperpool-vllm
+    app.kubernetes.io/name: {{ .name }}
   ports:
-  - name: http
-    port: {{ .Values.service.port | default 8000 }}
-    targetPort: 8000
-    protocol: TCP
-  - name: metrics
-    port: {{ .Values.service.metricsPort | default 9999 }}
-    targetPort: 9999
-    protocol: TCP
+    - name: http
+      port: {{ .Values.service.port | default 8000 }}
+      targetPort: 8000
+      protocol: TCP
+    - name: metrics
+      port: {{ .Values.service.metricsPort | default 9999 }}
+      targetPort: 9999
+      protocol: TCP
+{{- end }}
