@@ -40,7 +40,7 @@ cascade:
         # https://huggingface.co/TinyLlama/TinyLlama-1.1B-Chat-v1.0
         model: "TinyLlama/TinyLlama-1.1B-Chat-v1.0"
         # https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/
-        priority: -100
+        priority: -1000
         extraArgs:
           - "--dtype=half"
         resources:
