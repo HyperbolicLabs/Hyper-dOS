@@ -1,0 +1,18 @@
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: cricket-domain
+
+spec:
+  entryPoints:
+    - websecure
+
+  routes:
+    - match: Host(`{{ .Values.cascade.cricket.domain }}`)
+      kind: Rule
+      services:
+        - name: piko-upstream
+          port: 7000
+  tls:
+    secretName: cricket-domain

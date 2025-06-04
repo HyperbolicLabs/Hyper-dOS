@@ -1,0 +1,18 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: server-config
+data:
+  # https://github.com/andydunstall/piko/wiki/Server-Configuration
+  server.yaml: |
+    cluster:
+      node_id_prefix: ${POD_NAME}-
+      join:
+        - piko.forward.svc
+    proxy:
+      http:
+        # The maximum duration before timing out writes of the response.
+        write_timeout: 1m
+    upstream:
+      bind_addr: :7000

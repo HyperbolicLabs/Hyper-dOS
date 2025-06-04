@@ -1,0 +1,11 @@
+{{- range .Values.cascade.hyperpool.models }}
+---
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: {{ .name }}
+value: {{ .priority }}
+preemptionPolicy: PreemptLowerPriority
+description: "Used for hyperpool vLLM DaemonSet pods for model {{ .model }}"
+globalDefault: false
+{{- end }}

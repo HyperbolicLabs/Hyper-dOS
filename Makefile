@@ -52,34 +52,48 @@ test:
 helm-test:
 	@cd metadeployment; \
 	helm template metadeployment \
-		--set ref="dev" \
+		--set cascade.hyperdos.ref="dev" \
 		.
 
-	@cd gitapps/nvidia-smi; \
+	@cd gitapps/buffalo/nvidia-smi; \
 	helm template nvidia-smi \
-		--set ref="dev" \
 		.
 
 	@cd gitapps/epitome; \
 	helm template epitome \
-		--set ref="dev" \
+		--set cascade.hyperdos.ref="dev" \
+		--set cascade.jungleRole.buffalo="true" \
 		.
 
-	@cd gitapps/epitome; \
-	helm template epitome \
-		--set ref="main" \
-		.
-
-	@cd gitapps/pre-pull; \
+	@cd gitapps/buffalo/pre-pull; \
 	helm template pre-pull \
-		--set ref="main" \
+		--set cascade.hyperdos.ref="dev" \
+		.
+
+	@cd gitapps/buffalo/instance; \
+	helm template instance \
+		--set sshPubKeys="pubkey1\npubkey2" \
+		--set pubkeyConfig="instance-name" \
+		.
+
+	@cd gitapps/buffalo/hyperpool; \
+	helm template hyperpool \
+		--set enabled="true", \
+		--set cascade.hyperpool.models[0].name="test-model" \
+		--set cascade.hyperpool.models[0].model="test-model-str" \
+		--set cascade.hyperpool.models[0].priority=-1000 \
+		--set cascade.hyperpool.models[0].extraArgs[0]="--dtype=half" \
+		--set cascade.hyperpool.models[0].resources.requests.cpu=1 \
+		--set cascade.hyperpool.models[0].resources.requests.nvidia.com\/gpu=1 \
+		--set cascade.hyperpool.models[0].resources.limits.cpu=1 \
+		--set cascade.hyperpool.models[0].resources.limits.nvidia.com\/gpu=1 \
 		.
 
 test-helm-install:
 	@cd charts/hyperdos; \
 	helm template hyperdos \
 		--debug \
-		--set ref="dev" \
+		--set cascade.hyperdos.ref="dev" \
 		.
 
 .PHONY: aider

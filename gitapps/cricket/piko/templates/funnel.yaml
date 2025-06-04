@@ -1,0 +1,20 @@
+---
+{{- if .Values.funnel.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: piko-funnel
+  annotations:
+    tailscale.com/funnel: "true"
+spec:
+  defaultBackend:
+    service:
+      name: piko-upstream
+      port:
+        # number: 7000
+        name: upstream
+  ingressClassName: tailscale
+  tls:
+    - hosts:
+        - {{ .Values.funnel.hostname }}
+{{- end }}

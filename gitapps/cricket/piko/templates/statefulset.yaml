@@ -1,0 +1,67 @@
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: piko
+spec:
+  selector:
+    matchLabels:
+      app: piko
+  serviceName: "piko"
+  {{- if .Values.flag.scalinghack }}
+  replicas: 5
+  {{- else }}
+  replicas: 1
+  {{- end }}
+  template:
+    metadata:
+      labels:
+        app: piko
+    spec:
+      terminationGracePeriodSeconds: 60
+      containers:
+        - name: piko
+          image: ghcr.io/andydunstall/piko:{{ .Values.server.imagetag }}
+          ports:
+            - containerPort: 8000
+              name: proxy
+            - containerPort: 7000
+              name: upstream
+            - containerPort: 8002
+              name: admin
+            - containerPort: 8003
+              name: gossip
+          args:
+            - server
+            - --config.path
+            - /config/server.yaml
+            - --config.expand-env
+            {{- if .Values.flag.scalinghack }}
+            - --proxy.timeout
+            - "0"
+            {{- end}}
+          resources:
+            limits:
+              cpu: 250m
+              ephemeral-storage: 1Gi
+              memory: 1Gi
+            requests:
+              cpu: 250m
+              ephemeral-storage: 1Gi
+              memory: 1Gi
+          env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+          volumeMounts:
+            - name: config
+              mountPath: "/config"
+              readOnly: true
+      volumes:
+        - name: config
+          configMap:
+            name: server-config
+            items:
+              - key: "server.yaml"
+                path: "server.yaml"

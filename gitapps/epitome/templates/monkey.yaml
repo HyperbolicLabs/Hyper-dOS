@@ -17,11 +17,30 @@ spec:
     spec:
       containers:
       - name: epitome-monkey
-        image: "{{ .Values.image }}:{{ .Values.hyperdos.ref }}"
+        image: "{{ .Values.image }}:{{ .Values.cascade.hyperdos.ref }}"
         imagePullPolicy: Always
         args:
           - -mode=monkey
         env:
+        - name: HYPERDOS_VERSION
+          value: "{{ .Values.cascade.hyperdos.ref }}"
+        # can fulfill many roles at once
+        {{- if (.Values.cascade.buffalo).enabled }}
+        - name: JUNGLE_ROLE_BUFFALO
+          value: "true"
+        {{- end }}
+        {{- if (.Values.cascade.cow).enabled }}
+        - name: JUNGLE_ROLE_COW
+          value: "true"
+        {{- end }}
+        {{- if (.Values.cascade.cricket).enabled }}
+        - name: JUNGLE_ROLE_CRICKET
+          value: "true"
+        {{- end }}
+        {{- if (.Values.cascade.squirrel).enabled }}
+        - name: JUNGLE_ROLE_SQUIRREL
+          value: "true"
+        {{- end }}
         - name: KUBERNETES_NODE_NAME
           valueFrom:
             fieldRef:

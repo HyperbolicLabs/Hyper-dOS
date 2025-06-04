@@ -1,0 +1,22 @@
+{{- range .Values.cascade.hyperpool.models }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .name }}
+  labels:
+    app.kubernetes.io/name: {{ .name }}
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: {{ .name }}
+  ports:
+    - name: http
+      port: 8000
+      targetPort: 8000
+      protocol: TCP
+    - name: metrics
+      port: 9999
+      targetPort: 9999
+      protocol: TCP
+{{- end }}

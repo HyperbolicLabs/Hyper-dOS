@@ -1,14 +1,60 @@
 ---
-# note: this is usually over-ridden by the helm chart install in charts/hyperdos
 hyperdos:
-  url: 'https://github.com/hyperboliclabs/hyper-dos.git'
-  ref: "v0.0.3"
+  # including this for backwards compatibility, but once v0.0.3 is fully deprecated
+  # this can be removed everywhere
+  ref: null
+cascade:
+  hyperdos:
+    # cascade.hyperdos.ref must be overwritten
+    ref: null
+    url: 'https://github.com/hyperboliclabs/hyper-dos.git'
+  king:
+    url: 'https://api.hyperbolic.xyz'
 
-hyperai:
-  enabled: false
+  # the jungle role determines the obligations this baron
+  # will be expected to fulfill - and computational challenges
+  # it will be expected to pass at any time.
+  # note that a single baron cluster can fulfil multiple roles at once
+  buffalo:
+    enabled: false
+  cricket:
+    enabled: false
+    # domain should be overwritten by the supplier
+    # it will be used by traefik and certmanager to provision acme tls certs
+    domain: null
+  cow:
+    enabled: false
+  squirrel:
+    enabled: false
+
+  # enable hyperpool to provide inference to the network as a pre-emptible
+  # (low priority) baseload. this is a good way to increase cluster utilization
+  # and earnings without interfering with existing rentals. hyperpool
+  # automatically gets out of the way when your baron is about to be rented,
+  # and spins back up when there are resources available.
+  hyperpool:
+    enabled: false
+    models:
+      - name: hyperpool-tinyllama
+        downloaded: false
+        # https://huggingface.co/TinyLlama/TinyLlama-1.1B-Chat-v1.0
+        model: "TinyLlama/TinyLlama-1.1B-Chat-v1.0"
+        # https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/
+        priority: -1000
+        extraArgs:
+          - "--dtype=half"
+        resources:
+          requests:
+            cpu: "1"
+            memory: "4G"
+            nvidia.com/gpu: 1
+          limits:
+            cpu: "2"
+            memory: "8G"
+            nvidia.com/gpu: 1
 
 clusterdos:
-  ref: 'v0.1'
+  ref: 'v0.2.5'
   url: 'https://gitlab.com/squire-exchange/public/cluster-dos.git'
 
 env: prod

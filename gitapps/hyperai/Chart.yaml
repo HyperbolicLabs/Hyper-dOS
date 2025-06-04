@@ -1,7 +1,0 @@
----
-apiVersion: v3
-name: hyperai
-description: deploys hyperdos ai according to configuration
-type: application
-version: 0.0.0
-appVersion: "v0.0.0"

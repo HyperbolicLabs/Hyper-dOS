@@ -7,15 +7,15 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: {{ .Values.hyperdos.url }}
+    repoURL: {{ .Values.cascade.hyperdos.url }}
     path: gitapps/epitome
-    targetRevision: {{ .Values.hyperdos.ref }}
+    targetRevision: {{ .Values.cascade.hyperdos.ref }}
     helm:
-      parameters:
-        - name: hyperdos.ref
-          value: $ARGOCD_APP_SOURCE_TARGET_REVISION
+      values: |
+        cascade:
+          {{- .Values.cascade | toYaml | nindent 10 }}
   destination:
-    server: 'https://kubernetes.default.svc'
+    server: "https://kubernetes.default.svc"
     namespace: hyperdos
   syncPolicy:
     syncOptions:

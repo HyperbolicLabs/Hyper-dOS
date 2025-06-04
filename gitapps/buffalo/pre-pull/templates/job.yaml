@@ -3,7 +3,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: pull-{{ .name }}-{{ $.Values.hyperdos.ref }}
+  name: pull-{{ .name }}-{{ $.Values.cascade.hyperdos.ref }}
 spec:
   template:
     spec:
@@ -11,7 +11,7 @@ spec:
       restartPolicy: Never
       containers:
       - name: nvidia-smi
-        image: {{ .url }}:{{ $.Values.hyperdos.ref }}
+        image: {{ .url }}:{{ $.Values.cascade.hyperdos.ref }}
         command:
           - nvidia-smi
       priorityClassName: pre-pull

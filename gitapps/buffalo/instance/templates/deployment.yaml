@@ -1,0 +1,168 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "instance.fullname" . }}
+  labels:
+    {{- include "instance.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "instance.selectorLabels" . | nindent 6 }}
+  # https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodename
+  # nodeName: {{ .Values.node }}
+  strategy:
+    # delete the old pod before creating the new one
+    # so that there is no duplicate consumption of resources by the same instance
+    type: Recreate
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "instance.labels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+
+      terminationGracePeriodSeconds: {{ .Values.gracePeriod }}
+
+      nodeSelector:
+        kubernetes.io/hostname: {{ .Values.node }}
+
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+
+      terminationGracePeriodSeconds: {{ .Values.gracePeriod }}
+
+      {{- if .Values.runtimeClassName }}
+      runtimeClassName: {{ .Values.runtimeClassName }}
+      {{- end}}
+
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+
+      serviceAccountName: {{ include "instance.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+
+      initContainers:
+        - name: initialize
+          image: "{{ .Values.sshbox.image.repository }}:{{ .Values.sshbox.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.sshbox.image.pullPolicy }}
+          command:
+            - sh
+            - -c
+            - |
+              cp -a /home/ubuntu/. /mnt/data
+              cat /mnt/config/auth_keys
+              cat /mnt/config/auth_keys > /mnt/data/.ssh/authorized_keys
+              chown -R ubuntu:ubuntu /mnt/data
+              chmod 600 /mnt/data/.ssh/authorized_keys
+          volumeMounts:
+            - name: ssh-config
+              mountPath: /mnt/config
+            - name: home
+              mountPath: /mnt/data
+
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.sshbox.image.repository }}:{{ .Values.sshbox.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.sshbox.image.pullPolicy }}
+          ports:
+            - name: ssh
+              containerPort: {{ .Values.service.ports.targetPort }}
+              protocol: TCP
+          {{- with .Values.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{ end }}
+          # lifecycle:
+          #    note: this isn't working smoothly yet
+          #   preStop:
+          #     exec:
+          #       command: ["killall sshd"]
+          volumeMounts:
+            - name: home
+              mountPath: /home/ubuntu
+            {{- if .Values.sharedMemory }}
+            - name: shm
+              mountPath: /dev/shm
+            {{- end}}
+        - name: {{ .Values.reverseProxy.name }}
+          resources:
+            requests:
+              cpu: 0m
+              memory: 0Mi
+            limits:
+              cpu: 100m
+              memory: 100Mi
+          image: "{{ .Values.reverseProxy.image.repository }}:{{ .Values.reverseProxy.image.tag }}"
+          args:
+            - agent
+          {{- if not .Values.feature.multiPort  }}
+            - tcp
+            - --server.bind-addr
+            - 0.0.0.0:5000
+            - --connect.url
+            - {{ .Values.reverseProxy.downstreamAddr }}
+            - {{ include "instance.fullname" . }}
+            - "{{ .Values.reverseProxy.exposedInstancePort }}"
+          {{- else }}
+            - start
+            - --config.path
+            - /etc/piko/config.yaml
+          volumeMounts:
+            - name: piko-config
+              mountPath: /etc/piko
+          {{- end}}
+          ports:
+            - name: bind-port
+              containerPort: {{ .Values.reverseProxy.port }}
+              protocol: TCP
+      volumes:
+        - name: ssh-config
+          configMap:
+            defaultMode: 420
+            name: {{ .Values.pubkeyConfig }}
+        {{- if .Values.sharedMemory }}
+        - name: shm
+          emptyDir:
+            medium: Memory
+            sizeLimit: {{ .Values.sharedMemory }}
+        {{- end}}
+        {{- if .Values.persistentVolume.requests }}
+        - name: home
+          persistentVolumeClaim:
+            claimName: {{ include "instance.fullname" . }}
+        {{- else}}
+        - name: home
+          emptyDir: {}
+        {{- end}}
+        {{- if .Values.feature.multiPort }}
+        - name: piko-config
+          configMap:
+            name: piko-{{ include "instance.fullname" . }}
+        {{- end}}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

@@ -1,0 +1,26 @@
+name: Test Helm Templates Render
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  helm-template:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Helm
+        uses: azure/setup-helm@v3
+        with:
+          version: v3.14.2  # Matches latest stable from your release workflow
+
+      - name: Run template tests
+        run: |
+          make helm-test

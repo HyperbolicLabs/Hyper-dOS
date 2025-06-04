@@ -1,0 +1,47 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: piko-upstream
+  labels:
+    app: piko
+spec:
+  type: NodePort
+  ports:
+    - port: 7000
+      name: upstream
+      nodePort: 31000
+  selector:
+    app: piko
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: piko
+  labels:
+    app: piko
+spec:
+  ports:
+    - port: 8000
+      name: proxy
+    - port: 8002
+      name: admin
+    - port: 8003
+      name: gossip
+  selector:
+    app: piko
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: piko-proxy
+  labels:
+    app: piko
+spec:
+  type: NodePort
+  ports:
+    - port: 8000
+      name: proxy
+      nodePort: 30000
+  selector:
+    app: piko

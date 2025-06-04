@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/sirupsen/logrus"
+	"go.uber.org/zap"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime/schema"
@@ -25,13 +25,13 @@ func (a *agent) patchClusterPolicy() error {
 
 	clusterPolicy, err := a.dynamicClient.Resource(gvr).Get(getCtx, "cluster-policy", metav1.GetOptions{})
 	if err != nil {
-		logrus.Errorf("failed to get ClusterPolicy: %v", err)
+		a.logger.Error("failed to get ClusterPolicy", zap.Error(err))
 		return err
 	}
 
 	_, found, err := unstructured.NestedMap(clusterPolicy.Object, "spec", "validator", "driver")
 	if err != nil {
-		logrus.Errorf("error checking .spec.validator.driver: %v", err)
+		a.logger.Error("error checking .spec.validator.driver", zap.Error(err))
 		return err
 	}
 
@@ -42,12 +42,12 @@ func (a *agent) patchClusterPolicy() error {
 		patch := []byte(`{"spec":{"validator":{"driver":{"env":[{"name":"DISABLE_DEV_CHAR_SYMLINK_CREATION","value":"true"}]}}}}`)
 		_, err = a.dynamicClient.Resource(gvr).Patch(patchCtx, "cluster-policy", types.MergePatchType, patch, metav1.PatchOptions{})
 		if err != nil {
-			logrus.Errorf("failed to patch ClusterPolicy: %v", err)
+			a.logger.Error("failed to patch ClusterPolicy", zap.Error(err))
 			return err
 		}
-		logrus.Infof("successfully patched ClusterPolicy with .spec.validator.driver.env")
+		a.logger.Info("successfully patched ClusterPolicy with .spec.validator.driver.env")
 	} else {
-		logrus.Infof(".spec.validator.driver field already exists in ClusterPolicy")
+		a.logger.Debug(".spec.validator.driver field already exists in ClusterPolicy")
 	}
 
 	return nil

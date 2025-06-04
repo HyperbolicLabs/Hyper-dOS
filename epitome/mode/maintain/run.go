@@ -30,14 +30,18 @@ func Run(
 
 	ticker := time.NewTicker(interval)
 	for {
-		err := a.patchClusterPolicy()
-		if err != nil {
-			logrus.Errorf("failed to patch cluster policy: %v", err)
-			return err
+		// patch cluster policy if we are on a buffalo baron
+		// (as only the buffalo are expected to have the NVIDIA operator installed)
+		if a.cfg.Role.Buffalo {
+			err := a.patchClusterPolicy()
+			if err != nil {
+				logrus.Errorf("failed to patch cluster policy: %v", err)
+				return err
+			}
 		}
 
 		<-ticker.C // in maintain mode, we wait before running the first reconcile
-		err = a.reconcile()
+		err := a.reconcile()
 		if err != nil {
 			return fmt.Errorf("failed to reconcile: %v", err)
 		}

@@ -25,6 +25,9 @@ func (a *agent) handshake(
 ) (response *handshakeResponse, err error) {
 	gatewayUrl := a.cfg.Default.HYPERBOLIC_GATEWAY_URL
 	token := a.cfg.Default.HYPERBOLIC_TOKEN
+	if token == nil {
+		return nil, errors.New("HYPERBOLIC_TOKEN is not set")
+	}
 
 	logrus.Infof("handshaking with gateway: %v", gatewayUrl)
 
@@ -38,7 +41,7 @@ func (a *agent) handshake(
 		return
 	}
 	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Authorization", "bearer "+token)
+	req.Header.Set("Authorization", "bearer "+*token)
 
 	resp, err := handshaker.Do(req)
 	if err != nil {

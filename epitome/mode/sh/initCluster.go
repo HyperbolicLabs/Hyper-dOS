@@ -3,20 +3,53 @@ package sh
 import (
 	"flag"
 	"fmt"
+	"net/url"
 	"os"
 	"os/exec"
 	"runtime"
 	"strings"
 
-	commonv1 "jungle.proto/common/v1"
+	"epitome.hyperbolic.xyz/config"
+	"epitome.hyperbolic.xyz/mode/sh/microk8s"
+	"epitome.hyperbolic.xyz/mode/sh/nodeshell"
+	"k8s.io/utils/ptr"
+
+	"golang.org/x/mod/semver"
 )
 
 func (s *session) initCluster(args ...string) error {
 	// use flag.parse to parse args for the -mode=cricket flag
 
 	flags := flag.NewFlagSet("init", flag.ContinueOnError)
-	modeArg := flags.String("mode", "ronin", "Specify the mode to initialize the cluster in (ronin | buffalo | cricket)")
+	versionArg := flags.String("version", "", "Specify the version of hyperdos to install")
+	roleArg := flags.String("role", "", "Specify the role to initialize the cluster in (buffalo | cricket)")
 	flags.Parse(args)
+
+	if *versionArg == "" {
+		if s.cfg.HYPERDOS_VERSION == nil {
+			return fmt.Errorf("must specify -version=VERSION or set $HYPERDOS_VERSION")
+		} else {
+			versionArg = s.cfg.HYPERDOS_VERSION
+		}
+	}
+
+	if *versionArg == "dev" {
+		// TODO this is a hack
+		versionArg = ptr.To("0.0.3")
+	} else if !semver.IsValid(*versionArg) {
+		return fmt.Errorf("version %s is not a valid semantic version", *versionArg)
+	}
+
+	if *roleArg == "" {
+		return fmt.Errorf("must specify -role=(buffalo | cricket)")
+	}
+
+	roles := config.JungleRole{
+		// TODO use 'contains' or split on commas so we
+		// can init with multiple roles at once
+		Buffalo: *roleArg == "buffalo",
+		Cricket: *roleArg == "cricket",
+	}
 
 	if s.clientset != nil && !s.cfg.DEBUG {
 		s.write("cluster already initialized\n")
@@ -25,7 +58,7 @@ func (s *session) initCluster(args ...string) error {
 
 	if runtime.GOOS != "linux" {
 		s.writeInitNotImplementedOnThisPlatform()
-		return fmt.Errorf("not implemented on this platform")
+		return fmt.Errorf("epitomesh init currently only supports linux")
 	}
 
 	// check if snapd is installed
@@ -33,33 +66,191 @@ func (s *session) initCluster(args ...string) error {
 		return err
 	}
 
-	if err := s.checkAndInstallSnap("microk8s", "--classic", "--channel=1.32/stable"); err != nil {
+	// note that they underlying function should do a snap refresh --hold
+	if err := s.checkAndInstallSnap("microk8s", "--classic", "--channel=1.33/stable"); err != nil {
 		return err
 	}
 
-	// switch modearg
-	switch *modeArg {
-	case "ronin":
-		return fmt.Errorf("ronin mode not yet implemented")
-	case "buffalo":
-		return fmt.Errorf("buffalo mode not yet implemented")
-	case "cricket":
-		return s.installHyperdos(
-			s.cfg.HyperdosNamespace,
-			commonv1.Baron_ROLE_CRICKET,
+	// check if this user is a part of the microk8s group
+	// and if not, add them
+	groups, err := exec.Command("groups").Output()
+	if err != nil {
+		return fmt.Errorf("failed to check if user is in microk8s group: %v", err)
+	}
+	if !strings.Contains(string(groups), "microk8s") {
+		// confirm if they want to add themselves to microk8s group
+		s.writeln("you are not in the microk8s group")
+		s.writeln("would you like to add you to the microk8s group?")
+		if !s.confirm() {
+			return fmt.Errorf("operation canceled by user")
+		}
+
+		s.write("adding you to microk8s group\n")
+		user := os.Getenv("USER")
+		err := nodeshell.RunCommandFromStr(
+			true,
+			fmt.Sprintf("sudo usermod -a -G microk8s %s", user),
+			os.Stdin,
+			os.Stdout,
+			os.Stderr,
 		)
+		if err != nil {
+			return fmt.Errorf("failed to add user %s to microk8s group: %v", user, err)
+		}
+	} else {
+		s.write("user already in microk8s group\n")
+	}
+
+	// set up rbac
+	s.write("enabling rbac\n")
+	err = microk8s.EnableRBAC(false)
+	if err != nil {
+		return fmt.Errorf("failed to set up rbac: %v", err)
+	}
+
+	// install argocd
+	s.write("installing argocd\n")
+	err = s.checkAndInstallArgocd()
+	if err != nil {
+		return fmt.Errorf("failed to install argocd: %v", err)
 	}
 
 	s.write("cluster initialized\n")
 
+	err = s.checkAndInstallHyperdos(roles, *versionArg)
+	if err != nil {
+		return fmt.Errorf("failed to install hyperdos: %v", err)
+	}
+
 	return nil
 }
 
-func (s *session) installHyperdos(
-	namespace string,
-	role commonv1.Baron_Role) error {
+func (s *session) checkAndInstallArgocd() error {
+	// check if the user would like to install argocd
+	s.writeln("would you like to install argocd?")
+	if !s.confirm() {
+		return fmt.Errorf("operation canceled by user")
+	}
 
-	return fmt.Errorf("TODO: cricket install not implemented")
+	err := nodeshell.RunCommandFromStr(
+		false, // shouldn't need sudo at this point, since we are in the microk8s group
+		"microk8s helm repo add argo https://argoproj.github.io/argo-helm",
+		os.Stdin,
+		os.Stdout,
+		os.Stderr,
+	)
+
+	if err != nil {
+		return fmt.Errorf("failed to add argo helm repo: %v", err)
+	}
+
+	err = nodeshell.RunCommandFromStr(
+		false,
+		"microk8s helm repo update",
+		os.Stdin,
+		os.Stdout,
+		os.Stderr,
+	)
+
+	if err != nil {
+		return fmt.Errorf("failed to update helm repos: %v", err)
+	}
+
+	err = nodeshell.RunCommandFromStr(
+		false,
+		"microk8s helm install argocd argo/argo-cd -n argocd --create-namespace",
+		os.Stdin,
+		os.Stdout,
+		os.Stderr,
+	)
+
+	if err != nil {
+		return fmt.Errorf("failed to install argocd: %v", err)
+	}
+
+	return nil
+}
+
+func (s *session) checkAndInstallHyperdos(roles config.JungleRole, version string) error {
+	s.writeln("would you like to install hyperdos now?")
+	if !s.confirm() {
+		return fmt.Errorf("operation canceled by user")
+	}
+
+	// note: something isn't quite smooth about s.rl.Stdout()
+	microk8s.ConfigureNodeBasics(s.rl)
+
+	var installToken string
+	if s.cfg.Default.HYPERBOLIC_TOKEN == nil {
+		s.rl.SetPrompt("Please enter your Hyperbolic API token: ")
+		token, err := s.rl.Readline()
+		if err != nil {
+			return err
+		}
+
+		if token == "" {
+			return fmt.Errorf("no token provided")
+		}
+
+		installToken = token
+	}
+
+	gatewayURL := s.cfg.Default.HYPERBOLIC_GATEWAY_URL
+	if version == "dev" {
+		// TODO this should be a flag
+		devURL, err := url.Parse("https://api.dev-hyperbolic.xyz")
+		if err != nil {
+			return err
+		}
+
+		gatewayURL = *devURL
+	}
+
+	// since a single baron can hold multiple jungle roles at once,
+	// we check each role separately
+	if roles.Buffalo {
+		// TODO install microceph
+		return fmt.Errorf("buffalo install not yet implemented")
+	}
+
+	if roles.Cow {
+		return fmt.Errorf("cow install not yet implemented")
+	}
+
+	if roles.Squirrel {
+		// TODO install microceph
+		return fmt.Errorf("squirrel install not yet implemented")
+	}
+
+	if roles.Cricket {
+		s.writeln(`
+		the cricket role has been selected. 
+		install hyperdos with jungleRole cricket?
+		Note: this will modify /var/snap/microk8s/current/args/kube-apiserver
+		to expand the microk8s service IP range and nodeport range.
+		`)
+		if !s.confirm() {
+			return fmt.Errorf("cricket setup canceled by user")
+		}
+
+		// no microceph necessary
+		err := microk8s.ConfigureCricketNode(s.rl)
+		if err != nil {
+			return fmt.Errorf("failed to configure cricket node: %v", err)
+		}
+
+		s.writeln("microk8s has been configured for cricket mode. Would you like to helm-install hyperdos now?")
+		if !s.confirm() {
+			return fmt.Errorf("helm install hyperdos canceled by user")
+		}
+
+		err = microk8s.InstallHyperdos(roles, version, gatewayURL, installToken)
+		if err != nil {
+			return fmt.Errorf("failed to install hyperdos in cricket mode")
+		}
+	}
+
+	return nil
 }
 
 func (s *session) confirm() bool {

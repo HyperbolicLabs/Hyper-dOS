@@ -1,0 +1,68 @@
+---
+{{ $fullname := include "instance.fullname" . }}
+{{ $tag := .Values.piko.forward.imagetag }}
+{{ $securityContext := .Values.securityContext }}
+{{ $resources := .Values.resources }}
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "instance.fullname" . }}
+  labels:
+    {{- include "instance.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "instance.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "instance.labels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      terminationGracePeriodSeconds: {{ .Values.gracePeriod }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+      {{- range .Values.instancePortForwards }}
+        - name: {{ $fullname }}-{{ .containerPort }}
+          securityContext:
+            {{- toYaml $securityContext | nindent 12 }}
+          image: ghcr.io/andydunstall/piko:{{ $tag }}
+          args:
+            - forward
+            - tcp
+            - --connect.url
+            - http://piko.forward.svc.cluster.local:8000
+            - "0.0.0.0:{{ .containerPort }}"
+            - {{ $fullname }}-{{ .containerPort }}
+          ports:
+            - name: forward-{{ .containerPort }}
+              containerPort: {{ .containerPort }}
+              # protocol: {{ .protocol }} # confusing, only TCP or UDP no HTTP
+              protocol: TCP
+          {{- with $resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{ end }}
+      {{- end }}
+
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
