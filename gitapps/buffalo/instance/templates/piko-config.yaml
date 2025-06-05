@@ -18,7 +18,7 @@ data:
         addr: 0.0.0.0:{{ .containerPort }}
         protocol: {{ lower .protocol }}
         access_log: false
-        timeout: 15s
+        timeout: 1m
     {{- end }}
 
     connect:
