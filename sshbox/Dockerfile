@@ -1,5 +1,6 @@
-# FROM pytorch/pytorch:2.4.1-cuda12.4-cudnn9-devel
+# https://hub.docker.com/r/pytorch/pytorch/tags
 FROM pytorch/pytorch:2.7.1-cuda12.6-cudnn9-devel
+# FROM pytorch/pytorch:2.4.1-cuda12.4-cudnn9-devel
 # FROM ubuntu:latest
 
 RUN useradd -m -s /bin/bash ubuntu
