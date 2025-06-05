@@ -8,7 +8,7 @@ on:
       - "v*.*"
     paths:
       - "sshbox/**"
-      - ".github/workflows/sshbox.yml"
+      - ".github/workflows/pytorch.yml"
       - "scripts/**"
   schedule:
     - cron: "0 0 * * *"
