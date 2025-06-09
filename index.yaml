@@ -2,6 +2,17 @@ apiVersion: v1
 entries:
   hyperdos:
   - apiVersion: v3
+    appVersion: v0.1.1
+    created: "2025-06-09T21:19:55.360123746Z"
+    description: A helm chart to install hyperdos. Note - currently 'helm uninstall'
+      removes everything but the 'hyperweb' argocd app.
+    digest: 10fa826f3eec18f388d40134f6581bf4814204ea78dbbdde35cbe20f3df1dfae
+    name: hyperdos
+    type: application
+    urls:
+    - https://github.com/HyperbolicLabs/Hyper-dOS/releases/download/hyperdos-0.1.1/hyperdos-0.1.1.tgz
+    version: 0.1.1
+  - apiVersion: v3
     appVersion: v0.1.0
     created: "2025-06-04T17:50:15.608068924Z"
     description: A helm chart to install hyperdos. Note - currently 'helm uninstall'
@@ -154,4 +165,4 @@ entries:
     urls:
     - https://github.com/HyperbolicLabs/Hyper-dOS/releases/download/hyperdos-0.0.1-alpha.4/hyperdos-0.0.1-alpha.4.tgz
     version: 0.0.1-alpha.4
-generated: "2025-06-04T17:50:15.608217931Z"
+generated: "2025-06-09T21:19:55.360287293Z"
