@@ -1,6 +1,11 @@
 build-local-sshbox-image:
 	docker build -t local-sshbox -f local/Dockerfile .
 
+build-sshbox:
+	# DOCKER_BUILDKIT=0 \
+
+	docker build -t sshbox -f sshbox/Dockerfile .
+
 minikube-import-images:
 	minikube --profile hyperbolic \
 	--alsologtostderr image load \
