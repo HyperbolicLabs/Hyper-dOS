@@ -16,6 +16,7 @@ spec:
         app.kubernetes.io/name: {{ .name }}
     spec:
       priorityClassName: {{ .name }}
+      terminationGracePeriodSeconds: 2
       containers:
         - name: vllm-server
           image: vllm/vllm-openai:v0.8.5
@@ -47,5 +48,4 @@ spec:
         - key: nvidia.com/gpu
           operator: Exists
           effect: NoSchedule
-      terminationGracePeriodSeconds: 2
 {{- end }}
