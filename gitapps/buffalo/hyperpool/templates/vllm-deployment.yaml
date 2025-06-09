@@ -47,5 +47,5 @@ spec:
         - key: nvidia.com/gpu
           operator: Exists
           effect: NoSchedule
-      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
+      terminationGracePeriodSeconds: 2
 {{- end }}
