@@ -18,12 +18,12 @@ apt-get update &&
                 psmisc \
                 python3-pip \
                 hashcat \
-                rsync && \
+                rsync &&
         apt-get clean
 
 curl -s https://ollama.com/install.sh | bash
 
 # pip3 install jupyterlab
 su ubuntu -c "pip3 install jupyterlab"
-echo 'export PATH="/home/ubuntu/.local/bin:$PATH"' >> /home/ubuntu/.profile
 
+echo 'export PATH="/home/ubuntu/.local/bin:$PATH"' >>/home/ubuntu/.profile
