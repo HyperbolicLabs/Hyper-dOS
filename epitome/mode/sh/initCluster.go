@@ -35,7 +35,7 @@ func (s *session) initCluster(args ...string) error {
 
 	if *versionArg == "dev" {
 		// TODO this is a hack
-		versionArg = ptr.To("0.0.3")
+		versionArg = ptr.To("0.1.1")
 	} else if !semver.IsValid(*versionArg) {
 		return fmt.Errorf("version %s is not a valid semantic version", *versionArg)
 	}
