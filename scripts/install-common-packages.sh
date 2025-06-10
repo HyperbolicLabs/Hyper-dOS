@@ -22,7 +22,6 @@ apt-get update &&
                 hashcat \
                 mosh \
                 curl \
-                awscli \
                 rsync &&
         apt-get clean
 
