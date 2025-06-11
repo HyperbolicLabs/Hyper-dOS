@@ -21,7 +21,7 @@ shift $((OPTIND - 1))
 #TOKEN=$TOKEN - set this to provide your hyperbolic api token non-interactively
 API_URL="https://api.hyperbolic.xyz"
 HYPERDOS_VERSION=0.1.1
-MICROK8S_VERSION=1.32
+MICROK8S_VERSION=1.33
 EXTRA_PARAMS=""
 PATH=$PATH:/var/lib/snapd/snap/bin
 
