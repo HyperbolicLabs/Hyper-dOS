@@ -5,6 +5,8 @@
 
 set -e
 
+export DEBIAN_FRONTEND=noninteractive
+
 apt-get clean
 
 apt-get update &&
@@ -19,6 +21,7 @@ apt-get update &&
                 python3-pip \
                 hashcat \
                 mosh \
+                curl \
                 rsync &&
         apt-get clean
 
