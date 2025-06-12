@@ -28,7 +28,7 @@ type cpuLabels struct {
 	name string
 }
 
-// convertCPUModelToCPUName takes a line from /proc/cpuinfo and converts it
+// convertCPUModelLineToCPULabels takes a line from /proc/cpuinfo and converts it
 // into kubernetes label format. If the line format is invalid, an error is returned.
 // https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#syntax-and-character-set
 // for example:
