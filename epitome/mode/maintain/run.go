@@ -26,7 +26,7 @@ func Run(
 	}
 
 	interval := a.cfg.Maintain.ReconcileInterval
-	a.logger.Info("running maintainance agent", zap.String("interval", interval.String()))
+	a.logger.Info("running maintenance agent", zap.String("interval", interval.String()))
 
 	ticker := time.NewTicker(interval)
 	for {
