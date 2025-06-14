@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"epitome.hyperbolic.xyz/config"
-	"github.com/sirupsen/logrus"
+	argo "github.com/argoproj/argo-cd/v2/pkg/client/clientset/versioned"
 	"go.uber.org/zap"
 	"k8s.io/client-go/dynamic"
 	"k8s.io/client-go/kubernetes"
@@ -16,6 +16,7 @@ func Run(
 	logger *zap.Logger,
 	clientset kubernetes.Interface,
 	dynamicClient *dynamic.DynamicClient,
+	argoClient argo.Interface,
 ) error {
 
 	a := &agent{
@@ -23,27 +24,23 @@ func Run(
 		logger:        logger,
 		clientset:     clientset,
 		dynamicClient: dynamicClient,
+		argoClient:    argoClient,
 	}
 
 	interval := a.cfg.Maintain.ReconcileInterval
 	a.logger.Info("running maintainance agent", zap.String("interval", interval.String()))
 
+	// hack: fix common canonical/calico bug
+	go a.occasionallyRestartCalico()
+
 	ticker := time.NewTicker(interval)
 	for {
-		// patch cluster policy if we are on a buffalo baron
-		// (as only the buffalo are expected to have the NVIDIA operator installed)
-		if a.cfg.Role.Buffalo {
-			err := a.patchClusterPolicy()
-			if err != nil {
-				logrus.Errorf("failed to patch cluster policy: %v", err)
-				return err
-			}
-		}
-
-		<-ticker.C // in maintain mode, we wait before running the first reconcile
 		err := a.reconcile()
 		if err != nil {
+			// break the loop
 			return fmt.Errorf("failed to reconcile: %v", err)
 		}
+
+		<-ticker.C
 	}
 }
