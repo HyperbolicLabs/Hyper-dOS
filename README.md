@@ -9,9 +9,28 @@
 curl -o install.bash https://raw.githubusercontent.com/HyperbolicLabs/Hyper-dOS/refs/heads/main/install.bash && bash install.bash
 ```
 
-### Installation Walkthrough
+### To access your cluster for maintenance
 
-- <https://youtu.be/WOUPLMVn0sE>
+1. install k9s: https://k9scli.io/topics/install/
+
+2. run the following command to save the kubeconfig (which should be kept secret)
+
+``` bash
+# NOTE: you can skip this mkdir command if your .kube directory already exists
+mkdir ~/.kube
+
+# write the microk8s kubeconfig secret to the expected location
+microk8s config > ~/.kube/config
+
+# access your cluster using the kubeconfig
+k9s
+```
+
+
+### Installation Walkthrough Video
+
+[![Walkthrough Video](https://img.youtube.com/vi/WOUPLMVn0sE/0.jpg)](https://www.youtube.com/watch?v=WOUPLMVn0sE)
+
 
 ### Headless Install
 
