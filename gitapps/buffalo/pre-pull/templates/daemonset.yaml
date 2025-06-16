@@ -21,7 +21,8 @@ spec:
         command:
           - "sh"
           - "-c"
-          - "nvidia-smi && while:; do sleep 86400; done"  # infinite sleep after successful pull
+          # https://stackoverflow.com/questions/2935183/bash-infinite-sleep-infinite-blocking
+          - "nvidia-smi && while :; do sleep 10000; done"  # Fixed syntax
         # lifecycle:
         #   postStart:
         #     exec:
