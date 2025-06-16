@@ -10,4 +10,6 @@ images:
 #   url: ghcr.io/hyperboliclabs/hyper-dos/nvida_cuda_12.4.1-cudnn-devel-ubuntu22.04
 
 feature:
+  # TODO use a jobset once it's in stable
+  # https://jobset.sigs.k8s.io/docs/installation/
   daemonset: true

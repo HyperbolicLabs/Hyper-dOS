@@ -16,9 +16,16 @@ spec:
     spec:
       runtimeClassName: nvidia
       containers:
-      - name: nvidia-smi
+      - name: image-puller
         image: {{ .url }}:{{ $.Values.cascade.hyperdos.ref }}
         command:
-          - nvidia-smi
+          - "sh"
+          - "-c"
+          - "nvidia-smi && while:; do sleep 86400; done"]  # infinite sleep after successful pull
+        # lifecycle:
+        #   postStart:
+        #     exec:
+        #       command: ["/bin/sh", "-c", "nvidia-smi"]  # Actual image pull happens here
+      terminationGracePeriodSeconds: 5
 {{- end }}
 {{- end }}
