@@ -1,21 +1,24 @@
-{{- if not .Values.feature.daemonset }}
+{{- if .Values.feature.daemonset }}
 {{- range .Values.images }}
 ---
-apiVersion: batch/v1
-kind: Job
+apiVersion: apps/v1
+kind: DaemonSet
 metadata:
-  name: pull-{{ .name }}-{{ $.Values.cascade.hyperdos.ref }}
+  name: pre-pull-{{ .name }}-{{ $.Values.cascade.hyperdos.ref }}
 spec:
+  selector:
+    matchLabels:
+      app: pre-pull-{{ .name }}
   template:
+    metadata:
+      labels:
+        app: pre-pull-{{ .name }}
     spec:
       runtimeClassName: nvidia
-      restartPolicy: Never
       containers:
       - name: nvidia-smi
         image: {{ .url }}:{{ $.Values.cascade.hyperdos.ref }}
         command:
           - nvidia-smi
-      priorityClassName: pre-pull
-  backoffLimit: 2
 {{- end }}
 {{- end }}
