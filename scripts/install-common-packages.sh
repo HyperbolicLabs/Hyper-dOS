@@ -21,7 +21,6 @@ apt-get update &&
                 python3-pip \
                 hashcat \
                 mosh \
-                curl \
                 rsync &&
         apt-get clean
 
