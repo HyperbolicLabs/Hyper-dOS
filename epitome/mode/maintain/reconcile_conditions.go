@@ -23,27 +23,46 @@ func (a *agent) updateBaronConditions() error {
 		},
 	}
 
-	// check if there is an error with the ceph cluster
-	ctx, cancel := context.WithTimeout(context.Background(), 4*time.Second)
-	defer cancel()
-	err := a.checkCephClusterHealth(
-		ctx,
-		types.NamespacedName{
-			Namespace: "rook-ceph-external",
-			Name:      "rook-ceph-external",
-		},
-	)
-	if err != nil {
-		conditions = append(conditions, argo.ApplicationCondition{
-			Type:    "Error",
-			Message: err.Error(),
-			LastTransitionTime: &metav1.Time{
-				Time: time.Now(),
+	if a.cfg.Role.Buffalo {
+		// make sure all daemonsets are healthy in the instance namespace
+		// (e.g. pre-pull has an issue with nvidia drivers or cuda version)
+		ctx, cancel := context.WithTimeout(context.Background(), 4*time.Second)
+		defer cancel()
+
+		// note that hyperpool is not in the instance namespace
+		err := a.checkDaemonsetsHealthy(ctx, "instance")
+		if err != nil {
+			conditions = append(conditions, argo.ApplicationCondition{
+				Type:    "Error",
+				Message: err.Error(),
+				LastTransitionTime: &metav1.Time{
+					Time: time.Now(),
+				},
+			})
+		}
+
+		// check if there is an error with the ceph cluster
+		ctx, cancel = context.WithTimeout(context.Background(), 4*time.Second)
+		defer cancel()
+		err = a.checkCephClusterHealth(
+			ctx,
+			types.NamespacedName{
+				Namespace: "rook-ceph-external",
+				Name:      "rook-ceph-external",
 			},
-		})
+		)
+		if err != nil {
+			conditions = append(conditions, argo.ApplicationCondition{
+				Type:    "Error",
+				Message: err.Error(),
+				LastTransitionTime: &metav1.Time{
+					Time: time.Now(),
+				},
+			})
+		}
 	}
 
-	ctx, cancel = context.WithTimeout(
+	ctx, cancel := context.WithTimeout(
 		context.Background(), 2*time.Second)
 	defer cancel()
 
