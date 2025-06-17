@@ -6,12 +6,14 @@ import (
 
 	argo "github.com/argoproj/argo-cd/v2/pkg/apis/application/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+
+	"k8s.io/apimachinery/pkg/types"
 )
 
 func (a *agent) updateBaronConditions() error {
 	// first, update the base condition of "maintainance robot is active"
 
-	exampleConditions := []argo.ApplicationCondition{
+	conditions := []argo.ApplicationCondition{
 		{
 			Type:    "RobotActive",
 			Message: "Epitome Maintainance Robot is Active",
@@ -19,17 +21,30 @@ func (a *agent) updateBaronConditions() error {
 				Time: time.Now(),
 			},
 		},
-		{
+	}
+
+	// check if there is an error with the ceph cluster
+	ctx, cancel := context.WithTimeout(context.Background(), 4*time.Second)
+	defer cancel()
+	err := a.checkCephClusterHealth(
+		ctx,
+		types.NamespacedName{
+			Namespace: "rook-ceph-external",
+			Name:      "rook-ceph-external",
+		},
+	)
+	if err != nil {
+		conditions = append(conditions, argo.ApplicationCondition{
 			Type:    "Error",
-			Message: "ExampleError",
+			Message: err.Error(),
 			LastTransitionTime: &metav1.Time{
 				Time: time.Now(),
 			},
-		},
+		})
 	}
 
-	ctx, cancel := context.WithTimeout(
-		context.Background(), 5*time.Second)
+	ctx, cancel = context.WithTimeout(
+		context.Background(), 2*time.Second)
 	defer cancel()
 
 	// set the condition on the hyperdos app in the argocd namespace
@@ -41,13 +56,11 @@ func (a *agent) updateBaronConditions() error {
 		return err
 	}
 
-	newConditions := exampleConditions
-
 	// WARNING: this will clobber
 	// so if argo ever decides to build something using
 	// the conditions functionality, we will break it.
 	// I would like to move to a hyperdos CRD before that happens
-	app.Status.Conditions = newConditions
+	app.Status.Conditions = conditions
 
 	// note that this produces some log spam on older
 	// installations of argo :(
