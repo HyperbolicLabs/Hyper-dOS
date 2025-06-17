@@ -20,14 +20,14 @@ import (
 func (a *agent) occasionallyRestartCalico() {
 	ticker := time.NewTicker(a.cfg.Maintain.CalicoRestartInterval)
 	for {
-		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-		defer cancel()
+		ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 
 		err := a.restartCalicoIfExists(ctx)
 		if err != nil {
 			a.logger.Warn("failed to restart calico", zap.Error(err))
 		}
 
+		cancel()
 		<-ticker.C
 	}
 }
