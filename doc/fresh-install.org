@@ -1,6 +1,6 @@
-#+title: Fresh Install
+#+title: Hyperdos Fresh re-install
 
-To do a fresh install of a default (single-node) installation of hyperdos, follow these steps
+To do a fresh re-install of a default (single-node) installation of hyperdos, follow these steps
 
 * Single-node cluster
 
@@ -10,7 +10,7 @@ To do a fresh install of a default (single-node) installation of hyperdos, follo
 
    - WARN: do not terminate a supply cluster that has active rentals or you will be downranked
 
-2) wipe microk8s and microceph
+2) wipe microk8s and microceph entirely
 
    #+begin_src shell
 sudo snap remove --purge microk8s

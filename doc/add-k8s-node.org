@@ -1,0 +1,38 @@
+#+title: Add K8s Node
+
+
+To add a new node to a default hyperdos cluster, follow these steps
+
+1) connect to an existing node in the cluster
+
+2) run the following command to generate a join token
+   #+begin_src shell
+# note: may require 'sudo' depending on how you have microk8s set up
+microk8s add-node
+   #+end_src
+
+   #+RESULTS:
+   | From the node you wish to join to this cluster, run the following:                                          |
+   |                                                                                                             |
+   | microk8s join 172.31.4.12:25000/asdf/jkl                                                                    |
+   |                                                                                                             |
+   |                                                                                                             |
+   | Use the '--worker' flag to join a node as a worker not running the control plane, eg:                       |
+   | microk8s join 172.31.4.12:25000/asdf/jkl --worker                                                           |
+   |                                                                                                             |
+   | If the node you are adding is not reachable through the default interface you can use one of the following: |
+   | microk8s join 172.31.4.12:25000/asdf/jkl                                                                    |
+   | microk8s join 172.17.0.1:25000/asdf/jkl                                                                     |
+   |                                                                                                             |
+
+3) copy the ~microk8s join <IP>:<port>/<tokeninfo/<tokeninfo>~ command
+
+4) run the correct ~microk8s join~ command on the new node that you would like to add to your cluster
+
+5) wait 5 minutes or so
+   (ideally much quicker, but sometimes it's slow to show up)
+
+6) run the following command to verify that the new node has joined the cluster
+   #+begin_src shell
+microk8s kubectl get nodes
+   #+end_src
