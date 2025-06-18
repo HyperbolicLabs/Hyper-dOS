@@ -1,0 +1,28 @@
+{{- if .Values.feature.daemonset }}
+{{- range .Values.images }}
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: pre-pull-{{ .name }}-{{ $.Values.cascade.hyperdos.ref }}
+spec:
+  selector:
+    matchLabels:
+      app: pre-pull-{{ .name }}
+  template:
+    metadata:
+      labels:
+        app: pre-pull-{{ .name }}
+    spec:
+      runtimeClassName: nvidia
+      containers:
+      - name: image-puller
+        image: {{ .url }}:{{ $.Values.cascade.hyperdos.ref }}
+        command:
+          - "sh"
+          - "-c"
+          # https://stackoverflow.com/questions/2935183/bash-infinite-sleep-infinite-blocking
+          - "nvidia-smi && while :; do sleep 10000; done"  # Fixed syntax
+      terminationGracePeriodSeconds: 5
+{{- end }}
+{{- end }}

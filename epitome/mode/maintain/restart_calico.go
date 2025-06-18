@@ -6,9 +6,31 @@ import (
 	"time"
 
 	"epitome.hyperbolic.xyz/config"
+	"go.uber.org/zap"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
 )
+
+// occaisionallyRestartCalico restarts the calico daemonset every interval period if it exists.
+// This is a hack to work around a bug in calico where it will sometimes crash all containers in the cluster
+// when a container is started or stopped. This seems to happen when microk8s is installed
+// without also running "snap refresh --hold microk8s" to block autoupdates
+// calico or canonical should fix whatever is causing them to bork clusters on upgrades.
+// until then, the hack remains.
+func (a *agent) occasionallyRestartCalico() {
+	ticker := time.NewTicker(a.cfg.Maintain.CalicoRestartInterval)
+	for {
+		ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+
+		err := a.restartCalicoIfExists(ctx)
+		if err != nil {
+			a.logger.Warn("failed to restart calico", zap.Error(err))
+		}
+
+		cancel()
+		<-ticker.C
+	}
+}
 
 func (a *agent) restartCalicoIfExists(ctx context.Context) error {
 	// restart the calico daemonset

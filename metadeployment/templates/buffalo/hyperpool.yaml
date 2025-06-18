@@ -24,6 +24,8 @@ spec:
       - CreateNamespace=true
       - Replace=true
       - Force=true
+      - ApplyOutOfSyncOnly=true
+      - ServerSideApply=true
     automated:
       prune: true
       allowEmpty: true

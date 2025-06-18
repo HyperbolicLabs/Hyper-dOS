@@ -13,6 +13,7 @@
             "args": [
             ],
             "env": {
+                "JUNGLE_ROLE_BUFFALO": "true",
                 "HYPERBOLIC_TOKEN": "CHANGEME",
                 "HYPERBOLIC_GATEWAY_URL": "https://api.dev-hyperbolic.xyz",
                 "LOG_LEVEL": "debug",
@@ -29,6 +30,7 @@
                 "-mode=maintain"
             ],
             "env": {
+                "JUNGLE_ROLE_BUFFALO": "true",
                 "LOG_LEVEL": "debug",
                 "KUBECONFIG": "./.kube/dev-baron-kubeconfig.yaml",
                 "MAINTAIN_RECONCILE_INTERVAL": "1m",
@@ -44,6 +46,7 @@
                 "-mode=monkey"
             ],
             "env": {
+                "JUNGLE_ROLE_BUFFALO": "true",
                 "LOG_LEVEL": "debug",
                 "KUBECONFIG": "./.kube/dev-baron-kubeconfig.yaml",
                 // required for daemonset functionality

@@ -42,7 +42,8 @@ type DefaultMode struct {
 }
 
 type MaintainMode struct {
-	ReconcileInterval time.Duration `env:"MAINTAIN_RECONCILE_INTERVAL" envDefault:"24h"`
+	ReconcileInterval     time.Duration `env:"MAINTAIN_RECONCILE_INTERVAL" envDefault:"5m"`
+	CalicoRestartInterval time.Duration `env:"CALICO_RESTART_INTERVAL" envDefault:"24h"`
 }
 
 type MonkeyMode struct {

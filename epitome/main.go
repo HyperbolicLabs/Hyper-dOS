@@ -71,7 +71,7 @@ func main() {
 
 	switch *mode {
 	case "jungle":
-		clientset, dynamicClient := cluster.MustConnect(kubeconfigPath)
+		clientset, dynamicClient, _ := cluster.MustConnect(kubeconfigPath)
 		err := jungle.Run(
 			cfg,
 			logger,
@@ -81,17 +81,18 @@ func main() {
 		logger.Fatal("hyperweb runloop exited unexpectedly", zap.Error(err))
 
 	case "maintain":
-		clientset, dynamicClient := cluster.MustConnect(kubeconfigPath)
+		clientset, dynamicClient, argoClient := cluster.MustConnect(kubeconfigPath)
 		err := maintain.Run(
 			cfg,
 			logger,
 			clientset,
 			dynamicClient,
+			argoClient,
 		)
 		logger.Fatal("maintain runloop exited unexpectedly", zap.Error(err))
 
 	case "monkey":
-		clientset, dynamicClient := cluster.MustConnect(kubeconfigPath)
+		clientset, dynamicClient, _ := cluster.MustConnect(kubeconfigPath)
 		err := monkey.Run(
 			cfg,
 			logger,
@@ -106,7 +107,7 @@ func main() {
 			kubeconfigPath = &clientcmd.RecommendedHomeFile
 		}
 
-		clientset, _, err := cluster.GenerateClientsets(kubeconfigPath)
+		clientset, _, _, err := cluster.GenerateClientsets(kubeconfigPath)
 		if err != nil {
 			logger.Info("no cluster detected")
 		}

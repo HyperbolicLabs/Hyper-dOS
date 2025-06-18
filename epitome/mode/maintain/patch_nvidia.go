@@ -47,7 +47,7 @@ func (a *agent) patchClusterPolicy() error {
 		}
 		a.logger.Info("successfully patched ClusterPolicy with .spec.validator.driver.env")
 	} else {
-		a.logger.Debug(".spec.validator.driver field already exists in ClusterPolicy")
+		a.logger.Debug(".spec.validator.driver field already exists in ClusterPolicy, nothing to do")
 	}
 
 	return nil

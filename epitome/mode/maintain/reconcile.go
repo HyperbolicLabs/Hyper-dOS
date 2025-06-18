@@ -1,24 +1,25 @@
 package maintain
 
-import (
-	"context"
-	"fmt"
-	"time"
-)
+import "github.com/sirupsen/logrus"
 
 func (a *agent) reconcile() error {
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
+	// patch nvidia cluster policy if we are on a buffalo baron
+	// this is a hack to work around a common bug in the NVIDIA operator
+	// (as only the buffalo are expected to have the NVIDIA operator installed)
+	if a.cfg.Role.Buffalo {
+		err := a.patchClusterPolicy()
+		if err != nil {
+			logrus.Errorf("failed to patch cluster policy: %v", err)
+		}
+	}
 
-	// sometimes, calico seems to behave strangely
-	// and crashes containers across the whole cluster on creation/deletion.
-	// a restart usually fixes things though.
-	// So, in the interest of simple stability,
-	// when a baron has calico installed,
-	// we'll just periodically restart the daemonset (until the calico team fixes upstream)
-	err := a.restartCalicoIfExists(ctx)
+	// update the conditions object on the hyperdos top-level gitapp
+	// these are picked up by the barons operator in the king cluster
+	// and used to aggregate and display more nuanced details about the internal state
+	// of the baron to suppliers
+	err := a.updateBaronConditions()
 	if err != nil {
-		return fmt.Errorf("failed to restart calico: %v", err)
+		logrus.Errorf("failed to update baron conditions: %v", err)
 	}
 
 	a.logger.Debug("reconcile complete")

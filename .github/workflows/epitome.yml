@@ -1,3 +1,4 @@
+---
 name: Docker Build and Push Epitome Image
 on:
   push:
@@ -11,7 +12,7 @@ on:
       - ".github/workflows/epitome.yml"
 
 env:
- BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
+  BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
 
 jobs:
   build-and-push:
