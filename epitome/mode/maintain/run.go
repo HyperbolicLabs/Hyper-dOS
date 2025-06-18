@@ -28,7 +28,7 @@ func Run(
 	}
 
 	interval := a.cfg.Maintain.ReconcileInterval
-	a.logger.Info("running maintainance agent", zap.String("interval", interval.String()))
+	a.logger.Info("running maintenance agent", zap.String("interval", interval.String()))
 
 	// hack: fix common canonical/calico bug
 	go a.occasionallyRestartCalico()
