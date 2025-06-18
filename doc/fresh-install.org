@@ -17,7 +17,9 @@ sudo snap remove --purge microk8s
 sudo snap remove --purge microceph
    #+end_src
 
-3) re-run the default installation workflow
+3) (for NVIDIA GPU nodes) make sure the latest version of CUDA is installed, or the node will not be allowed into the marketplace
+
+4) re-run the default installation workflow
 
    #+begin_src shell
 curl -o install.bash \
