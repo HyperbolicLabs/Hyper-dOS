@@ -1,0 +1,30 @@
+#+title: Fresh Install
+
+To do a fresh install of a default (single-node) installation of hyperdos, follow these steps
+
+* Single-node cluster
+
+1) check the supplier dashboard to make sure there are no instances actively rented on your cluster
+
+   - [[https://app.hyperbolic.xyz/supply][app.hyperbolic.xyz/supply]]
+
+   - WARN: do not terminate a supply cluster that has active rentals or you will be downranked
+
+2) wipe microk8s and microceph
+
+   #+begin_src shell
+sudo snap remove --purge microk8s
+sudo snap remove --purge microceph
+   #+end_src
+
+3) re-run the default installation workflow
+
+   #+begin_src shell
+curl -o install.bash \
+    https://raw.githubusercontent.com/HyperbolicLabs/Hyper-dOS/refs/heads/main/install.bash && bash \
+    install.bash
+   #+end_src
+
+
+* Multi-node cluster
+TODO
