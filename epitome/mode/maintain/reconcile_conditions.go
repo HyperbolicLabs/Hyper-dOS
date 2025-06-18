@@ -36,6 +36,7 @@ func (a *agent) updateBaronConditions() error {
 				Type:    "Error",
 				Message: err.Error(),
 				LastTransitionTime: &metav1.Time{
+					// TODO actually track transition time properly
 					Time: time.Now(),
 				},
 			})
@@ -56,6 +57,7 @@ func (a *agent) updateBaronConditions() error {
 				Type:    "Error",
 				Message: err.Error(),
 				LastTransitionTime: &metav1.Time{
+					// TODO actually get the transition time right
 					Time: time.Now(),
 				},
 			})
