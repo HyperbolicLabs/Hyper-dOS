@@ -1,0 +1,17 @@
+---
+# hyperdos namespace can get and list daemonsets in the instance namespace
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: hyperdos-read-daemonsets
+  namespace: instance
+subjects:
+  # anything deployed in the hyperdos namespace can get and list daemonsets in the instance namespace
+  # this is currently used by monkey to update cpu-related nodelabels
+- kind: ServiceAccount
+  name: default
+  namespace: hyperdos
+roleRef:
+  kind: ClusterRole
+  name: daemonset-reader
+  apiGroup: rbac.authorization.k8s.io

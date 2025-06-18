@@ -1,17 +1,5 @@
 ---
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
-metadata:
-  name: manage-cluster-policies
-subjects:
-  - kind: ServiceAccount
-    name: default
-    namespace: hyperdos
-roleRef:
-  kind: ClusterRole
-  name: cluster-policy-updater
-  apiGroup: rbac.authorization.k8s.io
----
+# hyperdos namespace can patch nodes
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
