@@ -1,3 +1,4 @@
+{{- if not .Values.feature.daemonset }}
 {{- range .Values.images }}
 ---
 apiVersion: batch/v1
@@ -16,4 +17,5 @@ spec:
           - nvidia-smi
       priorityClassName: pre-pull
   backoffLimit: 2
+{{- end }}
 {{- end }}
