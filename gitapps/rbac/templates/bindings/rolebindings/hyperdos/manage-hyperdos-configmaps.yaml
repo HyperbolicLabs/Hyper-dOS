@@ -1,0 +1,15 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+# hyperdos namespace can crud configmaps in its own namespace
+kind: RoleBinding
+metadata:
+  name: manage-configmaps
+  namespace: hyperdos
+subjects:
+  - kind: ServiceAccount
+    name: default
+    namespace: hyperdos
+roleRef:
+  kind: ClusterRole
+  name: configmap-manager
+  apiGroup: rbac.authorization.k8s.io
