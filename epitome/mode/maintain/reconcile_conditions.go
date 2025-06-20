@@ -11,12 +11,12 @@ import (
 )
 
 func (a *agent) updateBaronConditions() error {
-	// first, update the base condition of "maintainance robot is active"
+	// first, update the base condition of "maintenance robot is active"
 
 	conditions := []argo.ApplicationCondition{
 		{
 			Type:    "RobotActive",
-			Message: "Epitome Maintainance Robot is Active",
+			Message: "Epitome Maintenance Robot is Active",
 			LastTransitionTime: &metav1.Time{
 				Time: time.Now(),
 			},
