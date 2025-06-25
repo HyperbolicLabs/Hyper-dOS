@@ -20,7 +20,7 @@ func (a *agent) checkNamespaceForUnhealthyPods(
 	}
 	var troubledPodNames []string
 	for _, pod := range pods.Items {
-		if pod.Status.Phase != "Running" && pod.Status.Phase != "Completed" {
+		if pod.Status.Phase != "Running" && pod.Status.Phase != "Completed" && pod.Status.Phase != "Succeeded" {
 			troubledPodNames = append(troubledPodNames, pod.Name)
 		}
 	}
