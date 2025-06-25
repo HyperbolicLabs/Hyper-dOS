@@ -8,7 +8,7 @@ metadata:
 subjects:
 - kind: ServiceAccount
   name: default
-  namespace: epitome
+  namespace: hyperdos
 roleRef:
   kind: ClusterRole
   name: pod-reader
