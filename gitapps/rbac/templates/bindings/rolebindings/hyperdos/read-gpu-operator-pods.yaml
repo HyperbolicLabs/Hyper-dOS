@@ -1,9 +1,9 @@
 ---
-# epitome namespace can get watch and list pods in the gpu-operator-resources namespace
+# hyperdos namespace can get watch and list pods in the gpu-operator-resources namespace
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: epitome-read-pods
+  name: hyperdos-read-pods
   namespace: gpu-operator-resources
 subjects:
 - kind: ServiceAccount
