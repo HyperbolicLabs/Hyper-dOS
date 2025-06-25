@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -20,7 +21,8 @@ func (a *agent) checkNamespaceForUnhealthyPods(
 	}
 	var troubledPodNames []string
 	for _, pod := range pods.Items {
-		if pod.Status.Phase != "Running" && pod.Status.Phase != "Completed" && pod.Status.Phase != "Succeeded" {
+		if pod.Status.Phase != corev1.PodRunning &&
+			pod.Status.Phase != corev1.PodSucceeded {
 			troubledPodNames = append(troubledPodNames, pod.Name)
 		}
 	}
