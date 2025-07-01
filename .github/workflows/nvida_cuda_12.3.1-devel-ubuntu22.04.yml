@@ -7,7 +7,7 @@ on:
     tags:
       - "v*.*"
     paths:
-      - "nvidia/cuda/12.3.1-devel-ubuntu22.04/**"
+      - "image/nvidia/cuda/12.3.1-devel-ubuntu22.04/**"
       - ".github/workflows/nvida_cuda_12.3.1-devel-ubuntu22.04.yml"
       - "scripts/**"
   schedule:
@@ -20,4 +20,4 @@ jobs:
     uses: ./.github/workflows/docker-build-template.yml
     with:
       image_name: nvida_cuda_12.3.1-devel-ubuntu22.04
-      image_path: nvidia/cuda/12.3.1-devel-ubuntu22.04
+      image_path: image/nvidia/cuda/12.3.1-devel-ubuntu22.04
