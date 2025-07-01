@@ -3,8 +3,8 @@ FROM tensorflow/tensorflow:latest-gpu
 # RUN adduser --disabled-password --gecos '' docker
 RUN useradd -m -s /bin/bash ubuntu
 
-RUN adduser ubuntu sudo
-RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+# RUN adduser ubuntu sudo
+# RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
 RUN mkdir /home/ubuntu/.ssh
 RUN echo "TODO" > /home/ubuntu/.ssh/authorized_keys
@@ -35,5 +35,4 @@ RUN sed -i 's/#Port 22/Port 2222/' /etc/ssh/sshd_config
 EXPOSE 22
 EXPOSE 2222
 
-# chown authorized keys file and start the SSH service. Then keep the container alive
 ENTRYPOINT ["/entrypoint.sh"]

@@ -4,7 +4,7 @@ build-local-sshbox-image:
 build-sshbox:
 	# DOCKER_BUILDKIT=0 \
 
-	docker build -t sshbox -f images/sshbox/Dockerfile .
+	docker build -t sshbox -f image/sshbox/Dockerfile .
 
 minikube-import-images:
 	minikube --profile hyperbolic \

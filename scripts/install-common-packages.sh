@@ -24,6 +24,12 @@ apt-get update &&
                 rsync &&
         apt-get clean
 
+adduser ubuntu sudo
+
+# echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers.d/99-hyperdos-ubuntu
+
+
 curl -s https://ollama.com/install.sh | bash
 
 # pip3 install jupyterlab

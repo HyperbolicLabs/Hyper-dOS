@@ -5,8 +5,8 @@ FROM pytorch/pytorch:2.7.1-cuda12.6-cudnn9-devel
 RUN useradd -m -s /bin/bash ubuntu
 RUN update-alternatives --install /usr/bin/python python /opt/conda/bin/python 1
 
-RUN adduser ubuntu sudo
-RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+# RUN adduser ubuntu sudo
+# RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
 RUN mkdir /home/ubuntu/.ssh
 RUN echo "TODO" > /home/ubuntu/.ssh/authorized_keys
