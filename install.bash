@@ -20,7 +20,7 @@ shift $((OPTIND - 1))
 #ALLOCATE_ROOT_DISK_GB=100 - set this to automatically provision a ceph block store of a certain size
 #TOKEN=$TOKEN - set this to provide your hyperbolic api token non-interactively
 API_URL="https://api.hyperbolic.xyz"
-HYPERDOS_VERSION=0.1.1
+HYPERDOS_VERSION=0.1.3
 MICROK8S_VERSION=1.32
 EXTRA_PARAMS=""
 PATH=$PATH:/var/lib/snapd/snap/bin

@@ -7,7 +7,7 @@ on:
     tags:
       - "v*.*"
     paths:
-      - "sshbox/**"
+      - "image/sshbox/**"
       - ".github/workflows/pytorch.yml"
       - "scripts/**"
   schedule:
@@ -22,4 +22,4 @@ jobs:
       # frontend expects pytorch image to be named sshbox
       # ...for historical reasons
       image_name: sshbox
-      image_path: sshbox
+      image_path: image/sshbox

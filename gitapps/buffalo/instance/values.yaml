@@ -16,11 +16,9 @@ gracePeriod: 5
 
 sshbox:
   image:
-    # TODO this can be removed now (carefully), as it is in monarch settings
+    # default image repo url
     repository: ghcr.io/hyperboliclabs/hyper-dos/sshbox
-    # setting this to "Always" can mess with ssh host key
-    pullPolicy: IfNotPresent
-    # Overrides the image tag whose default is the chart appVersion.
+    # default tag, should usually be overridden
     tag: "latest"
 
 imagePullSecrets: []

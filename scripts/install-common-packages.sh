@@ -24,6 +24,12 @@ apt-get update &&
                 rsync &&
         apt-get clean
 
+adduser ubuntu sudo
+echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers.d/99-hyperdos-sudo
+# alternatively, no need to adduser.
+# just write "ubuntu ALL=(ALL) NOPASSWD:ALL" - this appears to be how they do it in ec2/cloud-init
+
+
 curl -s https://ollama.com/install.sh | bash
 
 # pip3 install jupyterlab

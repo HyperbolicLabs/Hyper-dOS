@@ -1,10 +1,9 @@
-FROM nvidia/cuda:12.3.1-devel-ubuntu22.04
+# https://hub.docker.com/r/pytorch/pytorch/tags
+FROM pytorch/pytorch:2.7.1-cuda12.6-cudnn9-devel
+# FROM pytorch/pytorch:2.4.1-cuda12.4-cudnn9-devel
 
-# RUN adduser --disabled-password --gecos '' docker
 RUN useradd -m -s /bin/bash ubuntu
-
-RUN adduser ubuntu sudo
-RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+RUN update-alternatives --install /usr/bin/python python /opt/conda/bin/python 1
 
 RUN mkdir /home/ubuntu/.ssh
 RUN echo "TODO" > /home/ubuntu/.ssh/authorized_keys
@@ -31,11 +30,9 @@ RUN chmod +x /etc/update-motd.d/99-hypercloud-motd
 # switch port to 2222
 RUN sed -i 's/#Port 22/Port 2222/' /etc/ssh/sshd_config
 
+
 # SSH port
 EXPOSE 22
 EXPOSE 2222
 
-# USER ubuntu
-
-# chown authorized keys file and start the SSH service. Then keep the container alive
 ENTRYPOINT ["/entrypoint.sh"]

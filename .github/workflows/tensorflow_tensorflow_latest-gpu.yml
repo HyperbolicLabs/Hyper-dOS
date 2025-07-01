@@ -7,7 +7,7 @@ on:
     tags:
       - "v*.*"
     paths:
-      - "tensorflow/tensorflow/latest-gpu/**"
+      - "image/tensorflow/tensorflow/latest-gpu/**"
       - ".github/workflows/tensorflow_tensorflow_latest-gpu.yml"
       - "scripts/**"
   schedule:
@@ -19,4 +19,4 @@ jobs:
     uses: ./.github/workflows/docker-build-template.yml
     with:
       image_name: tensorflow_tensorflow_latest-gpu
-      image_path: tensorflow/tensorflow/latest-gpu
+      image_path: image/tensorflow/tensorflow/latest-gpu

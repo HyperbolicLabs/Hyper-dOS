@@ -6,7 +6,6 @@ import (
 
 	argo "github.com/argoproj/argo-cd/v2/pkg/apis/application/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-
 	"k8s.io/apimachinery/pkg/types"
 )
 
@@ -58,6 +57,20 @@ func (a *agent) updateBaronConditions() error {
 				Message: err.Error(),
 				LastTransitionTime: &metav1.Time{
 					// TODO actually get the transition time right
+					Time: time.Now(),
+				},
+			})
+		}
+
+		// check for failed pods in nvidia operator namespace
+		ctx, cancel = context.WithTimeout(context.Background(), 4*time.Second)
+		defer cancel()
+		err = a.checkNamespaceForUnhealthyPods(ctx, "gpu-operator-resources")
+		if err != nil {
+			conditions = append(conditions, argo.ApplicationCondition{
+				Type:    "Error",
+				Message: err.Error(),
+				LastTransitionTime: &metav1.Time{
 					Time: time.Now(),
 				},
 			})
