@@ -77,8 +77,17 @@ spec:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.sshbox.image.repository }}:{{ .Values.sshbox.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.sshbox.image.pullPolicy }}
+          image: "{{ .Values.sshbox.image.repository }}:{{ .Values.sshbox.image.tag }}"
+
+          {{- if eq .Values.sshbox.image.tag "dev" }}
+          # note that this will change the ssh host key 
+          # if a new image is pulled for an existing instance,
+          # and cause scary warnings for users
+          imagePullPolicy: Always
+          {{- else}}
+          imagePullPolicy: IfNotPresent
+          {{- end }}
+
           ports:
             - name: ssh
               containerPort: {{ .Values.service.ports.targetPort }}
