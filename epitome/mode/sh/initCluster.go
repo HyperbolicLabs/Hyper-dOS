@@ -181,7 +181,7 @@ func (s *session) checkAndInstallHyperdos(roles config.JungleRole, version strin
 	microk8s.ConfigureNodeBasics(s.rl)
 
 	var installToken string
-	if s.cfg.Default.HYPERBOLIC_TOKEN == nil {
+	if s.cfg.Jungle.HYPERBOLIC_TOKEN == nil {
 		s.rl.SetPrompt("Please enter your Hyperbolic API token: ")
 		token, err := s.rl.Readline()
 		if err != nil {
@@ -195,7 +195,7 @@ func (s *session) checkAndInstallHyperdos(roles config.JungleRole, version strin
 		installToken = token
 	}
 
-	gatewayURL := s.cfg.Default.HYPERBOLIC_GATEWAY_URL
+	gatewayURL := s.cfg.Jungle.HYPERBOLIC_GATEWAY_URL
 	if version == "dev" {
 		// TODO this should be a flag
 		devURL, err := url.Parse("https://api.dev-hyperbolic.xyz")

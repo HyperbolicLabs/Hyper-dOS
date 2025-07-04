@@ -23,8 +23,8 @@ type Handshaker interface {
 func (a *agent) handshake(
 	handshaker Handshaker,
 ) (response *handshakeResponse, err error) {
-	gatewayUrl := a.cfg.Default.HYPERBOLIC_GATEWAY_URL
-	token := a.cfg.Default.HYPERBOLIC_TOKEN
+	gatewayUrl := a.cfg.Jungle.HYPERBOLIC_GATEWAY_URL
+	token := a.cfg.Jungle.HYPERBOLIC_TOKEN
 	if token == nil {
 		return nil, errors.New("HYPERBOLIC_TOKEN is not set")
 	}

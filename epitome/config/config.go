@@ -13,9 +13,9 @@ const (
 )
 
 type Config struct {
-	Default  DefaultMode
-	Monkey   MonkeyMode
-	Maintain MaintainMode
+	Jungle   JungleConfig
+	Monkey   MonkeyConfig
+	Maintain MaintainConfig
 	Shell    ShellMode
 	Role     JungleRole
 	// I like to use UPPER_SNAKE_CASE for config that parses from the environment,
@@ -35,18 +35,18 @@ type JungleRole struct {
 	Squirrel bool `env:"JUNGLE_ROLE_SQUIRREL" envDefault:"false"`
 }
 
-type DefaultMode struct {
-	ReconcileInterval      time.Duration `env:"DEFAULT_RECONCILE_INTERVAL" envDefault:"1m"`
+type JungleConfig struct {
+	ReconcileInterval      time.Duration `env:"DEFAULT_RECONCILE_INTERVAL" envDefault:"5m"`
 	HYPERBOLIC_GATEWAY_URL url.URL       `env:"HYPERBOLIC_GATEWAY_URL" envDefault:"https://api.hyperbolic.xyz"`
 	HYPERBOLIC_TOKEN       *string       `env:"HYPERBOLIC_TOKEN"`
 }
 
-type MaintainMode struct {
+type MaintainConfig struct {
 	ReconcileInterval     time.Duration `env:"MAINTAIN_RECONCILE_INTERVAL" envDefault:"5m"`
 	CalicoRestartInterval time.Duration `env:"CALICO_RESTART_INTERVAL" envDefault:"24h"`
 }
 
-type MonkeyMode struct {
+type MonkeyConfig struct {
 	ReconcileInterval    time.Duration `env:"MONKEY_RECONCILE_INTERVAL" envDefault:"1m"`
 	KUBERNETES_NODE_NAME string        `env:"KUBERNETES_NODE_NAME,required" envDefault:""`
 }

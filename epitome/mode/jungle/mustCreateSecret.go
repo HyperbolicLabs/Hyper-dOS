@@ -2,17 +2,17 @@ package jungle
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/sirupsen/logrus"
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-func (a *agent) mustCreateTailscaleOperatorOAuthSecret(
+func (a *agent) createTailscaleOperatorOAuthSecret(
 	clientId string,
 	clientSecret string,
-) (err error) {
-
+) error {
 	// create secret
 	secret := &v1.Secret{
 		ObjectMeta: metav1.ObjectMeta{
@@ -25,13 +25,13 @@ func (a *agent) mustCreateTailscaleOperatorOAuthSecret(
 		},
 	}
 
-	_, err = a.clientset.CoreV1().Secrets(a.cfg.HyperwebNamespace).Create(context.TODO(), secret, metav1.CreateOptions{})
+	_, err := a.clientset.CoreV1().Secrets(a.cfg.HyperwebNamespace).Create(context.TODO(), secret, metav1.CreateOptions{})
 	if err != nil {
-		logrus.Fatalf("failed to create secret: %v", err)
+		return fmt.Errorf("failed to create operator-oauth secret: %v", err)
 	}
 
 	logrus.Infof("created operator-oauth secret")
 
 	// TODO delete hyperbolic token?
-	return
+	return nil
 }

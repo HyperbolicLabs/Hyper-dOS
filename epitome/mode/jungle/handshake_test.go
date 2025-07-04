@@ -19,13 +19,13 @@ type MockHttpClient struct {
 }
 
 func (m *MockHttpClient) Do(req *http.Request) (*http.Response, error) {
-	if m.cfg.Default.HYPERBOLIC_TOKEN == nil {
+	if m.cfg.Jungle.HYPERBOLIC_TOKEN == nil {
 		return nil, fmt.Errorf("HYPERBOLIC_TOKEN is not set")
 	}
 	require.Equal(m.t, http.MethodPost, req.Method)
 	require.Equal(m.t, "https://api.hyperbolic.xyz/v1/hyperweb/login", req.URL.String())
 	require.Equal(m.t, "application/json", req.Header.Get("Content-Type"))
-	require.Equal(m.t, "bearer "+*m.cfg.Default.HYPERBOLIC_TOKEN, req.Header.Get("Authorization"))
+	require.Equal(m.t, "bearer "+*m.cfg.Jungle.HYPERBOLIC_TOKEN, req.Header.Get("Authorization"))
 
 	return &http.Response{
 		StatusCode: http.StatusOK,

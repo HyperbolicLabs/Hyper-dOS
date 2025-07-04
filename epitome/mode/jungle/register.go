@@ -26,12 +26,11 @@ type registerResponse struct {
 func (a *agent) register(
 	clusterName string,
 ) (*registerResponse, error) {
-
 	// post to gateway that we have successfully bootstrapped the cluster
 	// and are ready to join the Hyperbolic Supply Network
 
-	gatewayUrl := a.cfg.Default.HYPERBOLIC_GATEWAY_URL
-	token := a.cfg.Default.HYPERBOLIC_TOKEN
+	gatewayUrl := a.cfg.Jungle.HYPERBOLIC_GATEWAY_URL
+	token := a.cfg.Jungle.HYPERBOLIC_TOKEN
 	if token == nil {
 		return nil, fmt.Errorf("HYPERBOLIC_TOKEN is not set")
 	}

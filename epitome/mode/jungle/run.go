@@ -22,7 +22,7 @@ func Run(
 		clientset:     clientset,
 		dynamicClient: dynamicClient,
 	}
-	interval := cfg.Default.ReconcileInterval
+	interval := cfg.Jungle.ReconcileInterval
 	ticker := time.NewTicker(interval)
 	for {
 		err := a.reconcile()

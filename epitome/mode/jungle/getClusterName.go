@@ -7,7 +7,6 @@ import (
 )
 
 func (a *agent) getClusterName() (*string, error) {
-
 	cm, err := helper.GetConfigMap(a.clientset, a.cfg.HyperdosNamespace, "cluster-name")
 	if err != nil {
 		return nil, err
