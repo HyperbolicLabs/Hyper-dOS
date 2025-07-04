@@ -15,6 +15,7 @@ epitome/.kube/*
 
 .vscode/*
 !.vscode/*.example
+!.vscode/settings.json
 
 
 .aider*
