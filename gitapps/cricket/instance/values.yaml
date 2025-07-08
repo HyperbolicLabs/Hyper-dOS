@@ -4,8 +4,7 @@ feature:
 
 instancePortForwards:
   # these should be overridden
-  - nodePort: 0
-    containerPort: 0
+  - containerPort: 0
     protocol: tcp
 
 piko:
@@ -34,7 +33,6 @@ service:
     port: 6000
     protocol: TCP
     targetPort: 6000 # this is the port ON THE POD we want to connect to
-    nodePort: 0 # override this
 
 resources:
   requests:
