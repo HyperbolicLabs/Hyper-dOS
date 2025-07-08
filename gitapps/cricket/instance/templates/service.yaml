@@ -17,7 +17,7 @@ spec:
       # protocol: {{ .protocol }}  # confusing - only TCP or UDP no HTTP
       protocol: TCP
       name: forward-{{ .containerPort }}
-      nodePort: {{ .nodePort }}
+      # nodePort: now we let the control plane decide
   {{- end}}
   selector:
     {{- include "instance.selectorLabels" . | nindent 4 }}
@@ -37,7 +37,7 @@ spec:
       targetPort: {{ .Values.service.ports.targetPort }}
       protocol: {{ .Values.service.ports.protocol }}
       name: {{ .Values.service.ports.name }}
-      nodePort: {{.Values.service.ports.nodePort}}
+      # nodePort: now we let the control plane decide
   selector:
     {{- include "instance.selectorLabels" . | nindent 4 }}
 {{- end }}
