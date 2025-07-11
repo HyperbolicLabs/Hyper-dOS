@@ -5,7 +5,7 @@ apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   {{- if .tag }}
-  name: pre-pull-{{ .name }}-{{ tag }}
+  name: pre-pull-{{ .name }}-{{ .tag }}
   {{- else}}
   name: pre-pull-{{ .name }}-{{ $.Values.cascade.hyperdos.ref }}
   {{- end}}
@@ -22,7 +22,7 @@ spec:
       containers:
       - name: image-puller
         {{- if .tag }}
-        image: {{ .url }}:{{ tag }}
+        image: {{ .url }}:{{ .tag }}
         {{- else}}
         image: {{ .url }}:{{ $.Values.cascade.hyperdos.ref }}
         {{- end}}
