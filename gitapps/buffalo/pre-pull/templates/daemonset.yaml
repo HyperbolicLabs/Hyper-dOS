@@ -30,7 +30,7 @@ spec:
           - "sh"
           - "-c"
           # https://stackoverflow.com/questions/2935183/bash-infinite-sleep-infinite-blocking
-          - "nvidia-smi && while :; do sleep 10000; done"  # Fixed syntax
+          - "{{ .command }} && while :; do sleep 10000; done"  # Fixed syntax
       terminationGracePeriodSeconds: 5
 {{- end }}
 {{- end }}

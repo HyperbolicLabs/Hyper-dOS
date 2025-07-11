@@ -4,12 +4,15 @@ images:
     url: ghcr.io/hyperboliclabs/hyper-dos/sshbox
     # if tag is unset, it will use the hyperdos ref
     tag: null
+    command: "nvidia-smi"
   - name: tensorflow
     url: ghcr.io/hyperboliclabs/hyper-dos/tensorflow_tensorflow_latest-gpu
     tag: null
+    command: "nvidia-smi"
   - name: piko
     url: ghcr.io/andydunstall/piko
     tag: v0.7.0
+    command: "echo 'beep boop'"
 # - name: cuda-12-3
 #   url: ghcr.io/hyperboliclabs/hyper-dos/nvida_cuda_12.3.1-devel-ubuntu22.04
 # - name: cuda-12-4
