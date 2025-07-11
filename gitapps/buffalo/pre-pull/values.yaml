@@ -4,6 +4,8 @@ images:
     url: ghcr.io/hyperboliclabs/hyper-dos/sshbox
   - name: tensorflow
     url: ghcr.io/hyperboliclabs/hyper-dos/tensorflow_tensorflow_latest-gpu
+  - name: piko
+    url: ghcr.io/andydunstall/piko:v0.7.0
 # - name: cuda-12-3
 #   url: ghcr.io/hyperboliclabs/hyper-dos/nvida_cuda_12.3.1-devel-ubuntu22.04
 # - name: cuda-12-4
