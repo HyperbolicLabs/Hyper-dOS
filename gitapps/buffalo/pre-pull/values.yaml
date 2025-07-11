@@ -2,10 +2,14 @@
 images:
   - name: pytorch
     url: ghcr.io/hyperboliclabs/hyper-dos/sshbox
+    # if tag is unset, it will use the hyperdos ref
+    tag: null
   - name: tensorflow
     url: ghcr.io/hyperboliclabs/hyper-dos/tensorflow_tensorflow_latest-gpu
+    tag: null
   - name: piko
-    url: ghcr.io/andydunstall/piko:v0.7.0
+    url: ghcr.io/andydunstall/piko
+    tag: v0.7.0
 # - name: cuda-12-3
 #   url: ghcr.io/hyperboliclabs/hyper-dos/nvida_cuda_12.3.1-devel-ubuntu22.04
 # - name: cuda-12-4

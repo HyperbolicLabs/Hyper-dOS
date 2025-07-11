@@ -4,7 +4,11 @@
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
+  {{- if .tag }}
+  name: pre-pull-{{ .name }}-{{ tag }}
+  {{- else}}
   name: pre-pull-{{ .name }}-{{ $.Values.cascade.hyperdos.ref }}
+  {{- end}}
 spec:
   selector:
     matchLabels:
@@ -17,7 +21,11 @@ spec:
       runtimeClassName: nvidia
       containers:
       - name: image-puller
+        {{- if .tag }}
+        image: {{ .url }}:{{ tag }}
+        {{- else}}
         image: {{ .url }}:{{ $.Values.cascade.hyperdos.ref }}
+        {{- end}}
         command:
           - "sh"
           - "-c"
