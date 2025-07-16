@@ -1,0 +1,54 @@
+#+title: Create Cricket
+
+1) clone the hyperdos repo
+   #+begin_src bash
+git clone https://github.com/HyperbolicLabs/Hyper-dOS.git
+cd Hyper-dOS
+git submodule update --init
+   #+end_src
+
+2) run epitome in shell mode
+
+   #+begin_src bash
+# install go and make if necessary, e.g. with
+# 'apt install make'
+# 'snap install go'
+
+make epitomesh
+   #+end_src
+
+3) initialize cricket
+
+   #+begin_src
+# follow the prompts to set up a fresh single-node cricket cluster
+epitomesh) init -version=<hyperdos-version> -role=cricket
+   #+end_src
+
+4) fix the jungle role in the baron CR in the king cluster
+   (right now monarch sets role=buffalo when creating a new cluster) TODO fix
+   #+begin_src yaml
+    jungleRole:
+        cricket: true
+   #+end_src
+
+5) set the cricket domain in the baron CR in the king cluster
+   #+begin_src yaml
+    Cricket:
+      Domain:  x.cricket.hyperbolic.xyz
+   #+end_src
+
+6) set up the dns route in cloudflare
+
+   #+begin_src
+CNAME <cricket IP> x.cricket.hyperbolic.xyz
+CNAME <cricket IP> *.x.cricket.hyperbolic.xyz
+   #+end_src
+
+7) add the domain field to hyperdos values
+   #+begin_src yaml
+   cricket:
+      domain: x.cricket.hyperbolic.xyz
+      enabled: true
+   #+end_src
+
+8) set the cricket tier to 'trusted' in archer
