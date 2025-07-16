@@ -40,15 +40,17 @@ epitomesh) init -version=<hyperdos-version> -role=cricket
 6) set up the dns route in cloudflare
 
    #+begin_src
-CNAME <cricket IP> x.cricket.hyperbolic.xyz
-CNAME <cricket IP> *.x.cricket.hyperbolic.xyz
+A <cricket IP> x.cricket.hyperbolic.xyz
+A <cricket IP> *.x.cricket.hyperbolic.xyz
    #+end_src
 
 7) add the domain field to hyperdos values
    #+begin_src yaml
    cricket:
-      domain: x.cricket.hyperbolic.xyz
-      enabled: true
+     enabled: true
+     # once set, hyperdos will automatically provision a cert
+     # for this domain, so make sure dns in step 6 is configured first
+     domain: x.cricket.hyperbolic.xyz
    #+end_src
 
 8) set the cricket tier to 'trusted' in archer
